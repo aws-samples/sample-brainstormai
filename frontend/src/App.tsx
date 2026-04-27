@@ -5,6 +5,7 @@ import NotebooksPage from "./pages/NotebooksPage";
 import NotebookDetailPage from "./pages/NotebookDetailPage";
 import ArtifactPage from "./pages/ArtifactPage";
 import PodcastPlayerPage from "./pages/PodcastPlayerPage";
+import UsagePage from "./pages/UsagePage";
 
 export default function App() {
   const { user } = useAuth();
@@ -20,6 +21,7 @@ export default function App() {
       <Route path="/notebooks/:notebookId" element={<NotebookDetailPage />} />
       <Route path="/notebooks/:notebookId/artifacts/:artifactId" element={<ArtifactPage />} />
       <Route path="/notebooks/:notebookId/artifacts/:artifactId/play" element={<PodcastPlayerPage />} />
+      <Route path="/usage" element={<UsagePage />} />
     </Routes>
   );
 }

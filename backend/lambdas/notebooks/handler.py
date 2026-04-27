@@ -18,7 +18,8 @@ import uuid
 from datetime import datetime, timezone
 
 import boto3
-from boto3.dynamodb.conditions import Key
+import boto3.dynamodb.conditions
+from boto3.dynamodb.conditions import Attr, Key
 
 dynamodb = boto3.resource("dynamodb")
 notebooks_table = dynamodb.Table(os.environ["NOTEBOOKS_TABLE"])
@@ -47,6 +48,10 @@ def lambda_handler(event, context):
                 return update_notebook(user_id, notebook_id, json.loads(event["body"] or "{}"))
             if method == "DELETE":
                 return delete_notebook(user_id, notebook_id)
+
+        if path == "/usage" and method == "GET":
+            notebook_id = (event.get("queryStringParameters") or {}).get("notebookId")
+            return get_usage(user_id, notebook_id)
 
         return resp(404, {"error": "Not found"})
     except PermissionError as e:
@@ -134,6 +139,59 @@ def delete_notebook(user_id: str, notebook_id: str):
 
     notebooks_table.delete_item(Key={"notebookId": notebook_id})
     return resp(204, {})
+
+
+def get_usage(user_id: str, notebook_id: str | None = None):
+    filter_expr = Attr("status").eq("COMPLETED")
+    if notebook_id:
+        # Validate ownership before scoping
+        _get_and_authorize(user_id, notebook_id)
+        items = jobs_table.query(
+            IndexName="notebookId-index",
+            KeyConditionExpression=Key("notebookId").eq(notebook_id),
+            FilterExpression=filter_expr,
+        )["Items"]
+        # Extra guard: only include jobs belonging to this user
+        items = [j for j in items if j.get("userId") == user_id]
+    else:
+        items = jobs_table.query(
+            IndexName="userId-index",
+            KeyConditionExpression=Key("userId").eq(user_id),
+            FilterExpression=filter_expr,
+        )["Items"]
+
+    # Group by date (YYYY-MM-DD from createdAt ISO string)
+    # Structure: { date -> { type -> tokens } }
+    by_date: dict[str, dict[str, int]] = {}
+    for job in items:
+        date = (job.get("createdAt") or "")[:10]  # "2026-04-27"
+        if not date:
+            continue
+        job_type = job.get("type", "unknown")
+        tokens = int(job.get("inputTokens", 0)) + int(job.get("outputTokens", 0))
+        by_date.setdefault(date, {})
+        by_date[date][job_type] = by_date[date].get(job_type, 0) + tokens
+
+    # Also compute all-time breakdown for the summary ring
+    totals: dict[str, int] = {}
+    for day_data in by_date.values():
+        for t, v in day_data.items():
+            totals[t] = totals.get(t, 0) + v
+
+    days = [
+        {
+            "date": date,
+            "breakdown": [{"type": t, "tokens": v} for t, v in sorted(day_data.items())],
+            "total": sum(day_data.values()),
+        }
+        for date, day_data in sorted(by_date.items(), reverse=True)  # most recent first
+    ]
+
+    return resp(200, {
+        "days": days,
+        "breakdown": [{"type": t, "tokens": v} for t, v in sorted(totals.items())],
+        "total": sum(totals.values()),
+    })
 
 
 def _get_and_authorize(user_id: str, notebook_id: str) -> dict:

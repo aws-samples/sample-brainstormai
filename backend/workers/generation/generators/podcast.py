@@ -13,6 +13,7 @@ Returns dict with artifactId, s3Key (manifest), script_text (for validation).
 import json
 import logging
 import os
+import re
 import uuid
 from datetime import datetime, timezone
 
@@ -81,6 +82,7 @@ Write the complete script now. Only output the script — no preamble, no stage 
     turns = _parse_turns(script_text)
 
     if not turns:
+        log.error("Script parser found no turns. Raw output (first 500 chars): %s", script_text[:500])
         raise ValueError("Script parser found no speaker turns in LLM output")
 
     artifact_id = str(uuid.uuid4())
@@ -128,6 +130,12 @@ Write the complete script now. Only output the script — no preamble, no stage 
     }
 
 
+_SPEAKER_RE = re.compile(
+    r"^\**\s*(ALEX|SAM)\s*\**\s*:",
+    re.IGNORECASE,
+)
+
+
 def _parse_turns(script: str) -> list[dict]:
     turns = []
     current_speaker = None
@@ -137,16 +145,13 @@ def _parse_turns(script: str) -> list[dict]:
         line = line.strip()
         if not line:
             continue
-        if line.startswith("ALEX:"):
-            if current_speaker:
+        m = _SPEAKER_RE.match(line)
+        if m:
+            if current_speaker and current_lines:
                 turns.append({"speaker": current_speaker, "text": " ".join(current_lines)})
-            current_speaker = "ALEX"
-            current_lines = [line[len("ALEX:"):].strip()]
-        elif line.startswith("SAM:"):
-            if current_speaker:
-                turns.append({"speaker": current_speaker, "text": " ".join(current_lines)})
-            current_speaker = "SAM"
-            current_lines = [line[len("SAM:"):].strip()]
+            current_speaker = m.group(1).upper()
+            rest = line[m.end():].strip()
+            current_lines = [rest] if rest else []
         elif current_speaker:
             current_lines.append(line)
 

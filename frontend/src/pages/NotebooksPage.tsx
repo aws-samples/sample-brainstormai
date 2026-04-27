@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  AppLayout,
-  TopNavigation,
   ContentLayout,
   Header,
   Cards,
@@ -16,6 +14,7 @@ import {
 } from "@cloudscape-design/components";
 import { api, setTokenProvider } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
+import AppShell from "../components/AppShell";
 
 interface Notebook {
   notebookId: string;
@@ -34,7 +33,7 @@ function statusIndicatorType(status: string): "success" | "in-progress" | "warni
 }
 
 export default function NotebooksPage() {
-  const { getIdToken, logout, user } = useAuth();
+  const { getIdToken } = useAuth();
   const navigate = useNavigate();
   const [notebooks, setNotebooks] = useState<Notebook[]>([]);
   const [loading, setLoading] = useState(true);
@@ -86,172 +85,137 @@ export default function NotebooksPage() {
   };
 
   return (
-    <>
-      <TopNavigation
-        identity={{
-          href: "/notebooks",
-          title: "",
-          logo: {
-            src: "/banner.png",
-            alt: "BrainstormAI",
-          },
-        }}
-        utilities={[
-          {
-            type: "menu-dropdown",
-            text: user?.email ?? "Account",
-            iconName: "user-profile",
-            items: [{ id: "signout", text: "Sign out" }],
-            onItemClick: () => logout(),
-          },
-        ]}
-      />
-
-      <AppLayout
-        navigationHide
-        toolsHide
+    <AppShell>
+      <ContentLayout
         headerVariant="high-contrast"
-        content={
-          <ContentLayout
-            headerVariant="high-contrast"
-            disableOverlap
-            header={
-              <Header
-                variant="h1"
-                description="Create notebooks, add sources, and generate podcasts, mind maps, and quizzes."
-                actions={
-                  <Button
-                    variant="primary"
-                    onClick={() => setCreateOpen(true)}
-                  >
-                    New notebook
-                  </Button>
-                }
-              >
-                My Notebooks
-              </Header>
+        disableOverlap
+        header={
+          <Header
+            variant="h1"
+            description="Create notebooks, add sources, and generate podcasts, mind maps, and quizzes."
+            actions={
+              <Button variant="primary" onClick={() => setCreateOpen(true)}>
+                New notebook
+              </Button>
             }
           >
-            <Box padding={{ top: "l" }}>
-            <Cards
-              loading={loading}
-              loadingText="Loading notebooks…"
-              items={notebooks}
-              cardDefinition={{
-                header: (nb) => (
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
-                    <Button
-                      variant="link"
-                      onClick={() => navigate(`/notebooks/${nb.notebookId}`)}
-                    >
-                      {nb.title}
-                    </Button>
-                    <Button
-                      variant="inline-icon"
-                      iconName="close"
-                      ariaLabel="Delete notebook"
-                      onClick={(e) => { e.stopPropagation(); setDeleteTarget(nb); }}
-                    />
-                  </div>
-                ),
-                sections: [
-                  {
-                    id: "status",
-                    content: (nb) => (
-                      <StatusIndicator type={statusIndicatorType(nb.status)}>
-                        {nb.status.charAt(0) + nb.status.slice(1).toLowerCase().replace("_", " ")}
-                      </StatusIndicator>
-                    ),
-                  },
-                  {
-                    id: "sources",
-                    content: (nb) => (
-                      <Box color="text-body-secondary" fontSize="body-s">
-                        {nb.sourceCount} source{nb.sourceCount !== 1 ? "s" : ""}
-                      </Box>
-                    ),
-                  },
-                  {
-                    id: "date",
-                    content: (nb) => (
-                      <Box color="text-body-secondary" fontSize="body-s">
-                        Created {new Date(nb.createdAt).toLocaleDateString(undefined, {
-                          month: "short", day: "numeric", year: "numeric",
-                        })}
-                      </Box>
-                    ),
-                  },
-                ],
-              }}
-              cardsPerRow={[
-                { cards: 1 },
-                { minWidth: 600, cards: 2 },
-                { minWidth: 960, cards: 3 },
-              ]}
-              empty={
-                <Box textAlign="center" padding="xxl">
-                  <Box variant="strong" fontSize="heading-m">No notebooks yet</Box>
-                  <Box color="text-body-secondary" padding={{ top: "s" }}>
-                    Create a notebook to get started
-                  </Box>
-                  <Box padding={{ top: "m" }}>
-                    <Button variant="primary" onClick={() => setCreateOpen(true)}>
-                      New notebook
-                    </Button>
-                  </Box>
-                </Box>
-              }
-            />
-            </Box>
-
-            <Modal
-              visible={!!deleteTarget}
-              onDismiss={() => setDeleteTarget(null)}
-              header="Delete notebook"
-              footer={
-                <Box float="right">
-                  <SpaceBetween direction="horizontal" size="xs">
-                    <Button onClick={() => setDeleteTarget(null)}>Cancel</Button>
-                    <Button variant="primary" loading={deleting} onClick={deleteNotebook}>
-                      Delete
-                    </Button>
-                  </SpaceBetween>
-                </Box>
-              }
-            >
-              <Box>
-                Permanently delete <strong>{deleteTarget?.title}</strong>? This removes all sources, jobs, and artifacts and cannot be undone.
-              </Box>
-            </Modal>
-
-            <Modal
-              visible={createOpen}
-              onDismiss={() => { setCreateOpen(false); setNewTitle(""); }}
-              header="New notebook"
-              footer={
-                <Box float="right">
-                  <SpaceBetween direction="horizontal" size="xs">
-                    <Button onClick={() => { setCreateOpen(false); setNewTitle(""); }}>Cancel</Button>
-                    <Button variant="primary" loading={creating} onClick={create} disabled={!newTitle.trim()}>
-                      Create
-                    </Button>
-                  </SpaceBetween>
-                </Box>
-              }
-            >
-              <FormField label="Title">
-                <Input
-                  value={newTitle}
-                  onChange={(e) => setNewTitle(e.detail.value)}
-                  placeholder="e.g. Quantum Computing Research"
-                  onKeyDown={(e) => e.detail.key === "Enter" && create()}
-                  autoFocus
-                />
-              </FormField>
-            </Modal>
-          </ContentLayout>
+            My Notebooks
+          </Header>
         }
-      />
-    </>
+      >
+        <Box padding={{ top: "l" }}>
+          <Cards
+            loading={loading}
+            loadingText="Loading notebooks…"
+            items={notebooks}
+            cardDefinition={{
+              header: (nb) => (
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+                  <Button variant="link" onClick={() => navigate(`/notebooks/${nb.notebookId}`)}>
+                    {nb.title}
+                  </Button>
+                  <Button
+                    variant="inline-icon"
+                    iconName="close"
+                    ariaLabel="Delete notebook"
+                    onClick={(e) => { e.stopPropagation(); setDeleteTarget(nb); }}
+                  />
+                </div>
+              ),
+              sections: [
+                {
+                  id: "status",
+                  content: (nb) => (
+                    <StatusIndicator type={statusIndicatorType(nb.status)}>
+                      {nb.status.charAt(0) + nb.status.slice(1).toLowerCase().replace("_", " ")}
+                    </StatusIndicator>
+                  ),
+                },
+                {
+                  id: "sources",
+                  content: (nb) => (
+                    <Box color="text-body-secondary" fontSize="body-s">
+                      {nb.sourceCount} source{nb.sourceCount !== 1 ? "s" : ""}
+                    </Box>
+                  ),
+                },
+                {
+                  id: "date",
+                  content: (nb) => (
+                    <Box color="text-body-secondary" fontSize="body-s">
+                      Created {new Date(nb.createdAt).toLocaleDateString(undefined, {
+                        month: "short", day: "numeric", year: "numeric",
+                      })}
+                    </Box>
+                  ),
+                },
+              ],
+            }}
+            cardsPerRow={[
+              { cards: 1 },
+              { minWidth: 600, cards: 2 },
+              { minWidth: 960, cards: 3 },
+            ]}
+            empty={
+              <Box textAlign="center" padding="xxl">
+                <Box variant="strong" fontSize="heading-m">No notebooks yet</Box>
+                <Box color="text-body-secondary" padding={{ top: "s" }}>
+                  Create a notebook to get started
+                </Box>
+                <Box padding={{ top: "m" }}>
+                  <Button variant="primary" onClick={() => setCreateOpen(true)}>
+                    New notebook
+                  </Button>
+                </Box>
+              </Box>
+            }
+          />
+        </Box>
+
+        <Modal
+          visible={!!deleteTarget}
+          onDismiss={() => setDeleteTarget(null)}
+          header="Delete notebook"
+          footer={
+            <Box float="right">
+              <SpaceBetween direction="horizontal" size="xs">
+                <Button onClick={() => setDeleteTarget(null)}>Cancel</Button>
+                <Button variant="primary" loading={deleting} onClick={deleteNotebook}>Delete</Button>
+              </SpaceBetween>
+            </Box>
+          }
+        >
+          <Box>
+            Permanently delete <strong>{deleteTarget?.title}</strong>? This removes all sources, jobs, and artifacts and cannot be undone.
+          </Box>
+        </Modal>
+
+        <Modal
+          visible={createOpen}
+          onDismiss={() => { setCreateOpen(false); setNewTitle(""); }}
+          header="New notebook"
+          footer={
+            <Box float="right">
+              <SpaceBetween direction="horizontal" size="xs">
+                <Button onClick={() => { setCreateOpen(false); setNewTitle(""); }}>Cancel</Button>
+                <Button variant="primary" loading={creating} onClick={create} disabled={!newTitle.trim()}>
+                  Create
+                </Button>
+              </SpaceBetween>
+            </Box>
+          }
+        >
+          <FormField label="Title">
+            <Input
+              value={newTitle}
+              onChange={(e) => setNewTitle(e.detail.value)}
+              placeholder="e.g. Quantum Computing Research"
+              onKeyDown={(e) => e.detail.key === "Enter" && create()}
+              autoFocus
+            />
+          </FormField>
+        </Modal>
+      </ContentLayout>
+    </AppShell>
   );
 }

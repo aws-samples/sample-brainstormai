@@ -101,3 +101,22 @@ brainstormAI/
 ## Supported languages (podcast)
 
 English, Hindi, Mandarin, Spanish, French
+
+---
+
+## UI navigation
+
+The app uses a persistent sidebar with two top-level sections:
+
+- **My Notebooks** — list, create, and open notebooks
+- **Usage** — global token usage dashboard with day-wise pie charts across all notebooks
+
+Inside each notebook there are five tabs: Sources, Generate, Artifacts, Summary, and Usage. The notebook Usage tab shows the same day-wise breakdown scoped to jobs in that notebook only.
+
+---
+
+## Token usage tracking
+
+Every completed job stores `inputTokens` and `outputTokens` on its DynamoDB record, keyed by `jobId` (UUID). The `/usage` API endpoint aggregates these by date and artifact type. Pass `?notebookId=<id>` to scope results to a single notebook.
+
+Daily limit: 3,000,000 tokens per user (checked at job creation time and enforced by the generation worker).

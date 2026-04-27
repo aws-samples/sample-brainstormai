@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
-  AppLayout,
-  TopNavigation,
   ContentLayout,
   Header,
   Tabs,
@@ -12,10 +10,12 @@ import {
 import { api, setTokenProvider } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
 import { BrainstormWebSocket } from "../api/websocket";
+import AppShell from "../components/AppShell";
 import SourceUploader from "../components/SourceUploader";
 import JobCreator from "../components/JobCreator";
 import ArtifactsList from "../components/ArtifactsList";
 import SummaryTab from "../components/SummaryTab";
+import UsageTab from "../components/UsageTab";
 
 interface Notebook {
   notebookId: string;
@@ -34,7 +34,7 @@ function statusIndicatorType(status: string): "success" | "in-progress" | "warni
 
 export default function NotebookDetailPage() {
   const { notebookId } = useParams<{ notebookId: string }>();
-  const { getIdToken, logout, user } = useAuth();
+  const { getIdToken } = useAuth();
   const navigate = useNavigate();
   const [notebook, setNotebook] = useState<Notebook | null>(null);
   const wsRef = useRef<BrainstormWebSocket | null>(null);
@@ -68,105 +68,83 @@ export default function NotebookDetailPage() {
   if (!notebook) return null;
 
   return (
-    <>
-      <TopNavigation
-        identity={{
-          href: "/notebooks",
-          title: "",
-          logo: { src: "/banner.png", alt: "BrainstormAI" },
-        }}
-        utilities={[
-          {
-            type: "menu-dropdown",
-            text: user?.email ?? "Account",
-            iconName: "user-profile",
-            items: [{ id: "signout", text: "Sign out" }],
-            onItemClick: () => logout(),
-          },
-        ]}
-      />
-
-      <AppLayout
-        navigationHide
-        toolsHide
+    <AppShell
+      breadcrumbs={
+        <BreadcrumbGroup
+          items={[
+            { text: "My Notebooks", href: "/notebooks" },
+            { text: notebook.title, href: "#" },
+          ]}
+          onFollow={(e) => { e.preventDefault(); if (e.detail.href !== "#") navigate(e.detail.href); }}
+        />
+      }
+    >
+      <ContentLayout
         headerVariant="high-contrast"
-        breadcrumbs={
-          <BreadcrumbGroup
-            items={[
-              { text: "My Notebooks", href: "/notebooks" },
-              { text: notebook.title, href: "#" },
-            ]}
-            onFollow={(e) => { e.preventDefault(); if (e.detail.href !== "#") navigate(e.detail.href); }}
-          />
-        }
-        content={
-          <ContentLayout
-            headerVariant="high-contrast"
-            disableOverlap
-            header={
-              <Header
-                variant="h1"
-                description={
-                  <StatusIndicator type={statusIndicatorType(notebook.status)}>
-                    {notebook.status.charAt(0) + notebook.status.slice(1).toLowerCase().replace("_", " ")}
-                  </StatusIndicator>
-                }
-              >
-                {notebook.title}
-              </Header>
+        disableOverlap
+        header={
+          <Header
+            variant="h1"
+            description={
+              <StatusIndicator type={statusIndicatorType(notebook.status)}>
+                {notebook.status.charAt(0) + notebook.status.slice(1).toLowerCase().replace("_", " ")}
+              </StatusIndicator>
             }
           >
-            <Tabs
-                tabs={[
-                  {
-                    id: "sources",
-                    label: `Sources (${notebook.sourceCount})`,
-                    content: (
-                      <SourceUploader
-                        notebookId={notebookId!}
-                        onUploaded={loadNotebook}
-                      />
-                    ),
-                  },
-                  {
-                    id: "generate",
-                    label: "Generate",
-                    content: (
-                      <JobCreator
-                        notebookId={notebookId!}
-                        notebookStatus={notebook.status}
-                        onJobCreated={subscribeJob}
-                        refreshKey={refreshArtifacts}
-                      />
-                    ),
-                  },
-                  {
-                    id: "artifacts",
-                    label: "Artifacts",
-                    content: (
-                      <ArtifactsList
-                        notebookId={notebookId!}
-                        refreshKey={refreshArtifacts}
-                      />
-                    ),
-                  },
-                  {
-                    id: "summary",
-                    label: "Summary",
-                    content: (
-                      <SummaryTab
-                        notebookId={notebookId!}
-                        notebookStatus={notebook.status}
-                        onJobCreated={subscribeJob}
-                        refreshKey={refreshArtifacts}
-                      />
-                    ),
-                  },
-                ]}
-              />
-          </ContentLayout>
+            {notebook.title}
+          </Header>
         }
-      />
-    </>
+      >
+        <Tabs
+          tabs={[
+            {
+              id: "sources",
+              label: `Sources (${notebook.sourceCount})`,
+              content: (
+                <SourceUploader notebookId={notebookId!} onUploaded={loadNotebook} />
+              ),
+            },
+            {
+              id: "generate",
+              label: "Generate",
+              content: (
+                <JobCreator
+                  notebookId={notebookId!}
+                  notebookStatus={notebook.status}
+                  onJobCreated={subscribeJob}
+                  refreshKey={refreshArtifacts}
+                />
+              ),
+            },
+            {
+              id: "artifacts",
+              label: "Artifacts",
+              content: (
+                <ArtifactsList notebookId={notebookId!} refreshKey={refreshArtifacts} />
+              ),
+            },
+            {
+              id: "summary",
+              label: "Summary",
+              content: (
+                <SummaryTab
+                  notebookId={notebookId!}
+                  notebookStatus={notebook.status}
+                  onJobCreated={subscribeJob}
+                  refreshKey={refreshArtifacts}
+                />
+              ),
+            },
+            {
+              id: "usage",
+              label: "Usage",
+              content: (
+                <UsageTab notebookId={notebookId!} refreshKey={refreshArtifacts} />
+              ),
+            },
+          ]}
+        />
+      </ContentLayout>
+    </AppShell>
   );
 }

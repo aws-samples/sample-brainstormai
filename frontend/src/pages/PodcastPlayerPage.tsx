@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
-  AppLayout,
-  TopNavigation,
   ContentLayout,
   Header,
   SpaceBetween,
@@ -20,6 +18,7 @@ import {
 } from "@cloudscape-design/components";
 import { api, setTokenProvider } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
+import AppShell from "../components/AppShell";
 import { BrainstormWebSocket } from "../api/websocket";
 
 interface PlaylistTurn {
@@ -43,7 +42,7 @@ function fmt(secs: number) {
 
 export default function PodcastPlayerPage() {
   const { notebookId, artifactId } = useParams<{ notebookId: string; artifactId: string }>();
-  const { getIdToken, logout, user } = useAuth();
+  const { getIdToken } = useAuth();
   const navigate = useNavigate();
 
   const audioRef         = useRef<HTMLAudioElement | null>(null);
@@ -192,50 +191,29 @@ export default function PodcastPlayerPage() {
   const speakerColor  = (s: string): "blue" | "green" => s?.toLowerCase().startsWith("s") ? "green" : "blue";
 
   return (
-    <>
-      <TopNavigation
-        identity={{
-          href: "/notebooks",
-          title: "",
-          logo: { src: "/banner.png", alt: "BrainstormAI" },
-        }}
-        utilities={[
-          {
-            type: "menu-dropdown",
-            text: user?.email ?? "Account",
-            iconName: "user-profile",
-            items: [{ id: "signout", text: "Sign out" }],
-            onItemClick: () => logout(),
-          },
-        ]}
-      />
-
-      <AppLayout
-        navigationHide
-        toolsHide
+    <AppShell
+      breadcrumbs={
+        <BreadcrumbGroup
+          items={[
+            { text: "My Notebooks", href: "/notebooks" },
+            { text: "Notebook", href: `/notebooks/${notebookId}` },
+            { text: "Podcast", href: "#" },
+          ]}
+          onFollow={(e) => { e.preventDefault(); if (e.detail.href !== "#") navigate(e.detail.href); }}
+        />
+      }
+    >
+      <ContentLayout
         headerVariant="high-contrast"
-        breadcrumbs={
-          <BreadcrumbGroup
-            items={[
-              { text: "My Notebooks", href: "/notebooks" },
-              { text: "Notebook", href: `/notebooks/${notebookId}` },
-              { text: "Podcast", href: "#" },
-            ]}
-            onFollow={(e) => { e.preventDefault(); if (e.detail.href !== "#") navigate(e.detail.href); }}
-          />
-        }
-        content={
-          <ContentLayout
-            headerVariant="high-contrast"
-            header={
-              <Header
-                variant="h1"
-                description="Listen, control playback, and ask questions mid-episode."
-              >
-                Podcast Player
-              </Header>
-            }
+        header={
+          <Header
+            variant="h1"
+            description="Listen, control playback, and ask questions mid-episode."
           >
+            Podcast Player
+          </Header>
+        }
+      >
             <SpaceBetween size="l">
 
               {/* Loading */}
@@ -418,8 +396,6 @@ export default function PodcastPlayerPage() {
               )}
             </SpaceBetween>
           </ContentLayout>
-        }
-      />
-    </>
+    </AppShell>
   );
 }
