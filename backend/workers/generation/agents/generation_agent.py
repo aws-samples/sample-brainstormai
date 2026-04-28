@@ -26,10 +26,10 @@ def invoke(
     max_tokens: int = 8000,
     retries: int = 3,
 ) -> tuple[str, int, int]:
-    """Return (text, input_tokens, output_tokens)."""
+    """Return (text, input_tokens, output_tokens). Uses streaming to avoid read timeouts on long outputs."""
     for attempt in range(retries):
         try:
-            response = bedrock.invoke_model(
+            response = bedrock.invoke_model_with_response_stream(
                 modelId=MODEL_ID,
                 body=json.dumps({
                     "anthropic_version": "bedrock-2023-05-31",
@@ -40,13 +40,18 @@ def invoke(
                 contentType="application/json",
                 accept="application/json",
             )
-            body = json.loads(response["body"].read())
-            usage = body.get("usage", {})
-            return (
-                body["content"][0]["text"].strip(),
-                usage.get("input_tokens", 0),
-                usage.get("output_tokens", 0),
-            )
+            text_parts = []
+            input_tokens = 0
+            output_tokens = 0
+            for event in response["body"]:
+                chunk = json.loads(event["chunk"]["bytes"])
+                if chunk["type"] == "content_block_delta":
+                    text_parts.append(chunk["delta"].get("text", ""))
+                elif chunk["type"] == "message_delta":
+                    output_tokens = chunk.get("usage", {}).get("output_tokens", 0)
+                elif chunk["type"] == "message_start":
+                    input_tokens = chunk.get("message", {}).get("usage", {}).get("input_tokens", 0)
+            return "".join(text_parts).strip(), input_tokens, output_tokens
         except Exception as e:
             if attempt == retries - 1:
                 raise
