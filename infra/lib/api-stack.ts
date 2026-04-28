@@ -81,7 +81,38 @@ export class ApiStack extends cdk.Stack {
       return fn;
     };
 
-    const notebooksFn = makeLambda("Notebooks", "notebooks");
+    // Notebooks Lambda bundles its own boto3 (>= 1.38) because the runtime-bundled
+    // boto3 (~1.34) predates the S3 Vectors service.
+    const notebooksFn = new lambda.Function(this, "Notebooks", {
+      runtime: lambda.Runtime.PYTHON_3_12,
+      timeout: cdk.Duration.seconds(30),
+      memorySize: 256,
+      environment: commonEnv,
+      functionName: "brainstormai-notebooks",
+      code: lambda.Code.fromAsset("../backend/lambdas/notebooks", {
+        bundling: {
+          image: lambda.Runtime.PYTHON_3_12.bundlingImage,
+          command: [
+            "bash", "-c",
+            "pip install -r requirements.txt -t /asset-output --quiet && cp handler.py /asset-output/",
+          ],
+        },
+      }),
+      handler: "handler.lambda_handler",
+    });
+    props.notebooksTable.grantReadWriteData(notebooksFn);
+    props.sourcesTable.grantReadWriteData(notebooksFn);
+    props.jobsTable.grantReadWriteData(notebooksFn);
+    props.artifactsTable.grantReadWriteData(notebooksFn);
+    props.wsConnectionsTable.grantReadWriteData(notebooksFn);
+    props.podcastSessionsTable.grantReadWriteData(notebooksFn);
+    props.userJobCountTable.grantReadWriteData(notebooksFn);
+    props.assetsBucket.grantReadWrite(notebooksFn);
+    props.ingestionQueue.grantSendMessages(notebooksFn);
+    props.podcastQueue.grantSendMessages(notebooksFn);
+    props.mindmapQueue.grantSendMessages(notebooksFn);
+    props.quizQueue.grantSendMessages(notebooksFn);
+    props.summaryQueue.grantSendMessages(notebooksFn);
     notebooksFn.addToRolePolicy(
       new iam.PolicyStatement({
         actions: [
