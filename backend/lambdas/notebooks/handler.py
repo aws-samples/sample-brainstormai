@@ -10,9 +10,23 @@ Routes (method + path suffix dispatched by event['routeKey']):
 
 Each request carries a Cognito JWT; the user sub is extracted from
 requestContext.authorizer.claims.sub and used to scope all queries.
+
+S3 Vectors integration:
+  - create_notebook: creates a dedicated S3 Vectors index named after the notebook_id.
+  - delete_notebook: deletes the S3 Vectors index for the notebook_id.
+
+Required environment variables:
+  S3_VECTORS_BUCKET — name of the S3 Vectors bucket (e.g. "brainstormai-vectors")
+  AWS_REGION        — AWS region (default: "us-east-1")
+
+Required IAM permissions for this Lambda:
+  s3vectors:CreateIndex
+  s3vectors:DeleteIndex
+  on resource: arn:aws:s3vectors:<region>:<account>:bucket/<S3_VECTORS_BUCKET>/index/*
 """
 
 import json
+import logging
 import os
 import uuid
 from datetime import datetime, timezone
@@ -20,12 +34,22 @@ from datetime import datetime, timezone
 import boto3
 import boto3.dynamodb.conditions
 from boto3.dynamodb.conditions import Attr, Key
+from botocore.exceptions import ClientError
+
+log = logging.getLogger(__name__)
 
 dynamodb = boto3.resource("dynamodb")
 notebooks_table = dynamodb.Table(os.environ["NOTEBOOKS_TABLE"])
 sources_table = dynamodb.Table(os.environ["SOURCES_TABLE"])
 jobs_table = dynamodb.Table(os.environ["JOBS_TABLE"])
 artifacts_table = dynamodb.Table(os.environ["ARTIFACTS_TABLE"])
+
+# S3 Vectors client — used to create/delete a per-notebook vector index.
+S3V_BUCKET = os.environ["S3_VECTORS_BUCKET"]
+_s3v = boto3.client("s3vectors", region_name=os.environ.get("AWS_REGION", "us-east-1"))
+
+# Titan Text Embeddings v2 produces 1024-dimensional vectors.
+_VECTOR_DIMENSION = 1024
 
 
 def lambda_handler(event, context):
@@ -77,8 +101,14 @@ def create_notebook(user_id: str, body: dict):
         raise ValueError("title must be 200 characters or fewer")
 
     now = datetime.now(timezone.utc).isoformat()
+    notebook_id = str(uuid.uuid4())
+
+    # Create the S3 Vectors index for this notebook before persisting the
+    # notebook record.  Index name == notebook_id (UUIDs are valid index names).
+    _create_vector_index(notebook_id)
+
     notebook = {
-        "notebookId": str(uuid.uuid4()),
+        "notebookId": notebook_id,
         "userId": user_id,
         "title": title,
         "status": "READY",
@@ -138,6 +168,10 @@ def delete_notebook(user_id: str, notebook_id: str):
         artifacts_table.delete_item(Key={"artifactId": a["artifactId"]})
 
     notebooks_table.delete_item(Key={"notebookId": notebook_id})
+
+    # Delete the S3 Vectors index — this removes all vectors for the notebook.
+    _delete_vector_index(notebook_id)
+
     return resp(204, {})
 
 
@@ -201,6 +235,59 @@ def _get_and_authorize(user_id: str, notebook_id: str) -> dict:
     if item["userId"] != user_id:
         raise PermissionError("Access denied")
     return item
+
+
+def _create_vector_index(notebook_id: str) -> None:
+    """Create an S3 Vectors index for *notebook_id*.
+
+    Uses cosine distance and 1024 dimensions (Titan Text Embeddings v2).
+    Swallows "already exists" errors so this is safe to call idempotently.
+    """
+    try:
+        _s3v.create_index(
+            vectorBucketName=S3V_BUCKET,
+            indexName=notebook_id,
+            dataType="float32",
+            dimension=_VECTOR_DIMENSION,
+            distanceMetric="cosine",
+        )
+        log.info("Created S3 Vectors index for notebook %s", notebook_id)
+    except ClientError as exc:
+        error_code = exc.response["Error"]["Code"]
+        if error_code in ("IndexAlreadyExistsException", "ConflictException"):
+            log.debug("S3 Vectors index for notebook %s already exists", notebook_id)
+        else:
+            log.error(
+                "Failed to create S3 Vectors index for notebook %s: %s",
+                notebook_id,
+                exc,
+            )
+            raise
+
+
+def _delete_vector_index(notebook_id: str) -> None:
+    """Delete the S3 Vectors index for *notebook_id* (and all its vectors).
+
+    Swallows "does not exist" errors so this is safe to call even if the index
+    was never created (e.g. a notebook that had no sources).
+    """
+    try:
+        _s3v.delete_index(
+            vectorBucketName=S3V_BUCKET,
+            indexName=notebook_id,
+        )
+        log.info("Deleted S3 Vectors index for notebook %s", notebook_id)
+    except ClientError as exc:
+        error_code = exc.response["Error"]["Code"]
+        if error_code in ("NoSuchIndex", "ResourceNotFoundException"):
+            log.debug("S3 Vectors index for notebook %s did not exist; nothing to delete", notebook_id)
+        else:
+            log.error(
+                "Failed to delete S3 Vectors index for notebook %s: %s",
+                notebook_id,
+                exc,
+            )
+            raise
 
 
 def resp(status: int, body: dict):

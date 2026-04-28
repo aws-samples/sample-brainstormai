@@ -18,6 +18,7 @@ Depth controls strictness:
 import json
 import logging
 import os
+import re
 
 import boto3
 

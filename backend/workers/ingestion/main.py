@@ -6,7 +6,7 @@ Pipeline per message:
   2. Clean extracted text
   3. Semantic chunk (~500 tokens, 50-token overlap)
   4. Embed each chunk via Bedrock Titan Text Embeddings v2
-  5. Store chunks + embeddings in PostgreSQL/pgvector
+  5. Store chunks + embeddings in S3 Vectors (one index per notebook)
   6. Update source status to READY in DynamoDB
   7. Re-check if all notebook sources are READY → update notebook status
 """
@@ -27,7 +27,7 @@ from extractors.url import extract_url
 from extractors.text import extract_text
 from chunker import semantic_chunk
 from embedder import embed_chunks
-from db import get_connection, upsert_chunks
+from s3vectors import upsert_chunks, delete_chunks, purge_orphan_chunks
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
@@ -63,9 +63,11 @@ def main():
             try:
                 payload = json.loads(msg["Body"])
                 if payload.get("type") == "delete_chunks":
-                    delete_chunks(payload["sourceId"], payload.get("notebookId"))
+                    _delete_chunks_handler(payload["sourceId"], payload.get("notebookId"))
                 elif payload.get("type") == "purge_orphan_chunks":
-                    purge_orphan_chunks(payload["valid_source_ids"])
+                    _purge_orphan_chunks_handler(
+                        payload["valid_source_ids"], payload["notebookId"]
+                    )
                 else:
                     process_source(payload)
                 sqs.delete_message(QueueUrl=QUEUE_URL, ReceiptHandle=receipt)
@@ -74,32 +76,16 @@ def main():
                 # Let visibility timeout expire → SQS retries up to maxReceiveCount → DLQ
 
 
-def delete_chunks(source_id: str, notebook_id: str = None):
-    conn = get_connection()
-    try:
-        with conn.cursor() as cur:
-            cur.execute("DELETE FROM chunks WHERE source_id = %s", (source_id,))
-        conn.commit()
-        log.info("Deleted chunks for source %s", source_id)
-    finally:
-        conn.close()
+def _delete_chunks_handler(source_id: str, notebook_id: str = None):
+    """Handle a delete_chunks SQS message by removing vectors from S3 Vectors."""
+    delete_chunks(source_id, notebook_id)
     if notebook_id:
         _maybe_mark_notebook_ready(notebook_id)
 
 
-def purge_orphan_chunks(valid_source_ids: list[str]):
-    conn = get_connection()
-    try:
-        with conn.cursor() as cur:
-            cur.execute(
-                "DELETE FROM chunks WHERE source_id::text NOT IN %s",
-                (tuple(valid_source_ids),),
-            )
-            deleted = cur.rowcount
-        conn.commit()
-        log.info("Purged %d orphaned chunks", deleted)
-    finally:
-        conn.close()
+def _purge_orphan_chunks_handler(valid_source_ids: list[str], notebook_id: str):
+    """Handle a purge_orphan_chunks SQS message by removing stale vectors from S3 Vectors."""
+    purge_orphan_chunks(valid_source_ids, notebook_id)
 
 
 def process_source(payload: dict):
@@ -136,10 +122,8 @@ def process_source(payload: dict):
         # Step 3: Embed
         embedded_chunks = embed_chunks(chunks)
 
-        # Step 4: Store in pgvector
-        conn = get_connection()
-        upsert_chunks(conn, notebook_id, source_id, embedded_chunks)
-        conn.close()
+        # Step 4: Store in S3 Vectors (index = notebook_id, key = source_id#chunk_index)
+        upsert_chunks(notebook_id, source_id, embedded_chunks)
 
         # Step 5: Mark source READY
         sources_table.update_item(
