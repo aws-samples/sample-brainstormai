@@ -53,7 +53,7 @@ Respond with exactly this JSON structure (no extra keys):
   ]
 }}"""
 
-    text, in_tok, out_tok = invoke(SYSTEM_PROMPT, user_prompt, max_tokens=4000)
+    text, in_tok, out_tok = invoke(SYSTEM_PROMPT, user_prompt, max_tokens=8000)
 
     summary_json = _parse_json(text)
 

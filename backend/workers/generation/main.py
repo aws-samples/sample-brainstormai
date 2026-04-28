@@ -115,8 +115,11 @@ def process_job(payload: dict):
 
     try:
         depth = params.get("depth", "important_points")
-        k_map = {"brief": 20, "important_points": 40, "in_depth": 60}
-        top_k = k_map.get(depth, 40)
+        if job_type == "summary":
+            k_map = {"brief": 40, "important_points": 80, "in_depth": 120}
+        else:
+            k_map = {"brief": 20, "important_points": 40, "in_depth": 60}
+        top_k = k_map.get(depth, k_map["important_points"])
 
         chunks = retrieve_chunks(notebook_id, _query_hint(job_type, params), top_k)
 
