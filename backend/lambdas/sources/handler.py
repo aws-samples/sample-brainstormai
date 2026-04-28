@@ -233,15 +233,17 @@ def delete_source(user_id: str, notebook_id: str, source_id: str):
     sources_table.delete_item(Key={"sourceId": source_id})
     notebooks_table.update_item(
         Key={"notebookId": notebook_id},
-        UpdateExpression="SET sourceCount = sourceCount - :one, updatedAt = :u",
+        UpdateExpression="SET sourceCount = sourceCount - :one, updatedAt = :u, #s = :ingesting",
         ConditionExpression="sourceCount > :zero",
+        ExpressionAttributeNames={"#s": "status"},
         ExpressionAttributeValues={":one": 1, ":zero": 0,
-                                   ":u": datetime.now(timezone.utc).isoformat()},
+                                   ":u": datetime.now(timezone.utc).isoformat(),
+                                   ":ingesting": "INGESTING"},
     )
-    # Enqueue pgvector chunk cleanup via ingestion worker (lambda has no VPC/DB access)
+    # Enqueue pgvector chunk cleanup — ingestion worker sets notebook back to READY when done
     sqs_client.send_message(
         QueueUrl=INGESTION_QUEUE_URL,
-        MessageBody=json.dumps({"type": "delete_chunks", "sourceId": source_id}),
+        MessageBody=json.dumps({"type": "delete_chunks", "sourceId": source_id, "notebookId": notebook_id}),
     )
     return resp(204, {})
 

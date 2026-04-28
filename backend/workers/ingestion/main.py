@@ -63,7 +63,7 @@ def main():
             try:
                 payload = json.loads(msg["Body"])
                 if payload.get("type") == "delete_chunks":
-                    delete_chunks(payload["sourceId"])
+                    delete_chunks(payload["sourceId"], payload.get("notebookId"))
                 elif payload.get("type") == "purge_orphan_chunks":
                     purge_orphan_chunks(payload["valid_source_ids"])
                 else:
@@ -74,7 +74,7 @@ def main():
                 # Let visibility timeout expire → SQS retries up to maxReceiveCount → DLQ
 
 
-def delete_chunks(source_id: str):
+def delete_chunks(source_id: str, notebook_id: str = None):
     conn = get_connection()
     try:
         with conn.cursor() as cur:
@@ -83,6 +83,8 @@ def delete_chunks(source_id: str):
         log.info("Deleted chunks for source %s", source_id)
     finally:
         conn.close()
+    if notebook_id:
+        _maybe_mark_notebook_ready(notebook_id)
 
 
 def purge_orphan_chunks(valid_source_ids: list[str]):
