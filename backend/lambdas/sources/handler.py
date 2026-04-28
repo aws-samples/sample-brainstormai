@@ -262,8 +262,13 @@ def _check_source_limit(notebook_id: str):
 def _increment_source_count(notebook_id: str):
     notebooks_table.update_item(
         Key={"notebookId": notebook_id},
-        UpdateExpression="SET sourceCount = sourceCount + :one, updatedAt = :u",
-        ExpressionAttributeValues={":one": 1, ":u": datetime.now(timezone.utc).isoformat()},
+        UpdateExpression="SET sourceCount = sourceCount + :one, updatedAt = :u, #s = :ingesting",
+        ExpressionAttributeNames={"#s": "status"},
+        ExpressionAttributeValues={
+            ":one": 1,
+            ":u": datetime.now(timezone.utc).isoformat(),
+            ":ingesting": "INGESTING",
+        },
     )
 
 

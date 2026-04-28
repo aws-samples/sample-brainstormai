@@ -135,6 +135,12 @@ export default function SummaryTab({ notebookId, notebookStatus, onJobCreated, r
       >
         {error && <Alert type="error">{error}</Alert>}
 
+        {!notebookReady && (
+          <Alert type="info">
+            Sources are still being processed. The summary will use all sources once ingestion is complete — wait for the Sources tab to show all sources as READY before generating.
+          </Alert>
+        )}
+
         {loadState === "loading" && (
           <Box textAlign="center" padding="l">
             <Spinner /> <Box variant="p" color="text-body-secondary" padding={{ top: "s" }}>Loading…</Box>
