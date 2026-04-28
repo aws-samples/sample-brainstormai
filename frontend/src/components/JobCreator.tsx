@@ -43,9 +43,9 @@ const GENRES = [
 ];
 
 const DEPTHS_PODCAST = [
-  { label: "Brief (~5 min)", value: "brief" },
-  { label: "Important Points (~10 min)", value: "important_points" },
-  { label: "In-Depth (~20 min)", value: "in_depth" },
+  { label: "Brief (5+ min)", value: "brief" },
+  { label: "Important Points (10+ min)", value: "important_points" },
+  { label: "In-Depth (18+ min)", value: "in_depth" },
 ];
 
 const DEPTHS_OTHER = [

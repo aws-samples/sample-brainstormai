@@ -35,9 +35,9 @@ POLLY_VOICES = {
 }
 
 DEPTH_DURATION = {
-    "brief":            "5-7 minutes",
-    "important_points": "10-12 minutes",
-    "in_depth":         "18-22 minutes",
+    "brief":            "at least 5 minutes",
+    "important_points": "at least 10 minutes",
+    "in_depth":         "at least 18 minutes",
 }
 
 SYSTEM_PROMPT = """You are a professional podcast script writer. You write engaging,
@@ -71,7 +71,7 @@ def generate_podcast(chunks: list[dict], params: dict, missing_points: list[str]
             "\n".join(f"- {p}" for p in missing_points)
         )
 
-    user_prompt = f"""Write a {genre} podcast script in {language} that would last approximately {duration}.
+    user_prompt = f"""Write a {genre} podcast script in {language} that covers ALL the provided source material thoroughly. The script should be {duration} long — but go longer if needed to cover everything. Do not cut content short to fit a time limit.
 
 Genre guidelines:
 - debate: ALEX and SAM take opposing viewpoints and challenge each other's reasoning
@@ -84,7 +84,7 @@ SOURCE MATERIAL:
 
 Write the complete script now. Only output the script — no preamble, no stage directions."""
 
-    script_text, in_tok, out_tok = invoke(SYSTEM_PROMPT, user_prompt, max_tokens=8000)
+    script_text, in_tok, out_tok = invoke(SYSTEM_PROMPT, user_prompt, max_tokens=16000)
     turns = _parse_turns(script_text)
 
     if not turns:
