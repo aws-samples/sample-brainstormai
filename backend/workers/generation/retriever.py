@@ -50,20 +50,44 @@ def retrieve_chunks(notebook_id: str, query: str, top_k: int) -> list[dict]:
     try:
         register_vector(conn)
         with conn.cursor() as cur:
+            # Get distinct source_ids for this notebook
             cur.execute(
-                """
-                SELECT chunk_id, text, chunk_index, token_count,
-                       1 - (embedding <=> %s::vector) AS similarity
-                FROM chunks
-                WHERE notebook_id = %s
-                ORDER BY embedding <=> %s::vector
-                LIMIT %s
-                """,
-                (embedding, notebook_id, embedding, top_k),
+                "SELECT DISTINCT source_id FROM chunks WHERE notebook_id = %s",
+                (notebook_id,),
             )
-            rows = cur.fetchall()
+            source_ids = [row[0] for row in cur.fetchall()]
+
+        if not source_ids:
+            return []
+
+        # Distribute top_k evenly across sources so no single source dominates.
+        # Each source gets at least floor(top_k / n_sources) chunks, remainder
+        # goes to the first sources.
+        n = len(source_ids)
+        per_source = max(1, top_k // n)
+        remainder = top_k - per_source * n
+
+        all_rows = []
+        with conn.cursor() as cur:
+            for i, source_id in enumerate(source_ids):
+                limit = per_source + (1 if i < remainder else 0)
+                cur.execute(
+                    """
+                    SELECT chunk_id, text, chunk_index, token_count,
+                           1 - (embedding <=> %s::vector) AS similarity
+                    FROM chunks
+                    WHERE notebook_id = %s AND source_id = %s
+                    ORDER BY embedding <=> %s::vector
+                    LIMIT %s
+                    """,
+                    (embedding, notebook_id, source_id, embedding, limit),
+                )
+                all_rows.extend(cur.fetchall())
     finally:
         db_pool.putconn(conn)
+
+    # Sort combined results by similarity descending so generators see best chunks first
+    all_rows.sort(key=lambda r: r[4], reverse=True)
 
     return [
         {
@@ -73,7 +97,7 @@ def retrieve_chunks(notebook_id: str, query: str, top_k: int) -> list[dict]:
             "token_count": row[3],
             "similarity": float(row[4]),
         }
-        for row in rows
+        for row in all_rows
     ]
 
 
