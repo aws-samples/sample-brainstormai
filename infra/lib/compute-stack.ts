@@ -5,7 +5,6 @@ import * as ec2 from "aws-cdk-lib/aws-ec2";
 import * as iam from "aws-cdk-lib/aws-iam";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
-import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 import * as assets from "aws-cdk-lib/aws-ecr-assets";
 import * as appscaling from "aws-cdk-lib/aws-applicationautoscaling";
 import * as cloudwatch from "aws-cdk-lib/aws-cloudwatch";
@@ -21,10 +20,7 @@ interface ComputeStackProps extends cdk.StackProps {
   wsConnectionsTable: dynamodb.Table;
   podcastSessionsTable: dynamodb.Table;
   userJobCountTable: dynamodb.Table;
-  dbSecret: secretsmanager.Secret;
-  dbEndpoint: string;
-  dbPort: string;
-  dbSecurityGroup: ec2.SecurityGroup;
+  vectorsBucketName: string;
   vpc: ec2.Vpc;
 }
 
@@ -82,7 +78,6 @@ export class ComputeStack extends cdk.Stack {
     props.wsConnectionsTable.grantReadWriteData(workerRole);
     props.podcastSessionsTable.grantReadWriteData(workerRole);
     props.userJobCountTable.grantReadWriteData(workerRole);
-    props.dbSecret.grantRead(workerRole);
     this.ingestionQueue.grantConsumeMessages(workerRole);
     this.podcastQueue.grantConsumeMessages(workerRole);
     this.mindmapQueue.grantConsumeMessages(workerRole);
@@ -93,11 +88,20 @@ export class ComputeStack extends cdk.Stack {
       new iam.PolicyStatement({
         actions: [
           "bedrock:InvokeModel",
+          "bedrock:InvokeModelWithResponseStream",
           "polly:SynthesizeSpeech",
           "textract:DetectDocumentText",
           "textract:AnalyzeDocument",
           "execute-api:ManageConnections",
           "cloudwatch:PutMetricData",
+          "s3vectors:CreateIndex",
+          "s3vectors:DeleteIndex",
+          "s3vectors:ListIndexes",
+          "s3vectors:PutVectors",
+          "s3vectors:QueryVectors",
+          "s3vectors:GetVectors",
+          "s3vectors:DeleteVectors",
+          "s3vectors:ListVectors",
         ],
         resources: ["*"],
       })
@@ -106,16 +110,13 @@ export class ComputeStack extends cdk.Stack {
     const workerEnv = {
       AWS_REGION: this.region,
       S3_BUCKET: props.assetsBucket.bucketName,
+      S3_VECTORS_BUCKET: props.vectorsBucketName,
       NOTEBOOKS_TABLE: props.notebooksTable.tableName,
       SOURCES_TABLE: props.sourcesTable.tableName,
       JOBS_TABLE: props.jobsTable.tableName,
       ARTIFACTS_TABLE: props.artifactsTable.tableName,
       WS_CONNECTIONS_TABLE: props.wsConnectionsTable.tableName,
       PODCAST_SESSIONS_TABLE: props.podcastSessionsTable.tableName,
-      DB_HOST: props.dbEndpoint,
-      DB_PORT: props.dbPort,
-      DB_NAME: "brainstormai",
-      DB_SECRET_ARN: props.dbSecret.secretArn,
       INGESTION_QUEUE_URL: this.ingestionQueue.queueUrl,
       PODCAST_QUEUE_URL: this.podcastQueue.queueUrl,
       MINDMAP_QUEUE_URL: this.mindmapQueue.queueUrl,
@@ -170,18 +171,6 @@ export class ComputeStack extends cdk.Stack {
       assignPublicIp: false,
       enableExecuteCommand: true,
     });
-
-    // Allow worker SGs to reach RDS on 5432
-    props.dbSecurityGroup.addIngressRule(
-      ingestionService.connections.securityGroups[0],
-      ec2.Port.tcp(5432),
-      "Ingestion worker to RDS",
-    );
-    props.dbSecurityGroup.addIngressRule(
-      generationService.connections.securityGroups[0],
-      ec2.Port.tcp(5432),
-      "Generation worker to RDS",
-    );
 
     // ── Ingestion Auto-Scaling (1–5 tasks, driven by ingestion queue depth) ──
     const ingestionScaling = ingestionService.autoScaleTaskCount({

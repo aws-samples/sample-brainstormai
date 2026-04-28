@@ -28,10 +28,7 @@ const computeStack = new ComputeStack(app, "BrainstormAI-ComputeStack", {
   wsConnectionsTable: storageStack.wsConnectionsTable,
   podcastSessionsTable: storageStack.podcastSessionsTable,
   userJobCountTable: storageStack.userJobCountTable,
-  dbSecret: storageStack.dbSecret,
-  dbEndpoint: storageStack.dbEndpoint,
-  dbPort: storageStack.dbPort,
-  dbSecurityGroup: storageStack.dbSecurityGroup,
+  vectorsBucketName: storageStack.vectorsBucketName,
   vpc: storageStack.vpc,
 });
 
@@ -52,6 +49,7 @@ new ApiStack(app, "BrainstormAI-ApiStack", {
   mindmapQueue: computeStack.mindmapQueue,
   quizQueue: computeStack.quizQueue,
   summaryQueue: computeStack.summaryQueue,
+  vectorsBucketName: storageStack.vectorsBucketName,
 });
 
 new FrontendStack(app, "BrainstormAI-FrontendStack", { env });

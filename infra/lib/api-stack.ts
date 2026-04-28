@@ -26,6 +26,7 @@ interface ApiStackProps extends cdk.StackProps {
   mindmapQueue: sqs.Queue;
   quizQueue: sqs.Queue;
   summaryQueue: sqs.Queue;
+  vectorsBucketName: string;
 }
 
 export class ApiStack extends cdk.Stack {
@@ -44,6 +45,7 @@ export class ApiStack extends cdk.Stack {
       PODCAST_SESSIONS_TABLE: props.podcastSessionsTable.tableName,
       USER_JOB_COUNT_TABLE: props.userJobCountTable.tableName,
       S3_BUCKET: props.assetsBucket.bucketName,
+      S3_VECTORS_BUCKET: props.vectorsBucketName,
       INGESTION_QUEUE_URL: props.ingestionQueue.queueUrl,
       PODCAST_QUEUE_URL: props.podcastQueue.queueUrl,
       MINDMAP_QUEUE_URL: props.mindmapQueue.queueUrl,
@@ -80,6 +82,16 @@ export class ApiStack extends cdk.Stack {
     };
 
     const notebooksFn = makeLambda("Notebooks", "notebooks");
+    notebooksFn.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: [
+          "s3vectors:CreateIndex",
+          "s3vectors:DeleteIndex",
+          "s3vectors:ListIndexes",
+        ],
+        resources: ["*"],
+      })
+    );
     const sourcesFn = makeLambda("Sources", "sources");
     const jobsFn = makeLambda("Jobs", "jobs");
     const artifactsFn = makeLambda("Artifacts", "artifacts");
