@@ -62,11 +62,42 @@ def main():
             receipt = msg["ReceiptHandle"]
             try:
                 payload = json.loads(msg["Body"])
-                process_source(payload)
+                if payload.get("type") == "delete_chunks":
+                    delete_chunks(payload["sourceId"])
+                elif payload.get("type") == "purge_orphan_chunks":
+                    purge_orphan_chunks(payload["valid_source_ids"])
+                else:
+                    process_source(payload)
                 sqs.delete_message(QueueUrl=QUEUE_URL, ReceiptHandle=receipt)
             except Exception as e:
                 log.exception("Failed to process message: %s", e)
                 # Let visibility timeout expire → SQS retries up to maxReceiveCount → DLQ
+
+
+def delete_chunks(source_id: str):
+    conn = get_connection()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("DELETE FROM chunks WHERE source_id = %s", (source_id,))
+        conn.commit()
+        log.info("Deleted chunks for source %s", source_id)
+    finally:
+        conn.close()
+
+
+def purge_orphan_chunks(valid_source_ids: list[str]):
+    conn = get_connection()
+    try:
+        with conn.cursor() as cur:
+            cur.execute(
+                "DELETE FROM chunks WHERE source_id::text NOT IN %s",
+                (tuple(valid_source_ids),),
+            )
+            deleted = cur.rowcount
+        conn.commit()
+        log.info("Purged %d orphaned chunks", deleted)
+    finally:
+        conn.close()
 
 
 def process_source(payload: dict):

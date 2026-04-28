@@ -238,6 +238,11 @@ def delete_source(user_id: str, notebook_id: str, source_id: str):
         ExpressionAttributeValues={":one": 1, ":zero": 0,
                                    ":u": datetime.now(timezone.utc).isoformat()},
     )
+    # Enqueue pgvector chunk cleanup via ingestion worker (lambda has no VPC/DB access)
+    sqs_client.send_message(
+        QueueUrl=INGESTION_QUEUE_URL,
+        MessageBody=json.dumps({"type": "delete_chunks", "sourceId": source_id}),
+    )
     return resp(204, {})
 
 
