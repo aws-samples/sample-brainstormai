@@ -12,6 +12,7 @@ import {
   Alert,
   FileUpload,
   Box,
+  Header,
 } from "@cloudscape-design/components";
 import { api } from "../api/client";
 
@@ -157,14 +158,17 @@ export default function SourceUploader({ notebookId, onUploaded }: Props) {
           },
         ]}
         header={
-          <Box>
-            <Button variant="primary" onClick={() => setAddOpen(true)} disabled={sources.length >= 10}>
-              Add source
-            </Button>
-            {sources.length >= 10 && (
-              <Box color="text-status-warning" fontSize="body-s">Maximum 10 sources reached</Box>
-            )}
-          </Box>
+          <Header
+            variant="h2"
+            actions={
+              <Button variant="primary" onClick={() => setAddOpen(true)} disabled={sources.length >= 10}>
+                Add source
+              </Button>
+            }
+            description={sources.length >= 10 ? "Maximum 10 sources reached" : undefined}
+          >
+            Sources
+          </Header>
         }
         empty={<Box textAlign="center" padding="l">No sources yet — add PDFs, URLs, or text</Box>}
       />

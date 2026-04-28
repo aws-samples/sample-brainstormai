@@ -42,8 +42,14 @@ DEPTH_DURATION = {
 
 SYSTEM_PROMPT = """You are a professional podcast script writer. You write engaging,
 natural-sounding conversations between two hosts: ALEX and SAM.
-Rules:
-- Every line must be attributed: start with "ALEX:" or "SAM:"
+
+CRITICAL FORMAT RULES — follow exactly:
+- Output ONLY the raw script — no preamble, no title, no explanation, nothing before the first speaker line
+- Every single line must start with "ALEX:" or "SAM:" — no stage directions, no narrator lines
+- The speaker labels ALEX and SAM must always be in English regardless of the podcast language
+- If the source material is in a different language, translate and discuss the concepts in the requested output language
+
+CONTENT RULES:
 - Speak in a natural, conversational tone — not lecture-style
 - Ground every claim in the provided source material
 - Never fabricate facts not present in the sources
@@ -140,6 +146,7 @@ def _parse_turns(script: str) -> list[dict]:
     turns = []
     current_speaker = None
     current_lines = []
+    found_first = False
 
     for line in script.splitlines():
         line = line.strip()
@@ -147,13 +154,16 @@ def _parse_turns(script: str) -> list[dict]:
             continue
         m = _SPEAKER_RE.match(line)
         if m:
+            found_first = True
             if current_speaker and current_lines:
                 turns.append({"speaker": current_speaker, "text": " ".join(current_lines)})
             current_speaker = m.group(1).upper()
             rest = line[m.end():].strip()
             current_lines = [rest] if rest else []
-        elif current_speaker:
+        elif found_first and current_speaker:
+            # continuation line of current speaker's turn
             current_lines.append(line)
+        # lines before the first ALEX:/SAM: are preamble — silently skipped
 
     if current_speaker and current_lines:
         turns.append({"speaker": current_speaker, "text": " ".join(current_lines)})

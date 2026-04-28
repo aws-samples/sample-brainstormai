@@ -1,7 +1,25 @@
 import { useState } from "react";
+import {
+  Form,
+  FormField,
+  Input,
+  Button,
+  Alert,
+  SpaceBetween,
+  Box,
+  Link,
+} from "@cloudscape-design/components";
 import { useAuth } from "../auth/AuthContext";
 
 type View = "login" | "register" | "confirm" | "new_password";
+
+const FEATURES = [
+  "AI-generated podcasts with two hosts",
+  "Interactive Q&A mid-playback",
+  "Interactive mind maps you can explore branch by branch",
+  "Scored quizzes with explanations",
+  "Multi-language support",
+];
 
 export default function LoginPage() {
   const { login, register, confirmRegistration, confirmNewPassword, pendingNewPassword } = useAuth();
@@ -19,10 +37,10 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
     try {
-      if (view === "login")           { await login(email, password); }
-      else if (view === "register")   { await register(email, password); setView("confirm"); }
-      else if (view === "confirm")    { await confirmRegistration(email, code); await login(email, password); }
-      else if (view === "new_password") { await confirmNewPassword(newPassword); }
+      if (view === "login")             await login(email, password);
+      else if (view === "register")     { await register(email, password); setView("confirm"); }
+      else if (view === "confirm")      { await confirmRegistration(email, code); await login(email, password); }
+      else if (view === "new_password") await confirmNewPassword(newPassword);
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "An error occurred");
     } finally {
@@ -31,112 +49,176 @@ export default function LoginPage() {
   };
 
   const titles: Record<View, [string, string]> = {
-    login:        ["Welcome back", "Sign in to your BrainstormAI account"],
+    login:        ["Sign in", "Sign in to your BrainstormAI account"],
     register:     ["Create account", "Start turning content into knowledge"],
-    confirm:      ["Check your email", "Enter the verification code we sent you"],
+    confirm:      ["Verify your email", "Enter the verification code we sent you"],
     new_password: ["Set a new password", "Your account requires a password change"],
   };
   const [title, subtitle] = titles[view];
 
+  const primaryLabel =
+    view === "login"        ? "Sign in" :
+    view === "register"     ? "Create account" :
+    view === "new_password" ? "Set password" : "Verify";
+
   return (
-    <div className="login-root">
-      {/* Brand panel */}
-      <div className="login-brand">
-        <div className="login-brand-logo">
-          <div className="login-brand-icon">🧠</div>
-          <span style={{ fontSize: "1.3rem", fontWeight: 800, letterSpacing: "-0.3px" }}>BrainstormAI</span>
+    <div style={{ display: "flex", minHeight: "100vh" }}>
+
+      {/* ── Brand panel ── */}
+      <div style={{
+        flex: 1,
+        background: "linear-gradient(150deg, #0f1b2d 0%, #0d2d4a 55%, #0f3460 100%)",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        padding: "64px",
+        color: "#fff",
+      }}>
+        {/* Logo */}
+        <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 48 }}>
+          <img src="/banner.png" alt="BrainstormAI" style={{ height: 36 }} />
         </div>
-        <h1>Turn content into<br />conversations</h1>
-        <p>Upload PDFs, paste URLs, or drop in text — BrainstormAI transforms your sources into podcasts, mind maps, and quizzes you can interact with.</p>
-        <div className="login-brand-features">
-          {["AI-generated podcasts with two hosts", "Interactive Q&A mid-playback", "Mind maps and quizzes in seconds", "Multi-language support"].map((f) => (
-            <div className="login-brand-feature" key={f}>
-              <div className="login-brand-feature-dot" />
-              {f}
+
+        <Box
+          fontSize="display-l"
+          fontWeight="bold"
+          color="inherit"
+        >
+          Turn content into<br />conversations
+        </Box>
+
+        <div style={{ marginTop: 16, marginBottom: 48, maxWidth: 400 }}>
+          <Box fontSize="body-m" color="inherit">
+            <span style={{ color: "#8ecae6" }}>
+              Upload PDFs, paste URLs, or drop in text — BrainstormAI transforms your sources into podcasts, mind maps, and quizzes you can interact with.
+            </span>
+          </Box>
+        </div>
+
+        <SpaceBetween size="s">
+          {FEATURES.map((f) => (
+            <div key={f} style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <div style={{
+                width: 6,
+                height: 6,
+                borderRadius: "50%",
+                background: "#0972d3",
+                flexShrink: 0,
+              }} />
+              <Box fontSize="body-m" color="inherit">
+                <span style={{ color: "#a8dadc" }}>{f}</span>
+              </Box>
             </div>
           ))}
-        </div>
+        </SpaceBetween>
       </div>
 
-      {/* Form panel */}
-      <div className="login-form-panel">
-        <p className="login-form-title">{title}</p>
-        <p className="login-form-subtitle">{subtitle}</p>
+      {/* ── Form panel ── */}
+      <div style={{
+        width: 480,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        padding: "64px 52px",
+        background: "var(--color-background-container-content, #fff)",
+      }}>
+        <SpaceBetween size="l">
+          <div>
+            <Box fontSize="heading-xl" fontWeight="bold">
+              {title}
+            </Box>
+            <Box fontSize="body-m" color="text-body-secondary">
+              {subtitle}
+            </Box>
+          </div>
 
-        {error && <div className="login-error">{error}</div>}
+          {error && <Alert type="error">{error}</Alert>}
 
-        {(view === "login" || view === "register") && (
-          <>
-            <label className="login-input-label">Email</label>
-            <input
-              className="login-input"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              onKeyDown={(e) => e.key === "Enter" && handle()}
-            />
-            <label className="login-input-label">Password</label>
-            <input
-              className="login-input"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              onKeyDown={(e) => e.key === "Enter" && handle()}
-            />
-          </>
-        )}
+          <Form>
+            <SpaceBetween size="m">
+              {(view === "login" || view === "register") && (
+                <>
+                  <FormField label="Email">
+                    <Input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.detail.value)}
+                      placeholder="you@example.com"
+                      onKeyDown={(e) => e.detail.key === "Enter" && handle()}
+                    />
+                  </FormField>
+                  <FormField label="Password">
+                    <Input
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.detail.value)}
+                      placeholder="••••••••"
+                      onKeyDown={(e) => e.detail.key === "Enter" && handle()}
+                    />
+                  </FormField>
+                </>
+              )}
 
-        {view === "confirm" && (
-          <>
-            <label className="login-input-label">Verification code</label>
-            <input
-              className="login-input"
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              placeholder="123456"
-              onKeyDown={(e) => e.key === "Enter" && handle()}
-            />
-          </>
-        )}
+              {view === "confirm" && (
+                <FormField
+                  label="Verification code"
+                  description="Check your email for a 6-digit code"
+                >
+                  <Input
+                    value={code}
+                    onChange={(e) => setCode(e.detail.value)}
+                    placeholder="123456"
+                    onKeyDown={(e) => e.detail.key === "Enter" && handle()}
+                  />
+                </FormField>
+              )}
 
-        {view === "new_password" && (
-          <>
-            <label className="login-input-label">New password</label>
-            <input
-              className="login-input"
-              type="password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              placeholder="8+ chars, upper, lower, number"
-              onKeyDown={(e) => e.key === "Enter" && handle()}
-            />
-          </>
-        )}
+              {view === "new_password" && (
+                <FormField
+                  label="New password"
+                  description="Must be 8+ characters with upper, lower, and a number"
+                >
+                  <Input
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.detail.value)}
+                    placeholder="New password"
+                    onKeyDown={(e) => e.detail.key === "Enter" && handle()}
+                  />
+                </FormField>
+              )}
+            </SpaceBetween>
+          </Form>
 
-        <button className="login-btn-primary" onClick={handle} disabled={loading}>
-          {loading ? "Please wait…" :
-           view === "login" ? "Sign in" :
-           view === "register" ? "Create account" :
-           view === "new_password" ? "Set password" : "Verify"}
-        </button>
+          {/* Button + switch link — centered, outside Form to avoid Form's own layout */}
+          <style>{`
+            .login-primary-btn button[class*="button"][class*="variant-primary"] {
+              background: #e07941 !important;
+              border-color: #e07941 !important;
+            }
+            .login-primary-btn button[class*="button"][class*="variant-primary"]:hover {
+              background: #c96730 !important;
+              border-color: #c96730 !important;
+            }
+            .login-primary-btn button[class*="button"][class*="variant-primary"]:active {
+              background: #b85a28 !important;
+              border-color: #b85a28 !important;
+            }
+          `}</style>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
+            <div className="login-primary-btn" style={{ width: "100%" }}>
+              <Button variant="primary" loading={loading} onClick={handle} fullWidth>
+                {primaryLabel}
+              </Button>
+            </div>
+            <Box fontSize="body-s" color="text-body-secondary">
+              {view === "login" && <>Don't have an account? <Link onFollow={() => setView("register")}>Create one</Link></>}
+              {view === "register" && <>Already have an account? <Link onFollow={() => setView("login")}>Sign in</Link></>}
+              {view === "confirm" && <Link onFollow={() => setView("login")}>Back to sign in</Link>}
+            </Box>
+          </div>
 
-        <div className="login-switch-row">
-          {view === "login" && (
-            <>Don't have an account?{" "}
-              <button className="login-btn-link" onClick={() => setView("register")}>Create one</button>
-            </>
-          )}
-          {view === "register" && (
-            <>Already have an account?{" "}
-              <button className="login-btn-link" onClick={() => setView("login")}>Sign in</button>
-            </>
-          )}
-          {view === "confirm" && (
-            <button className="login-btn-link" onClick={() => setView("login")}>Back to sign in</button>
-          )}
-        </div>
+        </SpaceBetween>
       </div>
     </div>
   );

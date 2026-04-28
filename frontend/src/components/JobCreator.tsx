@@ -143,7 +143,25 @@ export default function JobCreator({ notebookId, notebookStatus, onJobCreated, r
   };
 
   return (
-    <Container header={<Header variant="h2">Generate artifact</Header>}>
+    <Container
+      header={
+        <Header
+          variant="h2"
+          actions={
+            <Button
+              variant="primary"
+              loading={submitting}
+              disabled={!notebookReady}
+              onClick={create}
+            >
+              Generate {artifactType}
+            </Button>
+          }
+        >
+          Generate artifact
+        </Header>
+      }
+    >
       <SpaceBetween size="m">
         {!notebookReady && (
           <Alert type="info">
@@ -194,20 +212,10 @@ export default function JobCreator({ notebookId, notebookStatus, onJobCreated, r
             </>
           )}
         </ColumnLayout>
-
-        <Box>
-          <Button
-            variant="primary"
-            loading={submitting}
-            disabled={!notebookReady}
-            onClick={create}
-          >
-            Generate {artifactType}
-          </Button>
-        </Box>
       </SpaceBetween>
 
       {(jobs.length > 0 || loadingJobs) && (
+        <div style={{ marginTop: 24 }}>
         <Container header={<Header variant="h3">Jobs</Header>}>
           <Table
             loading={loadingJobs && jobs.length === 0}
@@ -263,6 +271,7 @@ export default function JobCreator({ notebookId, notebookStatus, onJobCreated, r
             empty={<Box textAlign="center">No jobs yet</Box>}
           />
         </Container>
+        </div>
       )}
     </Container>
   );
