@@ -149,13 +149,19 @@ def _maybe_mark_notebook_ready(notebook_id: str):
     any_error = any(s["status"] == "ERROR" for s in sources)
 
     if all_ready:
-        notebooks_table.update_item(
-            Key={"notebookId": notebook_id},
-            UpdateExpression="SET #s = :s",
-            ExpressionAttributeNames={"#s": "status"},
-            ExpressionAttributeValues={":s": "READY"},
-        )
-        _enqueue_auto_summary(notebook_id, sources[0]["userId"])
+        # Only transition to READY (and auto-summary) if not already READY.
+        # ConditionalCheckFailedException means it was already READY — skip auto-summary.
+        try:
+            notebooks_table.update_item(
+                Key={"notebookId": notebook_id},
+                UpdateExpression="SET #s = :ready",
+                ConditionExpression="#s <> :ready",
+                ExpressionAttributeNames={"#s": "status"},
+                ExpressionAttributeValues={":ready": "READY"},
+            )
+            _enqueue_auto_summary(notebook_id, sources[0]["userId"])
+        except notebooks_table.meta.client.exceptions.ConditionalCheckFailedException:
+            log.info("Notebook %s already READY — skipping auto-summary", notebook_id)
     elif any_error:
         notebooks_table.update_item(
             Key={"notebookId": notebook_id},
