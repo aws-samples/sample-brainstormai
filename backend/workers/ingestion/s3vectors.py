@@ -14,6 +14,7 @@ Environment variables required:
     AWS_REGION         — AWS region (default: "us-east-1")
 """
 
+import json
 import logging
 import os
 
@@ -23,6 +24,9 @@ from botocore.exceptions import ClientError
 log = logging.getLogger(__name__)
 
 S3V_BUCKET = os.environ["S3_VECTORS_BUCKET"]
+S3_BUCKET = os.environ["S3_BUCKET"]
+
+_s3 = boto3.client("s3", region_name=os.environ.get("AWS_REGION", "us-east-1"))
 
 # Titan Text Embeddings v2 produces 1024-dimensional vectors.
 VECTOR_DIMENSION = 1024
@@ -85,7 +89,20 @@ def upsert_chunks(notebook_id: str, source_id: str, embedded_chunks: list[dict])
     # Remove stale vectors for this source so re-ingestion is idempotent.
     delete_chunks(source_id, notebook_id)
 
-    # Build the full vector list.
+    # Store chunk texts in S3 (S3 Vectors metadata is capped at 2048B).
+    # Key: chunks/{source_id}.json — array of {chunk_index, text, token_count}
+    chunk_texts = [
+        {"chunk_index": i, "text": c["text"], "token_count": c.get("token_count", 0)}
+        for i, c in enumerate(embedded_chunks)
+    ]
+    _s3.put_object(
+        Bucket=S3_BUCKET,
+        Key=f"chunks/{source_id}.json",
+        Body=json.dumps(chunk_texts),
+        ContentType="application/json",
+    )
+
+    # Build the full vector list — only small scalars in metadata.
     vectors = []
     for i, chunk in enumerate(embedded_chunks):
         key = f"{source_id}#{i}"
@@ -95,7 +112,6 @@ def upsert_chunks(notebook_id: str, source_id: str, embedded_chunks: list[dict])
             "metadata": {
                 "source_id": source_id,
                 "chunk_index": i,
-                "text": chunk["text"],
                 "token_count": chunk.get("token_count", 0),
             },
         })
@@ -136,15 +152,20 @@ def delete_chunks(source_id: str, notebook_id: str) -> None:
 
     if not keys_to_delete:
         log.debug("No vectors to delete for source %s (notebook %s)", source_id, notebook_id)
-        return
+    else:
+        _delete_keys_in_batches(notebook_id, keys_to_delete)
+        log.info(
+            "Deleted %d vectors for source %s (notebook %s)",
+            len(keys_to_delete),
+            source_id,
+            notebook_id,
+        )
 
-    _delete_keys_in_batches(notebook_id, keys_to_delete)
-    log.info(
-        "Deleted %d vectors for source %s (notebook %s)",
-        len(keys_to_delete),
-        source_id,
-        notebook_id,
-    )
+    # Delete the S3 chunk-text sidecar regardless of whether vectors existed.
+    try:
+        _s3.delete_object(Bucket=S3_BUCKET, Key=f"chunks/{source_id}.json")
+    except Exception as exc:
+        log.warning("Failed to delete S3 chunk sidecar for source %s: %s", source_id, exc)
 
 
 def purge_orphan_chunks(valid_source_ids: list[str], notebook_id: str) -> None:

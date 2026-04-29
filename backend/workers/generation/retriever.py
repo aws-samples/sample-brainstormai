@@ -30,8 +30,10 @@ bedrock = boto3.client("bedrock-runtime", region_name=os.environ.get("AWS_REGION
 MODEL_ID = "amazon.titan-embed-text-v2:0"
 
 S3V_BUCKET = os.environ["S3_VECTORS_BUCKET"]
+S3_BUCKET = os.environ["S3_BUCKET"]
 
 client = boto3.client("s3vectors", region_name=os.environ.get("AWS_REGION", "us-east-1"))
+_s3 = boto3.client("s3", region_name=os.environ.get("AWS_REGION", "us-east-1"))
 
 # S3 Vectors returns at most 100 results per QueryVectors call.
 MAX_QUERY_TOP_K = 100
@@ -159,30 +161,48 @@ def _query_source(
             return []
         raise
 
-    results: list[dict] = []
+    # Collect matching vector hits first.
+    hits: list[dict] = []
     prefix = f"{source_id}#"
 
     for item in response.get("vectors", []):
         key: str = item["key"]
         if not key.startswith(prefix):
-            # Belongs to a different source — skip.
             continue
 
         metadata: dict = item.get("metadata") or {}
-        # Cosine distance → cosine similarity: similarity = 1 - distance
         distance: float = item.get("distance", 0.0)
-        similarity: float = 1.0 - distance
-
-        results.append({
+        hits.append({
             "chunk_id": key,
-            "text": metadata.get("text", ""),
             "chunk_index": metadata.get("chunk_index", 0),
             "token_count": metadata.get("token_count", 0),
-            "similarity": similarity,
+            "similarity": 1.0 - distance,
         })
 
-        if len(results) >= top_k:
+        if len(hits) >= top_k:
             break
+
+    if not hits:
+        return []
+
+    # Fetch chunk texts from the S3 sidecar written during ingestion.
+    chunk_texts: dict[int, str] = {}
+    try:
+        obj = _s3.get_object(Bucket=S3_BUCKET, Key=f"chunks/{source_id}.json")
+        for entry in json.loads(obj["Body"].read()):
+            chunk_texts[entry["chunk_index"]] = entry["text"]
+    except Exception as exc:
+        log.warning("Could not load chunk texts for source %s: %s", source_id, exc)
+
+    results: list[dict] = []
+    for hit in hits:
+        results.append({
+            "chunk_id": hit["chunk_id"],
+            "text": chunk_texts.get(hit["chunk_index"], ""),
+            "chunk_index": hit["chunk_index"],
+            "token_count": hit["token_count"],
+            "similarity": hit["similarity"],
+        })
 
     return results
 
