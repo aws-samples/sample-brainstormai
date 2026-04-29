@@ -102,6 +102,7 @@ def process_job(payload: dict):
     notebook_id = payload["notebookId"]
     job_type = payload["type"]
     params = payload.get("params", {})
+    notebook_updated_at = payload.get("notebookUpdatedAt", "")
 
     log.info("Processing job %s type=%s", job_id, job_type)
 
@@ -160,6 +161,7 @@ def process_job(payload: dict):
             "s3Key": artifact_data["s3Key"],
             "coverageScore": artifact_data.get("coverageScore", 100),
             "coverageWarning": artifact_data.get("coverageWarning", False),
+            "notebookUpdatedAt": notebook_updated_at,
             "createdAt": artifact_data["createdAt"],
         })
 

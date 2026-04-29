@@ -5,6 +5,7 @@ import * as ec2 from "aws-cdk-lib/aws-ec2";
 import * as iam from "aws-cdk-lib/aws-iam";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
+import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 import * as assets from "aws-cdk-lib/aws-ecr-assets";
 import * as appscaling from "aws-cdk-lib/aws-applicationautoscaling";
 import * as cloudwatch from "aws-cdk-lib/aws-cloudwatch";
@@ -22,6 +23,11 @@ interface ComputeStackProps extends cdk.StackProps {
   userJobCountTable: dynamodb.Table;
   vectorsBucketName: string;
   vpc: ec2.Vpc;
+  // Kept during migration to avoid CloudFormation cross-stack reference errors
+  dbSecret: secretsmanager.Secret;
+  dbEndpoint: string;
+  dbPort: string;
+  dbSecurityGroup: ec2.SecurityGroup;
 }
 
 export class ComputeStack extends cdk.Stack {
@@ -78,6 +84,7 @@ export class ComputeStack extends cdk.Stack {
     props.wsConnectionsTable.grantReadWriteData(workerRole);
     props.podcastSessionsTable.grantReadWriteData(workerRole);
     props.userJobCountTable.grantReadWriteData(workerRole);
+    props.dbSecret.grantRead(workerRole);
     this.ingestionQueue.grantConsumeMessages(workerRole);
     this.podcastQueue.grantConsumeMessages(workerRole);
     this.mindmapQueue.grantConsumeMessages(workerRole);
@@ -117,6 +124,11 @@ export class ComputeStack extends cdk.Stack {
       ARTIFACTS_TABLE: props.artifactsTable.tableName,
       WS_CONNECTIONS_TABLE: props.wsConnectionsTable.tableName,
       PODCAST_SESSIONS_TABLE: props.podcastSessionsTable.tableName,
+      // DB env vars kept temporarily to preserve CloudFormation cross-stack references during migration
+      DB_HOST: props.dbEndpoint,
+      DB_PORT: props.dbPort,
+      DB_NAME: "brainstormai",
+      DB_SECRET_ARN: props.dbSecret.secretArn,
       INGESTION_QUEUE_URL: this.ingestionQueue.queueUrl,
       PODCAST_QUEUE_URL: this.podcastQueue.queueUrl,
       MINDMAP_QUEUE_URL: this.mindmapQueue.queueUrl,

@@ -2,6 +2,8 @@ import * as cdk from "aws-cdk-lib";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
+import * as rds from "aws-cdk-lib/aws-rds";
+import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 import { Construct } from "constructs";
 
 export class StorageStack extends cdk.Stack {
@@ -15,17 +17,23 @@ export class StorageStack extends cdk.Stack {
   public readonly vpc: ec2.Vpc;
   public readonly userJobCountTable: dynamodb.Table;
   public readonly vectorsBucketName: string = "brainstormai-vectors";
+  // Kept for cross-stack reference compatibility during migration; remove after ComputeStack is deployed without DB refs
+  public readonly dbSecret: secretsmanager.Secret;
+  public readonly dbEndpoint: string;
+  public readonly dbPort: string;
+  public readonly dbSecurityGroup: ec2.SecurityGroup;
 
   constructor(scope: Construct, id: string, props: cdk.StackProps) {
     super(scope, id, props);
 
-    // ── VPC (2 AZs, private subnets for ECS) ──
+    // ── VPC ──
     this.vpc = new ec2.Vpc(this, "Vpc", {
       maxAzs: 2,
       natGateways: 1,
       subnetConfiguration: [
         { name: "Public", subnetType: ec2.SubnetType.PUBLIC, cidrMask: 24 },
         { name: "Private", subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS, cidrMask: 24 },
+        { name: "Isolated", subnetType: ec2.SubnetType.PRIVATE_ISOLATED, cidrMask: 24 },
       ],
     });
 
@@ -133,6 +141,40 @@ export class StorageStack extends cdk.Stack {
       partitionKey: { name: "connectionId", type: dynamodb.AttributeType.STRING },
     });
 
+    // ── RDS PostgreSQL (retained; kept active until ComputeStack no longer references it) ──
+    this.dbSecurityGroup = new ec2.SecurityGroup(this, "DbSecurityGroup", {
+      vpc: this.vpc,
+      description: "RDS PostgreSQL access",
+    });
+
+    this.dbSecret = new secretsmanager.Secret(this, "DbSecret", {
+      secretName: "brainstormai/db",
+      generateSecretString: {
+        secretStringTemplate: JSON.stringify({ username: "brainstorm" }),
+        generateStringKey: "password",
+        excludePunctuation: true,
+      },
+    });
+
+    const dbInstance = new rds.DatabaseInstance(this, "Database", {
+      engine: rds.DatabaseInstanceEngine.postgres({
+        version: rds.PostgresEngineVersion.VER_16,
+      }),
+      instanceType: ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.MEDIUM),
+      vpc: this.vpc,
+      vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_ISOLATED },
+      securityGroups: [this.dbSecurityGroup],
+      credentials: rds.Credentials.fromSecret(this.dbSecret),
+      databaseName: "brainstormai",
+      storageEncrypted: true,
+      backupRetention: cdk.Duration.days(7),
+      deletionProtection: true,
+      removalPolicy: cdk.RemovalPolicy.RETAIN,
+    });
+
+    this.dbEndpoint = dbInstance.dbInstanceEndpointAddress;
+    this.dbPort = dbInstance.dbInstanceEndpointPort;
+
     // ── S3 Vectors bucket (one index per notebook, cosine/float32) ──
     new cdk.CfnResource(this, "VectorsBucket", {
       type: "AWS::S3Vectors::VectorBucket",
@@ -143,5 +185,6 @@ export class StorageStack extends cdk.Stack {
 
     new cdk.CfnOutput(this, "AssetsBucketName", { value: this.assetsBucket.bucketName });
     new cdk.CfnOutput(this, "VectorsBucketName", { value: this.vectorsBucketName });
+    new cdk.CfnOutput(this, "DbEndpoint", { value: this.dbEndpoint });
   }
 }

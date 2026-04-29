@@ -30,6 +30,10 @@ const computeStack = new ComputeStack(app, "BrainstormAI-ComputeStack", {
   userJobCountTable: storageStack.userJobCountTable,
   vectorsBucketName: storageStack.vectorsBucketName,
   vpc: storageStack.vpc,
+  dbSecret: storageStack.dbSecret,
+  dbEndpoint: storageStack.dbEndpoint,
+  dbPort: storageStack.dbPort,
+  dbSecurityGroup: storageStack.dbSecurityGroup,
 });
 
 new ApiStack(app, "BrainstormAI-ApiStack", {

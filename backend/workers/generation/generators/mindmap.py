@@ -7,7 +7,7 @@ Schema: { title, children: [{ label, children: [...] }] }
 Depth controls tree complexity:
   brief           → 2 levels (root + immediate children)
   important_points → 3 levels
-  in_depth        → 4+ levels with detail nodes
+  in_depth        → as many levels as the content warrants
 """
 
 import json
@@ -24,7 +24,11 @@ log = logging.getLogger(__name__)
 s3_client = boto3.client("s3")
 S3_BUCKET = os.environ["S3_BUCKET"]
 
-DEPTH_LEVELS = {"brief": 2, "important_points": 3, "in_depth": 4}
+DEPTH_PROMPTS = {
+    "brief": "2 levels of depth (root topic + immediate subtopics only)",
+    "important_points": "3 levels of depth (root, subtopics, and key details)",
+    "in_depth": "as many levels of depth as the content warrants — go deep wherever the material is rich, with no artificial limit on nesting",
+}
 
 SYSTEM_PROMPT = """You are a knowledge organization expert. You create structured mind maps
 from document content. You output ONLY valid JSON — no prose, no markdown, no explanation.
@@ -33,7 +37,7 @@ The JSON must strictly follow the given schema."""
 
 def generate_mindmap(chunks: list[dict], params: dict, missing_points: list[str] = None) -> dict:
     depth = params.get("depth", "important_points")
-    levels = DEPTH_LEVELS.get(depth, 3)
+    depth_instruction = DEPTH_PROMPTS.get(depth, DEPTH_PROMPTS["important_points"])
 
     missing_section = ""
     if missing_points:
@@ -42,7 +46,7 @@ def generate_mindmap(chunks: list[dict], params: dict, missing_points: list[str]
             "\n".join(f"- {p}" for p in missing_points)
         )
 
-    user_prompt = f"""Create a mind map with {levels} levels of depth from the following source material.
+    user_prompt = f"""Create a mind map with {depth_instruction} from the following source material.
 
 Output ONLY a JSON object in this exact schema:
 {{
@@ -61,13 +65,13 @@ Rules:
 - title should capture the overarching theme of all sources
 - Each node label should be concise (3-8 words)
 - No markdown, no prose — pure JSON only
-- Every non-leaf at levels < {levels} must have children
+- Leaf nodes should have an empty children array
 {missing_section}
 
 SOURCE MATERIAL:
 {format_chunks(chunks)}"""
 
-    raw, in_tok, out_tok = invoke(SYSTEM_PROMPT, user_prompt, max_tokens=4000)
+    raw, in_tok, out_tok = invoke(SYSTEM_PROMPT, user_prompt, max_tokens=32000)
     mindmap_json = _parse_json(raw)
 
     artifact_id = str(uuid.uuid4())

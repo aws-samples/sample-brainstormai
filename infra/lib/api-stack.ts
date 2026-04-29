@@ -9,6 +9,8 @@ import * as s3 from "aws-cdk-lib/aws-s3";
 import * as sqs from "aws-cdk-lib/aws-sqs";
 import * as iam from "aws-cdk-lib/aws-iam";
 import { Construct } from "constructs";
+import * as path from "path";
+import { execSync } from "child_process";
 
 interface ApiStackProps extends cdk.StackProps {
   userPool: cognito.UserPool;
@@ -82,16 +84,27 @@ export class ApiStack extends cdk.Stack {
     };
 
     // Notebooks Lambda bundles its own boto3 (>= 1.38) because the runtime-bundled
-    // boto3 (~1.34) predates the S3 Vectors service.
+    // boto3 (~1.34) predates the S3 Vectors service.  We use local bundling
+    // (pip on the host) to avoid Docker socket issues in some environments.
+    const notebooksAssetPath = path.resolve(__dirname, "../../backend/lambdas/notebooks");
     const notebooksFn = new lambda.Function(this, "Notebooks", {
       runtime: lambda.Runtime.PYTHON_3_12,
       timeout: cdk.Duration.seconds(30),
       memorySize: 256,
       environment: commonEnv,
       functionName: "brainstormai-notebooks",
-      code: lambda.Code.fromAsset("../backend/lambdas/notebooks", {
+      code: lambda.Code.fromAsset(notebooksAssetPath, {
         bundling: {
           image: lambda.Runtime.PYTHON_3_12.bundlingImage,
+          local: {
+            tryBundle(outputDir: string) {
+              execSync(
+                `pip install -r requirements.txt -t "${outputDir}" --quiet && cp handler.py "${outputDir}/"`,
+                { cwd: notebooksAssetPath, stdio: "inherit" },
+              );
+              return true;
+            },
+          },
           command: [
             "bash", "-c",
             "pip install -r requirements.txt -t /asset-output --quiet && cp handler.py /asset-output/",

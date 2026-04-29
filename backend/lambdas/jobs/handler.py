@@ -95,7 +95,10 @@ def create_job(user_id: str, notebook_id: str, body: dict):
     params = body.get("params") or {}
     _validate_params(job_type, params)
 
-    # Ensure notebook has ready sources
+    # Ensure notebook has ready sources; also capture updatedAt for cache key
+    notebook = notebooks_table.get_item(Key={"notebookId": notebook_id}).get("Item", {})
+    notebook_updated_at = notebook.get("updatedAt", "")
+
     sources = sources_table.query(
         IndexName="notebookId-index",
         KeyConditionExpression=Key("notebookId").eq(notebook_id),
@@ -103,6 +106,26 @@ def create_job(user_id: str, notebook_id: str, body: dict):
     ready_sources = [s for s in sources if s["status"] == "READY"]
     if not ready_sources:
         raise ValueError("No ready sources in this notebook. Wait for ingestion to complete.")
+
+    # Cache check: if an identical artifact exists for the current notebook state, reuse it
+    cached = _find_cached_artifact(notebook_id, job_type, params, notebook_updated_at)
+    if cached:
+        job_id = str(uuid.uuid4())
+        now = datetime.now(timezone.utc).isoformat()
+        job = {
+            "jobId": job_id,
+            "userId": user_id,
+            "notebookId": notebook_id,
+            "type": job_type,
+            "status": "COMPLETED",
+            "params": params,
+            "artifactId": cached["artifactId"],
+            "cached": True,
+            "createdAt": now,
+            "updatedAt": now,
+        }
+        jobs_table.put_item(Item=job)
+        return resp(201, job)
 
     # Check daily token budget before accepting the job
     _check_token_budget(user_id, params.get("depth", "important_points"))
@@ -139,7 +162,8 @@ def create_job(user_id: str, notebook_id: str, body: dict):
     sqs_client.send_message(
         QueueUrl=QUEUE_URLS[job_type],
         MessageBody=json.dumps({"jobId": job_id, "userId": user_id,
-                                "notebookId": notebook_id, "type": job_type, "params": params}),
+                                "notebookId": notebook_id, "type": job_type, "params": params,
+                                "notebookUpdatedAt": notebook_updated_at}),
     )
     return resp(201, job)
 
@@ -165,6 +189,24 @@ def cancel_job(user_id: str, job_id: str):
     )
     _decrement_job_count(user_id)
     return resp(200, {"jobId": job_id, "status": "CANCELLED"})
+
+
+def _find_cached_artifact(notebook_id: str, job_type: str, params: dict, notebook_updated_at: str) -> dict | None:
+    """Return a matching artifact if one exists for this notebook state, else None."""
+    if not notebook_updated_at:
+        return None
+
+    artifacts_table = dynamodb.Table(os.environ["ARTIFACTS_TABLE"])
+    items = artifacts_table.query(
+        IndexName="notebookId-index",
+        KeyConditionExpression=Key("notebookId").eq(notebook_id),
+        FilterExpression=Attr("type").eq(job_type) & Attr("notebookUpdatedAt").eq(notebook_updated_at),
+    )["Items"]
+
+    for item in items:
+        if item.get("params") == params:
+            return item
+    return None
 
 
 def _validate_params(job_type: str, params: dict):
