@@ -11,11 +11,13 @@ Built by Hima Varshini Parasa (hvparasa@)
 Upload PDFs, URLs, or plain text into a **notebook**. BrainstormAI ingests and embeds your sources, then lets you generate:
 
 - **Podcast** — a two-speaker conversational audio episode (TTS via Amazon Polly Neural), with genre (educational / debate / sporty), language, and depth controls
-- **Mind Map** — an interactive, expandable node graph you can explore branch by branch
+- **Mind Map** — an interactive, expandable node graph with uncapped depth — the tree grows as deep as the content warrants
 - **Quiz** — a scored multiple-choice quiz with explanations
 - **Summary** — a concise written overview of the source material
 
-Each artifact goes through a RAG pipeline (pgvector similarity search) and a validation agent that checks coverage and retries generation if key points are missing.
+Each artifact goes through a RAG pipeline (S3 Vectors similarity search) and a validation agent that checks coverage and retries generation if key points are missing.
+
+Identical jobs are cached: if you generate the same artifact type with the same parameters for a notebook whose sources have not changed, the existing artifact is returned instantly with no LLM call.
 
 ---
 
@@ -30,15 +32,17 @@ API Gateway (REST + WebSocket)
     ├── Lambda handlers
     │     notebooks / sources / jobs / artifacts / websocket
     │
-    ├── S3  ──── source files, audio segments, artifact JSON
+    ├── S3  ──── source files, chunk text sidecars, audio segments, artifact JSON
     ├── DynamoDB ── notebooks, sources, jobs, artifacts, WS connections
+    ├── S3 Vectors ── per-notebook vector indexes (one index per notebook)
     └── SQS queues (podcast / mindmap / quiz / summary)
               │
               ▼
          ECS Fargate workers
               │
               ├── Ingestion worker
-              │     PDF/URL/text extract → chunk → Titan embed → pgvector (RDS)
+              │     PDF/URL/text extract → chunk → Titan embed
+              │     → S3 Vectors (vectors) + S3 (chunk texts)
               │
               └── Generation worker
                     RAG retrieve → Claude generation agent
@@ -47,7 +51,7 @@ API Gateway (REST + WebSocket)
                     → S3 + DynamoDB → WebSocket notify
 ```
 
-**AWS services used:** Cognito, API Gateway (REST + WebSocket), Lambda, S3, DynamoDB, SQS, ECS Fargate, ECR, RDS (PostgreSQL + pgvector), Bedrock (Claude Sonnet, Titan Embeddings), Polly Neural TTS, CloudFront, CloudWatch
+**AWS services used:** Cognito, API Gateway (REST + WebSocket), Lambda, S3, S3 Vectors, DynamoDB, SQS, ECS Fargate, ECR, Bedrock (Claude Haiku 4.5, Titan Embeddings v2), Polly Neural TTS, CloudFront, CloudWatch
 
 ---
 
@@ -59,8 +63,8 @@ brainstormAI/
 ├── backend/
 │   ├── lambdas/       API handlers (notebooks, sources, jobs, artifacts, websocket)
 │   └── workers/
-│       ├── ingestion/ PDF/URL/text extract, chunk, embed
-│       └── generation/ RAG, generation agents, TTS, metrics
+│       ├── ingestion/ PDF/URL/text extract, chunk, embed, S3 Vectors storage
+│       └── generation/ RAG retrieval, generation agents, TTS, metrics
 └── infra/             AWS CDK stacks (TypeScript)
 ```
 
@@ -71,20 +75,37 @@ brainstormAI/
 | Stack | What it provisions |
 |---|---|
 | `CognitoStack` | User Pool + App Client |
-| `StorageStack` | S3 bucket, DynamoDB tables, RDS + pgvector, VPC |
+| `StorageStack` | S3 bucket, DynamoDB tables, S3 Vectors bucket, VPC |
 | `ApiStack` | REST API Gateway + Lambda handlers, WebSocket API |
 | `ComputeStack` | ECS Fargate cluster, ingestion + generation services, SQS queues |
 | `FrontendStack` | S3 static hosting + CloudFront distribution |
 
 ---
 
+## Vector storage
+
+Each notebook gets its own S3 Vectors index (`index_name == notebook_id`). Vector keys are formatted as `{source_id}#{chunk_index}`. Only small scalar metadata (source_id, chunk_index, token_count) is stored in the vector index; full chunk texts are stored in S3 as `chunks/{source_id}.json` sidecars and fetched at retrieval time (S3 Vectors enforces a 2048-byte metadata limit per vector).
+
+---
+
 ## Generation pipeline
 
-1. **Retrieve** — embed the job's query hint with Titan, cosine-similarity search top-K chunks from pgvector
-2. **Generate** — Claude produces the artifact grounded in retrieved chunks
+1. **Retrieve** — embed the job's query hint with Titan Embeddings v2, cosine-similarity search top-K chunks from S3 Vectors, distributed evenly across sources
+2. **Generate** — Claude Haiku 4.5 produces the artifact grounded in retrieved chunks
 3. **Validate** — Claude checks coverage against source chunks; if score < threshold, retry with missing points (up to 2 retries)
-4. **Post-process** — Polly TTS for podcasts; JSON schema validation for mind maps and quizzes
-5. **Store** — artifact written to S3 + DynamoDB; user notified via WebSocket
+4. **Post-process** — Polly Neural TTS for podcasts; JSON schema validation for mind maps and quizzes
+5. **Cache** — artifact stored with `notebookUpdatedAt` as cache key; identical future requests return the cached artifact instantly
+6. **Store** — artifact written to S3 + DynamoDB; user notified via WebSocket
+
+---
+
+## Artifact caching
+
+Cache key: `notebookId + jobType + params + notebookUpdatedAt`
+
+- Cache **hit**: job is immediately marked COMPLETED pointing at the existing artifact — no LLM call, no queue
+- Cache **miss**: normal generation flow runs and stamps `notebookUpdatedAt` on the new artifact
+- Cache **invalidation**: adding or deleting any source bumps `notebook.updatedAt`, automatically invalidating all cached artifacts for that notebook
 
 ---
 
@@ -92,9 +113,9 @@ brainstormAI/
 
 | Depth | Podcast | Mind Map / Quiz |
 |---|---|---|
-| Brief | ~5 min | Concise |
-| Important Points | ~10 min | Key points |
-| In-Depth | ~20 min | Comprehensive |
+| Brief | ~5 min | Concise (2 levels) |
+| Important Points | ~10 min | Key points (3 levels) |
+| In-Depth | ~20 min | Uncapped — as deep as content warrants |
 
 ---
 
