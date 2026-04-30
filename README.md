@@ -145,10 +145,12 @@ Inside each notebook there are five tabs: Sources, Generate, Artifacts, Summary,
 
 **URL validation** — only HTTPS URLs are accepted; private/internal IP ranges and the EC2 metadata endpoint are blocked before any fetch is attempted.
 
+**URL fetch safeguards** — the ingestion worker enforces a 15-second connect/read timeout and a 5 MB response size cap on every URL fetch, preventing hung connections and runaway downloads.
+
 ---
 
 ## Token usage tracking
 
 Every completed job stores `inputTokens` and `outputTokens` on its DynamoDB record, keyed by `jobId` (UUID). The `/usage` API endpoint aggregates these by date and artifact type. Pass `?notebookId=<id>` to scope results to a single notebook.
 
-Daily limit: 3,000,000 tokens per user (checked at job creation time and enforced by the generation worker).
+Daily limit: 500,000 tokens per user (configurable via `DAILY_TOKEN_LIMIT` env var; checked at job creation time and enforced by the generation worker).
