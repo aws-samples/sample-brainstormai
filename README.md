@@ -51,7 +51,7 @@ API Gateway (REST + WebSocket)
                     → S3 + DynamoDB → WebSocket notify
 ```
 
-**AWS services used:** Cognito, API Gateway (REST + WebSocket), Lambda, S3, S3 Vectors, DynamoDB, SQS, ECS Fargate, ECR, Bedrock (Claude Haiku 4.5, Titan Embeddings v2), Polly Neural TTS, CloudFront, CloudWatch
+**AWS services used:** Cognito, API Gateway (REST + WebSocket), Lambda, S3, S3 Vectors, DynamoDB, SQS, ECS Fargate, ECR, Bedrock (Claude Haiku 4.5, Titan Embeddings v2, Guardrails), Polly Neural TTS, CloudFront, CloudWatch
 
 ---
 
@@ -133,6 +133,17 @@ The app uses a persistent sidebar with two top-level sections:
 - **Usage** — global token usage dashboard with day-wise pie charts across all notebooks
 
 Inside each notebook there are five tabs: Sources, Generate, Artifacts, Summary, and Usage. The notebook Usage tab shows the same day-wise breakdown scoped to jobs in that notebook only.
+
+---
+
+## Security
+
+**Prompt injection protection** — source content (from PDFs, URLs, and text) is treated as untrusted data throughout the pipeline:
+
+- All chunks are wrapped in `<untrusted_source_chunk>` XML tags with an explicit instruction to the model to treat the content as data, not instructions
+- Every LLM call passes through a Bedrock Guardrail (`lalac10679yh`) with `PROMPT_ATTACK` detection at HIGH sensitivity — if an injection attempt is detected, the job fails with a clear error rather than producing compromised output
+
+**URL validation** — only HTTPS URLs are accepted; private/internal IP ranges and the EC2 metadata endpoint are blocked before any fetch is attempted.
 
 ---
 

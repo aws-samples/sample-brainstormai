@@ -154,7 +154,8 @@ def add_url_source(user_id: str, notebook_id: str, body: dict):
     sqs_client.send_message(
         QueueUrl=INGESTION_QUEUE_URL,
         MessageBody=json.dumps({"sourceId": source_id, "type": "url", "url": url,
-                                "notebookId": notebook_id, "userId": user_id}),
+                                "notebookId": notebook_id, "userId": user_id,
+                                "s3Key": f"sources/{user_id}/{notebook_id}/{source_id}/extracted.txt"}),
     )
     return resp(201, {"sourceId": source_id})
 

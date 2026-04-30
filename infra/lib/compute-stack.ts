@@ -96,6 +96,7 @@ export class ComputeStack extends cdk.Stack {
         actions: [
           "bedrock:InvokeModel",
           "bedrock:InvokeModelWithResponseStream",
+          "bedrock:ApplyGuardrail",
           "polly:SynthesizeSpeech",
           "textract:DetectDocumentText",
           "textract:AnalyzeDocument",
