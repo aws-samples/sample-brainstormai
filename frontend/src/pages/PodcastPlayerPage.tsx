@@ -10,7 +10,6 @@ import {
   Badge,
   BreadcrumbGroup,
   Container,
-  Input,
   Alert,
   StatusIndicator,
   ColumnLayout,
@@ -29,7 +28,7 @@ interface PlaylistTurn {
 }
 
 type LoadState = "fetching" | "ready" | "error";
-type PlayerState = "paused" | "playing" | "interrupted" | "answering" | "done";
+type PlayerState = "paused" | "playing" | "done";
 
 const SPEEDS = ["0.75", "1", "1.25", "1.5", "2"];
 
@@ -46,7 +45,6 @@ export default function PodcastPlayerPage() {
   const navigate = useNavigate();
 
   const audioRef         = useRef<HTMLAudioElement | null>(null);
-  const answerAudioRef   = useRef<HTMLAudioElement | null>(null);
   const blobUrlRef       = useRef<string | null>(null);
   const turnOffsetsRef   = useRef<number[]>([]);
   const wsRef            = useRef<BrainstormWebSocket | null>(null);
@@ -61,8 +59,6 @@ export default function PodcastPlayerPage() {
   const [duration, setDuration]         = useState(0);
   const [speed, setSpeed]               = useState("1");
   const [currentTurnIdx, setCurrentTurnIdx] = useState(0);
-  const [question, setQuestion]         = useState("");
-  const [answerText, setAnswerText]     = useState("");
 
   useEffect(() => {
     setTokenProvider(getIdToken);
@@ -126,15 +122,6 @@ export default function PodcastPlayerPage() {
       ws.on("podcast_turn", (msg) => {
         if (!sessionIdRef.current) sessionIdRef.current = (msg as { sessionId: string }).sessionId;
       });
-      ws.on("podcast_answer", (msg) => {
-        const p = msg as { text: string; audioUrl: string };
-        setAnswerText(p.text);
-        setPlayerState("answering");
-        const a = new Audio(p.audioUrl);
-        answerAudioRef.current = a;
-        a.onended = () => setPlayerState("interrupted");
-        a.play().catch(() => {});
-      });
       wsRef.current = ws;
       ws.send({ action: "start_podcast", artifactId });
     });
@@ -142,7 +129,6 @@ export default function PodcastPlayerPage() {
     return () => {
       wsRef.current?.close();
       audioRef.current?.pause();
-      answerAudioRef.current?.pause();
       if (blobUrlRef.current) URL.revokeObjectURL(blobUrlRef.current);
     };
   }, [artifactId]);
@@ -170,25 +156,11 @@ export default function PodcastPlayerPage() {
     if (audioRef.current) { audioRef.current.currentTime = v; setCurrentTime(v); }
   };
 
-  const interrupt = () => {
-    if (!question.trim() || !sessionIdRef.current) return;
-    audioRef.current?.pause();
-    setPlayerState("interrupted");
-    wsRef.current?.send({ action: "interrupt", sessionId: sessionIdRef.current, text: question, turnIndex: currentTurnIdx });
-    setQuestion("");
-  };
-
-  const resumeAfterQA = () => {
-    setAnswerText("");
-    audioRef.current?.play();
-    setPlayerState("playing");
-  };
-
-  const progress      = duration > 0 ? (currentTime / duration) * 100 : 0;
-  const currentTurn   = playlist[currentTurnIdx] ?? null;
-  const canControl    = loadState === "ready" && playerState !== "done";
-  const isPlaying     = playerState === "playing";
-  const speakerColor  = (s: string): "blue" | "green" => s?.toLowerCase().startsWith("s") ? "green" : "blue";
+  const progress    = duration > 0 ? (currentTime / duration) * 100 : 0;
+  const currentTurn = playlist[currentTurnIdx] ?? null;
+  const canControl  = loadState === "ready" && playerState !== "done";
+  const isPlaying   = playerState === "playing";
+  const speakerColor = (s: string): "blue" | "green" => s?.toLowerCase().startsWith("s") ? "green" : "blue";
 
   return (
     <AppShell
@@ -208,7 +180,7 @@ export default function PodcastPlayerPage() {
         header={
           <Header
             variant="h1"
-            description="Listen, control playback, and ask questions mid-episode."
+            description="Listen and control playback."
           >
             Podcast Player
           </Header>
@@ -305,7 +277,7 @@ export default function PodcastPlayerPage() {
                             variant="primary"
                             iconName={isPlaying ? "pause" : "caret-right-filled"}
                             onClick={togglePlay}
-                            disabled={!canControl || playerState === "interrupted" || playerState === "answering"}
+                            disabled={!canControl}
                           >
                             {isPlaying ? "Pause" : "Play"}
                           </Button>
@@ -327,47 +299,6 @@ export default function PodcastPlayerPage() {
                       </ColumnLayout>
                     </SpaceBetween>
                   </Container>
-
-                  {/* Q&A answer */}
-                  {answerText && (playerState === "answering" || playerState === "interrupted") && (
-                    <Container header={<Header variant="h2">Listener Q&amp;A</Header>}>
-                      <SpaceBetween size="m">
-                        {playerState === "answering" && (
-                          <StatusIndicator type="in-progress">Playing answer…</StatusIndicator>
-                        )}
-                        <Box color="text-body-secondary">{answerText}</Box>
-                        {playerState === "interrupted" && (
-                          <Button variant="primary" iconName="caret-right-filled" onClick={resumeAfterQA}>
-                            Resume podcast
-                          </Button>
-                        )}
-                      </SpaceBetween>
-                    </Container>
-                  )}
-
-                  {/* Ask a question */}
-                  {(playerState === "playing" || playerState === "paused" || playerState === "interrupted") && (
-                    <Container header={<Header variant="h2">Ask a question</Header>}>
-                      <SpaceBetween direction="horizontal" size="xs">
-                        <div style={{ flex: 1 }}>
-                          <Input
-                            value={question}
-                            onChange={(e) => setQuestion(e.detail.value)}
-                            placeholder="Ask anything about the podcast…"
-                            onKeyDown={(e) => e.detail.key === "Enter" && interrupt()}
-                            disabled={playerState === "interrupted"}
-                          />
-                        </div>
-                        <Button
-                          variant="primary"
-                          onClick={interrupt}
-                          disabled={!question.trim() || playerState === "interrupted"}
-                        >
-                          Ask
-                        </Button>
-                      </SpaceBetween>
-                    </Container>
-                  )}
 
                   {/* Transcript */}
                   {playlist.length > 0 && (

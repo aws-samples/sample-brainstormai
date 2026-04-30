@@ -22,6 +22,7 @@ import os
 import time
 
 import boto3
+from boto3.dynamodb.conditions import Key
 from botocore.exceptions import ClientError
 
 log = logging.getLogger(__name__)
@@ -34,6 +35,8 @@ S3_BUCKET = os.environ["S3_BUCKET"]
 
 client = boto3.client("s3vectors", region_name=os.environ.get("AWS_REGION", "us-east-1"))
 _s3 = boto3.client("s3", region_name=os.environ.get("AWS_REGION", "us-east-1"))
+_dynamodb = boto3.resource("dynamodb", region_name=os.environ.get("AWS_REGION", "us-east-1"))
+_sources_table = _dynamodb.Table(os.environ["SOURCES_TABLE"])
 
 # S3 Vectors returns at most 100 results per QueryVectors call.
 MAX_QUERY_TOP_K = 100
@@ -90,42 +93,16 @@ def retrieve_chunks(notebook_id: str, query: str, top_k: int) -> list[dict]:
 # ---------------------------------------------------------------------------
 
 def _list_source_ids(notebook_id: str) -> list[str]:
-    """Return the distinct source_ids present in the notebook's S3 Vectors index.
+    """Return the READY source_ids for *notebook_id* from DynamoDB.
 
-    Pages through ListVectors to collect all keys, then extracts the source_id
-    portion (everything before the first "#" in the key).  Returns an empty
-    list if the index does not exist.
+    Queries the notebookId-index GSI — O(sources) instead of O(vectors).
+    Only includes READY sources; PENDING/ERROR sources have no vectors.
     """
-    source_ids: set[str] = set()
-    next_token: str | None = None
-
-    while True:
-        kwargs: dict = {
-            "vectorBucketName": S3V_BUCKET,
-            "indexName": notebook_id,
-        }
-        if next_token:
-            kwargs["nextToken"] = next_token
-
-        try:
-            response = client.list_vectors(**kwargs)
-        except ClientError as exc:
-            error_code = exc.response["Error"]["Code"]
-            if error_code in ("NoSuchIndex", "ResourceNotFoundException"):
-                # No index yet — notebook has no ingested sources.
-                return []
-            raise
-
-        for vector in response.get("vectors", []):
-            key: str = vector["key"]
-            source_id = key.split("#", 1)[0]
-            source_ids.add(source_id)
-
-        next_token = response.get("nextToken")
-        if not next_token:
-            break
-
-    return list(source_ids)
+    items = _sources_table.query(
+        IndexName="notebookId-index",
+        KeyConditionExpression=Key("notebookId").eq(notebook_id),
+    )["Items"]
+    return [item["sourceId"] for item in items if item.get("status") == "READY"]
 
 
 def _query_source(

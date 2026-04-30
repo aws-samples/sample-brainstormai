@@ -7,8 +7,7 @@ Routes handled:
   sendmessage   → dispatch by action:
       subscribe_job   → register interest in a job's completion notification
       start_podcast   → begin a podcast playback session
-      interrupt       → user asks a question mid-podcast
-      resume          → user resumes playback after Q&A
+      resume          → advance to next podcast turn
 
 Pushes back to client via ApiGatewayManagementApi using the WS_ENDPOINT env var.
 
@@ -27,7 +26,6 @@ from datetime import datetime, timezone
 import boto3
 
 dynamodb = boto3.resource("dynamodb")
-bedrock_client = boto3.client("bedrock-runtime", region_name=os.environ.get("AWS_REGION", "us-east-1"))
 polly_client = boto3.client("polly")
 s3_client = boto3.client("s3")
 
@@ -38,7 +36,6 @@ jobs_table = dynamodb.Table(os.environ["JOBS_TABLE"])
 
 WS_ENDPOINT = os.environ.get("WS_ENDPOINT", "")
 S3_BUCKET = os.environ["S3_BUCKET"]
-BEDROCK_MODEL = "us.anthropic.claude-sonnet-4-5-20250929-v1:0"  # cross-region inference profile
 
 POLLY_VOICES = {
     "english": ("Matthew", "Joanna"),
@@ -119,8 +116,6 @@ def on_message(event, connection_id: str):
         return subscribe_job(connection_id, user_id, body)
     if action == "start_podcast":
         return start_podcast(connection_id, user_id, body)
-    if action == "interrupt":
-        return handle_interrupt(connection_id, user_id, body)
     if action == "resume":
         return handle_resume(connection_id, user_id, body)
 
@@ -168,7 +163,6 @@ def start_podcast(connection_id: str, user_id: str, body: dict):
             "turnIndex": 0,
             "script": manifest["turns"],
             "language": language,
-            "history": [],
             "ttl": int(time.time()) + 7200,
         })
 
@@ -186,65 +180,6 @@ def start_podcast(connection_id: str, user_id: str, body: dict):
         print(f"[WS] start_podcast error: {e}")
         import traceback; traceback.print_exc()
         return {"statusCode": 500}
-
-
-def handle_interrupt(connection_id: str, user_id: str, body: dict):
-    session_id = body.get("sessionId")
-    question = (body.get("text") or "").strip()
-    if not question:
-        return {"statusCode": 400}
-
-    session = podcast_sessions_table.get_item(Key={"sessionId": session_id}).get("Item")
-    if not session or session["userId"] != user_id:
-        return {"statusCode": 403}
-
-    language = session.get("language", "english")
-    history = session.get("history", [])
-
-    # Client sends turnIndex indicating where in the audio the listener paused
-    turn_index = int(body.get("turnIndex", session.get("turnIndex", 0)))
-
-    # Build context: script up to current turn + history
-    script_context = "\n".join(
-        f"{t['speaker']}: {t['text']}" for t in session["script"][:turn_index]
-    )
-    history_context = "\n".join(
-        f"Q: {h['question']}\nA: {h['answer']}" for h in history[-5:]  # last 5 exchanges
-    )
-
-    # Derive the two speaker names from the script
-    speakers = list(dict.fromkeys(t["speaker"] for t in session["script"]))
-    host_a = speakers[0] if speakers else "ALEX"
-    host_b = speakers[1] if len(speakers) > 1 else "SAM"
-
-    answer = _generate_answer(question, script_context, history_context, language, host_a, host_b)
-
-    # TTS using host A's voice (same speaker who drives the conversation)
-    voices = POLLY_VOICES.get(language, POLLY_VOICES["english"])
-    audio_key = f"audio/{session['artifactId']}/qa_{uuid.uuid4()}.mp3"
-    _synthesize_and_store(answer, voices[0], audio_key)
-
-    presigned_url = s3_client.generate_presigned_url(
-        "get_object",
-        Params={"Bucket": S3_BUCKET, "Key": audio_key},
-        ExpiresIn=3600,
-    )
-
-    # Persist Q&A in session history
-    history.append({"question": question, "answer": answer})
-    podcast_sessions_table.update_item(
-        Key={"sessionId": session_id},
-        UpdateExpression="SET history = :h",
-        ExpressionAttributeValues={":h": history},
-    )
-
-    _push(connection_id, {
-        "type": "podcast_answer",
-        "sessionId": session_id,
-        "text": answer,
-        "audioUrl": presigned_url,
-    })
-    return {"statusCode": 200}
 
 
 def handle_resume(connection_id: str, user_id: str, body: dict):
@@ -297,56 +232,6 @@ def _push_next_turn(connection_id: str, session_id: str, script: list, turn_inde
         "audioUrl": presigned_url,
         "totalTurns": len(script),
     })
-
-
-def _generate_answer(question: str, script_context: str, history_context: str, language: str,
-                     host_a: str, host_b: str) -> str:
-    lang_instruction = f"Respond entirely in {language}." if language != "english" else ""
-    prior_qa = f"\nPrevious listener questions already addressed:\n{history_context}" if history_context.strip() else ""
-    prompt = f"""You are {host_a}, one of the two hosts of this podcast. Your co-host is {host_b}.
-A listener has just paused the podcast to ask a question. You need to address it naturally — as if it were said out loud mid-episode — before the podcast resumes.
-
-Podcast conversation so far:
-{script_context}
-{prior_qa}
-
-Listener's question: {question}
-
-Write ONLY {host_a}'s spoken response. Rules:
-- Start by warmly acknowledging the question, referencing {host_b} by name (e.g. "Oh great question — and {host_b}, this ties right into what we were just saying about...")
-- Speak as {host_a} in first person. Do NOT write "{host_a}:" — just write the words they say.
-- Stay tightly grounded in what was just discussed. Do not introduce new topics.
-- Keep it to 3-5 natural spoken sentences. No bullet points, no headers.
-- End in a way that naturally hands back to the podcast flow (e.g. "...so let's keep going" or "...which is exactly what we're about to get into").
-{lang_instruction}"""
-
-    response = bedrock_client.invoke_model(
-        modelId=BEDROCK_MODEL,
-        body=json.dumps({
-            "anthropic_version": "bedrock-2023-05-31",
-            "max_tokens": 400,
-            "messages": [{"role": "user", "content": prompt}],
-        }),
-        contentType="application/json",
-        accept="application/json",
-    )
-    result = json.loads(response["body"].read())
-    return result["content"][0]["text"].strip()
-
-
-def _synthesize_and_store(text: str, voice_id: str, s3_key: str):
-    response = polly_client.synthesize_speech(
-        Text=text,
-        OutputFormat="mp3",
-        VoiceId=voice_id,
-        Engine="neural",
-    )
-    s3_client.put_object(
-        Bucket=S3_BUCKET,
-        Key=s3_key,
-        Body=response["AudioStream"].read(),
-        ContentType="audio/mpeg",
-    )
 
 
 def _push(connection_id: str, payload: dict):
