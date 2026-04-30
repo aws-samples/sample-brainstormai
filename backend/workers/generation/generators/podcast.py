@@ -88,7 +88,10 @@ Write the complete script now. Only output the script — no preamble, no stage 
     turns = _parse_turns(script_text)
 
     if not turns:
-        log.error("Script parser found no turns. Raw output (first 500 chars): %s", script_text[:500])
+        log.error(
+            "Script parser found no turns.\nFirst 1000 chars of raw output:\n%s",
+            script_text[:1000] if script_text else "<empty string — possible guardrail block>",
+        )
         raise ValueError("Script parser found no speaker turns in LLM output")
 
     artifact_id = str(uuid.uuid4())
@@ -137,7 +140,7 @@ Write the complete script now. Only output the script — no preamble, no stage 
 
 
 _SPEAKER_RE = re.compile(
-    r"^\**\s*(ALEX|SAM)\s*\**\s*:",
+    r"^[-*]?\s*\**\s*(ALEX|SAM)\s*\**\s*:",
     re.IGNORECASE,
 )
 

@@ -59,6 +59,8 @@ def invoke(
 
             text = "".join(text_parts).strip()
 
+            if not text:
+                raise ValueError("Generation blocked: guardrail suppressed entire response (empty output)")
             if text == "Content blocked due to potential prompt injection.":
                 raise ValueError("Generation blocked: prompt injection detected in source content")
 
