@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Table,
   Badge,
@@ -29,9 +29,9 @@ export default function ArtifactsList({ notebookId, refreshKey }: Props) {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    load();
-  }, [refreshKey]);
+  // Load on mount and whenever refreshKey changes (job completed / cache hit)
+  useEffect(() => { load(); }, []);
+  useEffect(() => { if (refreshKey > 0) load(); }, [refreshKey]);
 
   const load = async () => {
     setLoading(true);
