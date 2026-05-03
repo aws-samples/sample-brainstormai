@@ -119,9 +119,10 @@ def _query_source(
 
     Returns a list of dicts matching the retrieve_chunks output format.
     """
-    # Over-fetch to compensate for filtering: request the full quota so that
-    # after filtering by source_id we still have enough candidates.
-    fetch_k = min(MAX_QUERY_TOP_K, top_k * max(1, 4))  # generous over-fetch
+    # Always fetch the maximum S3 Vectors allows. We filter by source_id prefix
+    # client-side, so if one source dominates similarity scores we still find
+    # chunks from less-similar sources by scanning the full result set.
+    fetch_k = MAX_QUERY_TOP_K
 
     try:
         response = client.query_vectors(
