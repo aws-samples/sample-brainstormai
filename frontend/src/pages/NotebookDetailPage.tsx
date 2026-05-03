@@ -112,6 +112,7 @@ export default function NotebookDetailPage() {
                   notebookId={notebookId!}
                   notebookStatus={notebook.status}
                   onJobCreated={subscribeJob}
+                  onJobCompleted={() => setRefreshArtifacts((n) => n + 1)}
                   refreshKey={refreshArtifacts}
                 />
               ),

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   SpaceBetween,
   Button,
@@ -27,6 +27,7 @@ interface Props {
   notebookId: string;
   notebookStatus: string;
   onJobCreated: (jobId: string) => void;
+  onJobCompleted: () => void;
   refreshKey: number;
 }
 
@@ -70,7 +71,7 @@ const STATUS_INDICATOR: Record<string, "success" | "in-progress" | "pending" | "
   CANCELLED: "stopped",
 };
 
-export default function JobCreator({ notebookId, notebookStatus, onJobCreated, refreshKey }: Props) {
+export default function JobCreator({ notebookId, notebookStatus, onJobCreated, onJobCompleted, refreshKey }: Props) {
   const [artifactType, setArtifactType] = useState("podcast");
   const [genre, setGenre] = useState("educational");
   const [depth, setDepth] = useState("important_points");
@@ -86,8 +87,16 @@ export default function JobCreator({ notebookId, notebookStatus, onJobCreated, r
     loadJobs();
   }, [refreshKey]);
 
-  // Poll every 8s while any job is active
+  // Poll every 8s while any job is active; fire onJobCompleted on transitions to COMPLETED
+  const prevJobsRef = useRef<Job[]>([]);
   useEffect(() => {
+    const prev = prevJobsRef.current;
+    jobs.forEach((j) => {
+      const wasActive = prev.some((p: Job) => p.jobId === j.jobId && (p.status === "QUEUED" || p.status === "RUNNING"));
+      if (wasActive && j.status === "COMPLETED") onJobCompleted();
+    });
+    prevJobsRef.current = jobs;
+
     const active = jobs.some((j) => j.status === "QUEUED" || j.status === "RUNNING");
     if (!active) return;
     const t = setInterval(loadJobs, 8000);
@@ -128,12 +137,17 @@ export default function JobCreator({ notebookId, notebookStatus, onJobCreated, r
         params.genre = genre;
         params.language = language;
       }
-      const job = await api.post<{ jobId: string }>(`/notebooks/${notebookId}/jobs`, {
+      const job = await api.post<{ jobId: string; status?: string }>(`/notebooks/${notebookId}/jobs`, {
         type: artifactType,
         params,
       });
-      onJobCreated(job.jobId);
-      setSuccess(`${artifactType} job queued. You'll be notified when it's ready.`);
+      if (job.status === "COMPLETED") {
+        onJobCompleted();
+        setSuccess(`${artifactType} artifact ready (served from cache).`);
+      } else {
+        onJobCreated(job.jobId);
+        setSuccess(`${artifactType} job queued. You'll be notified when it's ready.`);
+      }
       loadJobs();
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Failed to create job");
