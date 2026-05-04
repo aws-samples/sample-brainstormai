@@ -149,6 +149,26 @@ Inside each notebook there are five tabs: Sources, Generate, Artifacts, Summary,
 
 ---
 
+## Architecture decisions
+
+### Why ECS over Step Functions
+
+Step Functions orchestrates at the infra level — each artifact type becomes a new state machine with separate Lambda functions, IAM roles, retry/catch blocks, and CDK constructs. ECS uses a single worker with a code-level dispatch pattern:
+
+- **No timeout ceiling** — Lambda's 15-minute limit kills in-depth podcast jobs (18+ min of TTS synthesis). ECS Fargate has no timeout.
+- **Content-aware retry** — the validation agent inspects coverage and injects `missing_points` back into the generation prompt for a second attempt. Step Functions retries are infra-level only — they can't feed validation feedback into the next LLM call.
+- **Extensibility** — adding a new artifact type (e.g. PPT) is a single Python file + one `elif` in the dispatch. With Step Functions it would be a new state machine, new Lambdas, and new CDK infrastructure.
+- **Cost** — orchestration is 0.15% of total system cost at 15K jobs/month. There is no economic reason to add Step Functions complexity.
+
+### Why RAG over direct LLM calls
+
+Sending full documents directly to the LLM is simpler but more expensive and lower quality at scale:
+
+- **Cost** — RAG sends ~9K tokens per job (20 retrieved chunks). Direct LLM pass-through sends ~33K–100K tokens per job depending on notebook size. At 15K jobs/month, RAG saves ~$220/month on LLM inference alone — the RAG infrastructure pays for itself.
+- **Multi-document notebooks** — a notebook with 5 PDFs easily exceeds 50K tokens. RAG retrieves the most relevant chunks across all sources. Direct pass-through hits context window limits and suffers "lost in the middle" — the model deprioritises content in the middle of long contexts.
+- **Quality** — retrieved chunks are the highest-relevance passages for the query. Full documents include boilerplate, references, and appendices that dilute generation quality.
+- **Extensibility** — the retriever is query-agnostic. A future "user Q&A" feature requires zero changes to the ingestion pipeline.
+
 ## Token usage tracking
 
 Every completed job stores `inputTokens` and `outputTokens` on its DynamoDB record, keyed by `jobId` (UUID). The `/usage` API endpoint aggregates these by date and artifact type. Pass `?notebookId=<id>` to scope results to a single notebook.
