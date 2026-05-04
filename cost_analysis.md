@@ -44,38 +44,11 @@
 
 **Per-job average: ~$0.088**  
 **Per-user per month: ~$13.17** (at 150 jobs/user/month)
-
-> **Dominant cost: Amazon Polly TTS at $960/month (73% of total).**  
-> If you switch to standard voices ($4/M chars instead of $16/M), Polly drops to $240/month → total ~$597/month.
-
 ---
 
 ## 2. Comparative Scenarios
 
-### Scenario A — Direct LLM (no RAG, return text only, no audio)
-
-Skip S3 Vectors, Titan Embeddings, and Polly. Send the full document directly to the LLM.
-
-| Item | Cost |
-|---|---|
-| LLM input: full doc (~33K tokens avg) | 15K × $0.0264 = $396/month |
-| LLM output: same script | 15K × $0.0045 = $68/month |
-| Lambda (no ECS needed) | ~$1/month |
-| DynamoDB, S3, API GW, Cognito | ~$10/month |
-| **Total** | **~$475/month** |
-
-**Per-job: ~$0.032**
-
-**Why this looks cheaper but isn't the right choice:**
-
-1. **Context window cliff** — a multi-PDF notebook can easily exceed 100K tokens. Haiku 4.5 has a 200K window, but cramming everything in triggers the "lost in the middle" problem — the model skims rather than reads.
-2. **No audio** — this scenario produces text only. Add Polly back and you pay ~$960/month regardless, making total ~$1,435/month — *more* expensive than our RAG approach.
-3. **RAG reduces LLM cost** — our system sends only 9K tokens (20 retrieved chunks) vs 33K (full doc). RAG saves $222/month on LLM inference alone compared to direct LLM with the same audio output.
-4. **Quality** — retrieved chunks are the most relevant passages. Sending 33K tokens of a PDF includes boilerplate, references, appendices that dilute the generation.
-
----
-
-### Scenario B — Direct LLM + TTS (same output, no RAG)
+### Scenario A — Direct LLM + TTS (same output, no RAG)
 
 Same as our system but replace S3 Vectors + embeddings with full-document pass-through.
 
@@ -94,7 +67,7 @@ The savings come from reducing input tokens 73% (33K → 9K) per job.
 
 ---
 
-### Scenario C — Step Functions instead of SQS + ECS
+### Scenario B — Step Functions instead of ECS
 
 Replace SQS + ECS with Step Functions orchestrating Lambda functions.
 
@@ -110,27 +83,3 @@ Step Functions adds orchestration cost (+$2/month) and removes the ability to ru
 
 ---
 
-## 3. Cost Optimization Levers
-
-| Lever | Savings | Trade-off |
-|---|---|---|
-| Switch Polly to Standard voices | $720/month (75% of Polly cost) | Lower audio naturalness |
-| Cache hit rate 30% (already implemented) | ~$395/month | None — cache is free |
-| Reduce validation retries from 2 to 0 | $150/month | No coverage assurance |
-| Brief depth only (fewer tokens, shorter audio) | ~40% LLM + Polly | Less content |
-| Nova Lite instead of Haiku 4.5 | $164/month LLM savings | Shallower scripts (13 turns vs 29) |
-
-**Biggest single win: artifact caching.** A 30% cache hit rate (users regenerating same notebook) eliminates generation, validation, and TTS entirely for those jobs — saving ~$395/month at 15K jobs.
-
----
-
-## 4. Summary
-
-| Scenario | Monthly Cost | Per-job | Audio output |
-|---|---|---|---|
-| **Our system (RAG + TTS)** | **$1,317** | **$0.088** | ✓ |
-| Direct LLM + TTS (no RAG) | $1,538 | $0.103 | ✓ |
-| Direct LLM, text only | $475 | $0.032 | ✗ |
-| Our system, Polly Standard | $597 | $0.040 | ✓ (lower quality) |
-
-**Bottom line:** The system is audio-dominated — Polly TTS is 73% of cost. The RAG layer actually *reduces* total cost vs direct LLM by cutting input tokens 73%. The right cost lever is Polly voice quality (neural vs standard), not the LLM or RAG architecture.
