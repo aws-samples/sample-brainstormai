@@ -42,7 +42,7 @@ ESTIMATED_TOKENS = {
     "important_points": 60_000,
     "in_depth":         90_000,
 }
-DAILY_TOKEN_LIMIT = int(os.environ.get("DAILY_TOKEN_LIMIT", 3_000_000))
+DAILY_TOKEN_LIMIT = int(os.environ.get("DAILY_TOKEN_LIMIT", 1_000_000))
 
 VALID_GENRES = {"debate", "educational", "sporty"}
 VALID_DEPTHS = {"brief", "important_points", "in_depth"}

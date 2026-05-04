@@ -135,7 +135,7 @@ export class ComputeStack extends cdk.Stack {
       MINDMAP_QUEUE_URL: this.mindmapQueue.queueUrl,
       QUIZ_QUEUE_URL: this.quizQueue.queueUrl,
       SUMMARY_QUEUE_URL: this.summaryQueue.queueUrl,
-      DAILY_TOKEN_LIMIT: "500000",
+      DAILY_TOKEN_LIMIT: "1000000",
       WS_ENDPOINT: props.wsCallbackUrl,
     };
 

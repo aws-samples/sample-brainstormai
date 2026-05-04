@@ -54,7 +54,7 @@ export class ApiStack extends cdk.Stack {
       QUIZ_QUEUE_URL: props.quizQueue.queueUrl,
       SUMMARY_QUEUE_URL: props.summaryQueue.queueUrl,
       USER_POOL_ID: props.userPool.userPoolId,
-      DAILY_TOKEN_LIMIT: "500000",
+      DAILY_TOKEN_LIMIT: "1000000",
     };
 
     const makeLambda = (name: string, handlerPath: string) => {
