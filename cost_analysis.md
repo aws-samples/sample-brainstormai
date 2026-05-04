@@ -44,6 +44,7 @@
 
 **Per-job average: ~$0.088**  
 **Per-user per month: ~$13.17** (at 150 jobs/user/month)
+
 ---
 
 ## 2. Comparative Scenarios
