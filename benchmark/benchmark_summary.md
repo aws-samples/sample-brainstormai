@@ -12,8 +12,6 @@
 | Llama 4 Maverick 17B | YES | 14 | 2.7s | $0.00212 | $31.80 |
 | Amazon Nova Pro | YES | 9 | 3.4s | $0.00761 | $114.15 |
 | **Claude Haiku 4.5 (current)** | **YES** | **29** | 12.6s | $0.01161 | $174.15 |
-| Claude Haiku 3.5 | ERROR | — | — | — | — |
-| Claude Haiku 3 (legacy) | ERROR | — | — | — | — |
 
 > Haiku 3.5 and 3 are blocked — AWS marks them legacy and requires explicit activation after 30 days idle.
 
