@@ -48,7 +48,9 @@ Fixes applied:
 - aws-cdk-lib upgraded to 2.253.1
 
 ## Holmes / Slingshot (Checkov + cfn-guard + Semgrep OSS + ACAT)
-Templates re-generated after all remediation. Key findings and dispositions:
+**181 total findings across 5 CFN templates. 1 fixed, 180 accepted risk / false positives. 0 unaddressed vulnerabilities.**
+
+Templates re-generated after all remediation. Full findings and dispositions:
 
 ### Fixed
 | Rule | Finding | Fix applied |
