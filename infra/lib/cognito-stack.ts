@@ -1,6 +1,7 @@
 import * as cdk from "aws-cdk-lib";
 import * as cognito from "aws-cdk-lib/aws-cognito";
 import { Construct } from "constructs";
+import { NagSuppressions } from "cdk-nag";
 
 export class CognitoStack extends cdk.Stack {
   public readonly userPool: cognito.UserPool;
@@ -19,7 +20,7 @@ export class CognitoStack extends cdk.Stack {
         requireLowercase: true,
         requireUppercase: true,
         requireDigits: true,
-        requireSymbols: false,
+        requireSymbols: true,
       },
       accountRecovery: cognito.AccountRecovery.EMAIL_ONLY,
       removalPolicy: cdk.RemovalPolicy.RETAIN,
@@ -44,5 +45,10 @@ export class CognitoStack extends cdk.Stack {
 
     new cdk.CfnOutput(this, "UserPoolId", { value: this.userPool.userPoolId });
     new cdk.CfnOutput(this, "UserPoolClientId", { value: this.userPoolClient.userPoolClientId });
+
+    NagSuppressions.addResourceSuppressions(this.userPool, [
+      { id: "AwsSolutions-COG2", reason: "MFA not required for this sample application — users authenticate via email/password with Cognito SRP." },
+      { id: "AwsSolutions-COG8", reason: "Cognito Plus tier (advanced security) is not required for a sample app and adds significant cost." },
+    ]);
   }
 }

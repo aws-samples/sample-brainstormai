@@ -1,0 +1,301 @@
+"""
+Notebooks Lambda — CRUD for user notebooks.
+
+Routes (method + path suffix dispatched by event['routeKey']):
+  GET    /notebooks
+  POST   /notebooks
+  GET    /notebooks/{notebookId}
+  PATCH  /notebooks/{notebookId}
+  DELETE /notebooks/{notebookId}
+
+Each request carries a Cognito JWT; the user sub is extracted from
+requestContext.authorizer.claims.sub and used to scope all queries.
+
+S3 Vectors integration:
+  - create_notebook: creates a dedicated S3 Vectors index named after the notebook_id.
+  - delete_notebook: deletes the S3 Vectors index for the notebook_id.
+
+Required environment variables:
+  S3_VECTORS_BUCKET — name of the S3 Vectors bucket (e.g. "brainstormai-vectors")
+  AWS_REGION        — AWS region (default: "us-east-1")
+
+Required IAM permissions for this Lambda:
+  s3vectors:CreateIndex
+  s3vectors:DeleteIndex
+  on resource: arn:aws:s3vectors:<region>:<account>:bucket/<S3_VECTORS_BUCKET>/index/*
+"""
+
+import json
+import logging
+import os
+import uuid
+from datetime import datetime, timezone
+
+import boto3
+import boto3.dynamodb.conditions
+from boto3.dynamodb.conditions import Attr, Key
+from botocore.exceptions import ClientError
+
+log = logging.getLogger(__name__)
+
+dynamodb = boto3.resource("dynamodb")
+notebooks_table = dynamodb.Table(os.environ["NOTEBOOKS_TABLE"])
+sources_table = dynamodb.Table(os.environ["SOURCES_TABLE"])
+jobs_table = dynamodb.Table(os.environ["JOBS_TABLE"])
+artifacts_table = dynamodb.Table(os.environ["ARTIFACTS_TABLE"])
+
+# S3 Vectors client — used to create/delete a per-notebook vector index.
+S3V_BUCKET = os.environ["S3_VECTORS_BUCKET"]
+_s3v = boto3.client("s3vectors", region_name=os.environ.get("AWS_REGION", "us-east-1"))
+
+# Titan Text Embeddings v2 produces 1024-dimensional vectors.
+_VECTOR_DIMENSION = 1024
+
+
+def lambda_handler(event, context):
+    method = event["httpMethod"]
+    path = event["resource"]
+    user_id = event["requestContext"]["authorizer"]["claims"]["sub"]
+
+    try:
+        if path == "/notebooks":
+            if method == "GET":
+                return list_notebooks(user_id)
+            if method == "POST":
+                return create_notebook(user_id, json.loads(event["body"] or "{}"))
+
+        if path == "/notebooks/{notebookId}":
+            notebook_id = event["pathParameters"]["notebookId"]
+            if method == "GET":
+                return get_notebook(user_id, notebook_id)
+            if method == "PATCH":
+                return update_notebook(user_id, notebook_id, json.loads(event["body"] or "{}"))
+            if method == "DELETE":
+                return delete_notebook(user_id, notebook_id)
+
+        if path == "/usage" and method == "GET":
+            notebook_id = (event.get("queryStringParameters") or {}).get("notebookId")
+            return get_usage(user_id, notebook_id)
+
+        return resp(404, {"error": "Not found"})
+    except PermissionError as e:
+        return resp(403, {"error": str(e)})
+    except ValueError as e:
+        return resp(400, {"error": str(e)})
+
+
+def list_notebooks(user_id: str):
+    result = notebooks_table.query(
+        IndexName="userId-index",
+        KeyConditionExpression=Key("userId").eq(user_id),
+        ScanIndexForward=False,
+    )
+    return resp(200, {"notebooks": result["Items"]})
+
+
+def create_notebook(user_id: str, body: dict):
+    title = (body.get("title") or "").strip()
+    if not title:
+        raise ValueError("title is required")
+    if len(title) > 200:
+        raise ValueError("title must be 200 characters or fewer")
+
+    now = datetime.now(timezone.utc).isoformat()
+    notebook_id = str(uuid.uuid4())
+
+    # Create the S3 Vectors index for this notebook before persisting the
+    # notebook record.  Index name == notebook_id (UUIDs are valid index names).
+    _create_vector_index(notebook_id)
+
+    notebook = {
+        "notebookId": notebook_id,
+        "userId": user_id,
+        "title": title,
+        "status": "READY",
+        "sourceCount": 0,
+        "createdAt": now,
+        "updatedAt": now,
+    }
+    notebooks_table.put_item(Item=notebook)
+    return resp(201, notebook)
+
+
+def get_notebook(user_id: str, notebook_id: str):
+    item = _get_and_authorize(user_id, notebook_id)
+    return resp(200, item)
+
+
+def update_notebook(user_id: str, notebook_id: str, body: dict):
+    _get_and_authorize(user_id, notebook_id)
+    title = (body.get("title") or "").strip()
+    if not title:
+        raise ValueError("title is required")
+
+    now = datetime.now(timezone.utc).isoformat()
+    notebooks_table.update_item(
+        Key={"notebookId": notebook_id},
+        UpdateExpression="SET title = :t, updatedAt = :u",
+        ExpressionAttributeValues={":t": title, ":u": now},
+    )
+    return resp(200, {"notebookId": notebook_id, "title": title, "updatedAt": now})
+
+
+def delete_notebook(user_id: str, notebook_id: str):
+    _get_and_authorize(user_id, notebook_id)
+
+    # Delete all sources for this notebook
+    sources = sources_table.query(
+        IndexName="notebookId-index",
+        KeyConditionExpression=Key("notebookId").eq(notebook_id),
+    )["Items"]
+    for s in sources:
+        sources_table.delete_item(Key={"sourceId": s["sourceId"]})
+
+    # Delete all jobs for this notebook
+    jobs = jobs_table.query(
+        IndexName="notebookId-index",
+        KeyConditionExpression=Key("notebookId").eq(notebook_id),
+    )["Items"]
+    for j in jobs:
+        jobs_table.delete_item(Key={"jobId": j["jobId"]})
+
+    # Delete all artifacts for this notebook
+    artifacts = artifacts_table.query(
+        IndexName="notebookId-index",
+        KeyConditionExpression=Key("notebookId").eq(notebook_id),
+    )["Items"]
+    for a in artifacts:
+        artifacts_table.delete_item(Key={"artifactId": a["artifactId"]})
+
+    notebooks_table.delete_item(Key={"notebookId": notebook_id})
+
+    # Delete the S3 Vectors index — this removes all vectors for the notebook.
+    _delete_vector_index(notebook_id)
+
+    return resp(204, {})
+
+
+def get_usage(user_id: str, notebook_id: str | None = None):
+    filter_expr = Attr("status").eq("COMPLETED")
+    if notebook_id:
+        # Validate ownership before scoping
+        _get_and_authorize(user_id, notebook_id)
+        items = jobs_table.query(
+            IndexName="notebookId-index",
+            KeyConditionExpression=Key("notebookId").eq(notebook_id),
+            FilterExpression=filter_expr,
+        )["Items"]
+        # Extra guard: only include jobs belonging to this user
+        items = [j for j in items if j.get("userId") == user_id]
+    else:
+        items = jobs_table.query(
+            IndexName="userId-index",
+            KeyConditionExpression=Key("userId").eq(user_id),
+            FilterExpression=filter_expr,
+        )["Items"]
+
+    # Group by date (YYYY-MM-DD from createdAt ISO string)
+    # Structure: { date -> { type -> tokens } }
+    by_date: dict[str, dict[str, int]] = {}
+    for job in items:
+        date = (job.get("createdAt") or "")[:10]  # "2026-04-27"
+        if not date:
+            continue
+        job_type = job.get("type", "unknown")
+        tokens = int(job.get("inputTokens", 0)) + int(job.get("outputTokens", 0))
+        by_date.setdefault(date, {})
+        by_date[date][job_type] = by_date[date].get(job_type, 0) + tokens
+
+    # Also compute all-time breakdown for the summary ring
+    totals: dict[str, int] = {}
+    for day_data in by_date.values():
+        for t, v in day_data.items():
+            totals[t] = totals.get(t, 0) + v
+
+    days = [
+        {
+            "date": date,
+            "breakdown": [{"type": t, "tokens": v} for t, v in sorted(day_data.items())],
+            "total": sum(day_data.values()),
+        }
+        for date, day_data in sorted(by_date.items(), reverse=True)  # most recent first
+    ]
+
+    return resp(200, {
+        "days": days,
+        "breakdown": [{"type": t, "tokens": v} for t, v in sorted(totals.items())],
+        "total": sum(totals.values()),
+    })
+
+
+def _get_and_authorize(user_id: str, notebook_id: str) -> dict:
+    item = notebooks_table.get_item(Key={"notebookId": notebook_id}).get("Item")
+    if not item:
+        raise ValueError(f"Notebook {notebook_id} not found")
+    if item["userId"] != user_id:
+        raise PermissionError("Access denied")
+    return item
+
+
+def _create_vector_index(notebook_id: str) -> None:
+    """Create an S3 Vectors index for *notebook_id*.
+
+    Uses cosine distance and 1024 dimensions (Titan Text Embeddings v2).
+    Swallows "already exists" errors so this is safe to call idempotently.
+    """
+    try:
+        _s3v.create_index(
+            vectorBucketName=S3V_BUCKET,
+            indexName=notebook_id,
+            dataType="float32",
+            dimension=_VECTOR_DIMENSION,
+            distanceMetric="cosine",
+        )
+        log.info("Created S3 Vectors index for notebook %s", notebook_id)
+    except ClientError as exc:
+        error_code = exc.response["Error"]["Code"]
+        if error_code in ("IndexAlreadyExistsException", "ConflictException"):
+            log.debug("S3 Vectors index for notebook %s already exists", notebook_id)
+        else:
+            log.error(
+                "Failed to create S3 Vectors index for notebook %s: %s",
+                notebook_id,
+                exc,
+            )
+            raise
+
+
+def _delete_vector_index(notebook_id: str) -> None:
+    """Delete the S3 Vectors index for *notebook_id* (and all its vectors).
+
+    Swallows "does not exist" errors so this is safe to call even if the index
+    was never created (e.g. a notebook that had no sources).
+    """
+    try:
+        _s3v.delete_index(
+            vectorBucketName=S3V_BUCKET,
+            indexName=notebook_id,
+        )
+        log.info("Deleted S3 Vectors index for notebook %s", notebook_id)
+    except ClientError as exc:
+        error_code = exc.response["Error"]["Code"]
+        if error_code in ("NoSuchIndex", "ResourceNotFoundException"):
+            log.debug("S3 Vectors index for notebook %s did not exist; nothing to delete", notebook_id)
+        else:
+            log.error(
+                "Failed to delete S3 Vectors index for notebook %s: %s",
+                notebook_id,
+                exc,
+            )
+            raise
+
+
+def resp(status: int, body: dict):
+    return {
+        "statusCode": status,
+        "headers": {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+        },
+        "body": json.dumps(body, default=str),
+    }

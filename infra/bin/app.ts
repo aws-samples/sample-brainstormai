@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import "source-map-support/register";
 import * as cdk from "aws-cdk-lib";
+import { AwsSolutionsChecks } from "cdk-nag";
 import { CognitoStack } from "../lib/cognito-stack";
 import { StorageStack } from "../lib/storage-stack";
 import { ComputeStack } from "../lib/compute-stack";
@@ -8,6 +9,7 @@ import { ApiStack } from "../lib/api-stack";
 import { FrontendStack } from "../lib/frontend-stack";
 
 const app = new cdk.App();
+cdk.Aspects.of(app).add(new AwsSolutionsChecks({ verbose: true }));
 const env = {
   account: "173353905255",
   region: "us-east-1",

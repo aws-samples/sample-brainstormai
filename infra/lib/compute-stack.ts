@@ -1,4 +1,5 @@
 import * as cdk from "aws-cdk-lib";
+import { NagSuppressions } from "cdk-nag";
 import * as sqs from "aws-cdk-lib/aws-sqs";
 import * as ecs from "aws-cdk-lib/aws-ecs";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
@@ -9,6 +10,7 @@ import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 import * as assets from "aws-cdk-lib/aws-ecr-assets";
 import * as appscaling from "aws-cdk-lib/aws-applicationautoscaling";
 import * as cloudwatch from "aws-cdk-lib/aws-cloudwatch";
+import * as logs from "aws-cdk-lib/aws-logs";
 import { Construct } from "constructs";
 
 interface ComputeStackProps extends cdk.StackProps {
@@ -41,19 +43,39 @@ export class ComputeStack extends cdk.Stack {
     super(scope, id, props);
 
     // ── SQS Queues (with DLQs) ──
-    const makeDlq = (name: string) =>
-      new sqs.Queue(this, `${name}Dlq`, {
+    // Checkov SQS_QUEUE_KMS_MASTER_KEY_ID_RULE / CKV_AWS_27: SQS server-side encryption uses
+    // AWS-managed keys (SSE-SQS) which is enabled by default since late 2022. KMS CMK adds cost
+    // and operational overhead without meaningful additional protection for a sample application.
+    // enforceSSL: true ensures all data-in-transit is encrypted regardless of SSE tier.
+    const makeDlq = (name: string) => {
+      const q = new sqs.Queue(this, `${name}Dlq`, {
         queueName: `brainstormai-${name}-dlq`,
         retentionPeriod: cdk.Duration.days(14),
+        enforceSSL: true,
       });
+      (q.node.defaultChild as cdk.CfnResource).addMetadata("checkov", {
+        skip: [
+          { id: "CKV_AWS_27", comment: "SSE-SQS (AWS-managed key) enabled by default; KMS CMK not required for sample app." },
+        ],
+      });
+      return q;
+    };
 
-    const makeQueue = (name: string, dlq: sqs.Queue) =>
-      new sqs.Queue(this, `${name}Queue`, {
+    const makeQueue = (name: string, dlq: sqs.Queue) => {
+      const q = new sqs.Queue(this, `${name}Queue`, {
         queueName: `brainstormai-${name}`,
         visibilityTimeout: cdk.Duration.minutes(15),
         retentionPeriod: cdk.Duration.days(4),
         deadLetterQueue: { queue: dlq, maxReceiveCount: 3 },
+        enforceSSL: true,
       });
+      (q.node.defaultChild as cdk.CfnResource).addMetadata("checkov", {
+        skip: [
+          { id: "CKV_AWS_27", comment: "SSE-SQS (AWS-managed key) enabled by default; KMS CMK not required for sample app." },
+        ],
+      });
+      return q;
+    };
 
     this.ingestionQueue = makeQueue("ingestion", makeDlq("ingestion"));
     this.podcastQueue = makeQueue("podcast", makeDlq("podcast"));
@@ -139,6 +161,18 @@ export class ComputeStack extends cdk.Stack {
       WS_ENDPOINT: props.wsCallbackUrl,
     };
 
+    // Explicit log groups with retention so Checkov CLOUDWATCH_LOG_GROUP_RETENTION_PERIOD_CHECK passes.
+    const ingestionLogGroup = new logs.LogGroup(this, "IngestionLogGroup", {
+      logGroupName: "/ecs/brainstormai-ingestion-worker",
+      retention: logs.RetentionDays.THREE_MONTHS,
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+    });
+    const generationLogGroup = new logs.LogGroup(this, "GenerationLogGroup", {
+      logGroupName: "/ecs/brainstormai-generation-worker",
+      retention: logs.RetentionDays.THREE_MONTHS,
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+    });
+
     // ── Ingestion Worker ──
     const ingestionTaskDef = new ecs.FargateTaskDefinition(this, "IngestionTaskDef", {
       memoryLimitMiB: 2048,
@@ -150,7 +184,7 @@ export class ComputeStack extends cdk.Stack {
         platform: assets.Platform.LINUX_AMD64,
       }),
       environment: { ...workerEnv, QUEUE_URL: this.ingestionQueue.queueUrl },
-      logging: ecs.LogDrivers.awsLogs({ streamPrefix: "ingestion-worker" }),
+      logging: ecs.LogDrivers.awsLogs({ streamPrefix: "ingestion-worker", logGroup: ingestionLogGroup }),
     });
 
     const ingestionService = new ecs.FargateService(this, "IngestionService", {
@@ -173,7 +207,7 @@ export class ComputeStack extends cdk.Stack {
         platform: assets.Platform.LINUX_AMD64,
       }),
       environment: workerEnv,
-      logging: ecs.LogDrivers.awsLogs({ streamPrefix: "generation-worker" }),
+      logging: ecs.LogDrivers.awsLogs({ streamPrefix: "generation-worker", logGroup: generationLogGroup }),
     });
 
     const generationService = new ecs.FargateService(this, "GenerationService", {
@@ -229,5 +263,20 @@ export class ComputeStack extends cdk.Stack {
       adjustmentType: appscaling.AdjustmentType.CHANGE_IN_CAPACITY,
       cooldown: cdk.Duration.seconds(120),
     });
+
+    NagSuppressions.addStackSuppressions(this, [
+      {
+        id: "AwsSolutions-ECS2",
+        reason: "Environment variables contain non-secret config (table names, queue URLs, region). Actual secrets (DB credentials) are passed via Secrets Manager ARN and retrieved at runtime, not stored as plaintext env vars.",
+      },
+      {
+        id: "AwsSolutions-IAM4",
+        reason: "AmazonECSTaskExecutionRolePolicy is the standard managed policy required for ECS Fargate task execution (ECR pull, CloudWatch Logs). Replacing it with a custom policy provides no meaningful security benefit for this sample.",
+      },
+      {
+        id: "AwsSolutions-IAM5",
+        reason: "Wildcard resources required: Bedrock/Polly/Textract/S3Vectors APIs do not support resource-level restrictions; S3 bucket/* is scoped to the specific application bucket; DynamoDB index/* is required for GSI queries.",
+      },
+    ]);
   }
 }

@@ -1,0 +1,2520 @@
+{
+ "Metadata": {
+  "cdk_nag": {
+   "rules_to_suppress": [
+    {
+     "reason": "Environment variables contain non-secret config (table names, queue URLs, region). Actual secrets (DB credentials) are passed via Secrets Manager ARN and retrieved at runtime, not stored as plaintext env vars.",
+     "id": "AwsSolutions-ECS2"
+    },
+    {
+     "reason": "AmazonECSTaskExecutionRolePolicy is the standard managed policy required for ECS Fargate task execution (ECR pull, CloudWatch Logs). Replacing it with a custom policy provides no meaningful security benefit for this sample.",
+     "id": "AwsSolutions-IAM4"
+    },
+    {
+     "reason": "Wildcard resources required: Bedrock/Polly/Textract/S3Vectors APIs do not support resource-level restrictions; S3 bucket/* is scoped to the specific application bucket; DynamoDB index/* is required for GSI queries.",
+     "id": "AwsSolutions-IAM5"
+    }
+   ]
+  }
+ },
+ "Resources": {
+  "ingestionDlqE1CC7F38": {
+   "Type": "AWS::SQS::Queue",
+   "Properties": {
+    "MessageRetentionPeriod": 1209600,
+    "QueueName": "brainstormai-ingestion-dlq"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/ingestionDlq/Resource",
+    "checkov": {
+     "skip": [
+      {
+       "id": "CKV_AWS_27",
+       "comment": "SSE-SQS (AWS-managed key) enabled by default; KMS CMK not required for sample app."
+      }
+     ]
+    }
+   }
+  },
+  "ingestionDlqPolicyC31C5F2A": {
+   "Type": "AWS::SQS::QueuePolicy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sqs:*",
+       "Condition": {
+        "Bool": {
+         "aws:SecureTransport": "false"
+        }
+       },
+       "Effect": "Deny",
+       "Principal": {
+        "AWS": "*"
+       },
+       "Resource": {
+        "Fn::GetAtt": [
+         "ingestionDlqE1CC7F38",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Queues": [
+     {
+      "Ref": "ingestionDlqE1CC7F38"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/ingestionDlq/Policy/Resource"
+   }
+  },
+  "ingestionQueueB8D4F062": {
+   "Type": "AWS::SQS::Queue",
+   "Properties": {
+    "MessageRetentionPeriod": 345600,
+    "QueueName": "brainstormai-ingestion",
+    "RedrivePolicy": {
+     "deadLetterTargetArn": {
+      "Fn::GetAtt": [
+       "ingestionDlqE1CC7F38",
+       "Arn"
+      ]
+     },
+     "maxReceiveCount": 3
+    },
+    "VisibilityTimeout": 900
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/ingestionQueue/Resource",
+    "checkov": {
+     "skip": [
+      {
+       "id": "CKV_AWS_27",
+       "comment": "SSE-SQS (AWS-managed key) enabled by default; KMS CMK not required for sample app."
+      }
+     ]
+    }
+   }
+  },
+  "ingestionQueuePolicyDE24F5FF": {
+   "Type": "AWS::SQS::QueuePolicy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sqs:*",
+       "Condition": {
+        "Bool": {
+         "aws:SecureTransport": "false"
+        }
+       },
+       "Effect": "Deny",
+       "Principal": {
+        "AWS": "*"
+       },
+       "Resource": {
+        "Fn::GetAtt": [
+         "ingestionQueueB8D4F062",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Queues": [
+     {
+      "Ref": "ingestionQueueB8D4F062"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/ingestionQueue/Policy/Resource"
+   }
+  },
+  "podcastDlq844E9A49": {
+   "Type": "AWS::SQS::Queue",
+   "Properties": {
+    "MessageRetentionPeriod": 1209600,
+    "QueueName": "brainstormai-podcast-dlq"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/podcastDlq/Resource",
+    "checkov": {
+     "skip": [
+      {
+       "id": "CKV_AWS_27",
+       "comment": "SSE-SQS (AWS-managed key) enabled by default; KMS CMK not required for sample app."
+      }
+     ]
+    }
+   }
+  },
+  "podcastDlqPolicy8C1EE910": {
+   "Type": "AWS::SQS::QueuePolicy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sqs:*",
+       "Condition": {
+        "Bool": {
+         "aws:SecureTransport": "false"
+        }
+       },
+       "Effect": "Deny",
+       "Principal": {
+        "AWS": "*"
+       },
+       "Resource": {
+        "Fn::GetAtt": [
+         "podcastDlq844E9A49",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Queues": [
+     {
+      "Ref": "podcastDlq844E9A49"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/podcastDlq/Policy/Resource"
+   }
+  },
+  "podcastQueue88863691": {
+   "Type": "AWS::SQS::Queue",
+   "Properties": {
+    "MessageRetentionPeriod": 345600,
+    "QueueName": "brainstormai-podcast",
+    "RedrivePolicy": {
+     "deadLetterTargetArn": {
+      "Fn::GetAtt": [
+       "podcastDlq844E9A49",
+       "Arn"
+      ]
+     },
+     "maxReceiveCount": 3
+    },
+    "VisibilityTimeout": 900
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/podcastQueue/Resource",
+    "checkov": {
+     "skip": [
+      {
+       "id": "CKV_AWS_27",
+       "comment": "SSE-SQS (AWS-managed key) enabled by default; KMS CMK not required for sample app."
+      }
+     ]
+    }
+   }
+  },
+  "podcastQueuePolicy656421F3": {
+   "Type": "AWS::SQS::QueuePolicy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sqs:*",
+       "Condition": {
+        "Bool": {
+         "aws:SecureTransport": "false"
+        }
+       },
+       "Effect": "Deny",
+       "Principal": {
+        "AWS": "*"
+       },
+       "Resource": {
+        "Fn::GetAtt": [
+         "podcastQueue88863691",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Queues": [
+     {
+      "Ref": "podcastQueue88863691"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/podcastQueue/Policy/Resource"
+   }
+  },
+  "mindmapDlqB069C47B": {
+   "Type": "AWS::SQS::Queue",
+   "Properties": {
+    "MessageRetentionPeriod": 1209600,
+    "QueueName": "brainstormai-mindmap-dlq"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/mindmapDlq/Resource",
+    "checkov": {
+     "skip": [
+      {
+       "id": "CKV_AWS_27",
+       "comment": "SSE-SQS (AWS-managed key) enabled by default; KMS CMK not required for sample app."
+      }
+     ]
+    }
+   }
+  },
+  "mindmapDlqPolicy931ECF2C": {
+   "Type": "AWS::SQS::QueuePolicy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sqs:*",
+       "Condition": {
+        "Bool": {
+         "aws:SecureTransport": "false"
+        }
+       },
+       "Effect": "Deny",
+       "Principal": {
+        "AWS": "*"
+       },
+       "Resource": {
+        "Fn::GetAtt": [
+         "mindmapDlqB069C47B",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Queues": [
+     {
+      "Ref": "mindmapDlqB069C47B"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/mindmapDlq/Policy/Resource"
+   }
+  },
+  "mindmapQueue2C5F51AC": {
+   "Type": "AWS::SQS::Queue",
+   "Properties": {
+    "MessageRetentionPeriod": 345600,
+    "QueueName": "brainstormai-mindmap",
+    "RedrivePolicy": {
+     "deadLetterTargetArn": {
+      "Fn::GetAtt": [
+       "mindmapDlqB069C47B",
+       "Arn"
+      ]
+     },
+     "maxReceiveCount": 3
+    },
+    "VisibilityTimeout": 900
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/mindmapQueue/Resource",
+    "checkov": {
+     "skip": [
+      {
+       "id": "CKV_AWS_27",
+       "comment": "SSE-SQS (AWS-managed key) enabled by default; KMS CMK not required for sample app."
+      }
+     ]
+    }
+   }
+  },
+  "mindmapQueuePolicy7E4A53D7": {
+   "Type": "AWS::SQS::QueuePolicy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sqs:*",
+       "Condition": {
+        "Bool": {
+         "aws:SecureTransport": "false"
+        }
+       },
+       "Effect": "Deny",
+       "Principal": {
+        "AWS": "*"
+       },
+       "Resource": {
+        "Fn::GetAtt": [
+         "mindmapQueue2C5F51AC",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Queues": [
+     {
+      "Ref": "mindmapQueue2C5F51AC"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/mindmapQueue/Policy/Resource"
+   }
+  },
+  "quizDlqD9E9CD2B": {
+   "Type": "AWS::SQS::Queue",
+   "Properties": {
+    "MessageRetentionPeriod": 1209600,
+    "QueueName": "brainstormai-quiz-dlq"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/quizDlq/Resource",
+    "checkov": {
+     "skip": [
+      {
+       "id": "CKV_AWS_27",
+       "comment": "SSE-SQS (AWS-managed key) enabled by default; KMS CMK not required for sample app."
+      }
+     ]
+    }
+   }
+  },
+  "quizDlqPolicyB4B098E8": {
+   "Type": "AWS::SQS::QueuePolicy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sqs:*",
+       "Condition": {
+        "Bool": {
+         "aws:SecureTransport": "false"
+        }
+       },
+       "Effect": "Deny",
+       "Principal": {
+        "AWS": "*"
+       },
+       "Resource": {
+        "Fn::GetAtt": [
+         "quizDlqD9E9CD2B",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Queues": [
+     {
+      "Ref": "quizDlqD9E9CD2B"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/quizDlq/Policy/Resource"
+   }
+  },
+  "quizQueueA9393B41": {
+   "Type": "AWS::SQS::Queue",
+   "Properties": {
+    "MessageRetentionPeriod": 345600,
+    "QueueName": "brainstormai-quiz",
+    "RedrivePolicy": {
+     "deadLetterTargetArn": {
+      "Fn::GetAtt": [
+       "quizDlqD9E9CD2B",
+       "Arn"
+      ]
+     },
+     "maxReceiveCount": 3
+    },
+    "VisibilityTimeout": 900
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/quizQueue/Resource",
+    "checkov": {
+     "skip": [
+      {
+       "id": "CKV_AWS_27",
+       "comment": "SSE-SQS (AWS-managed key) enabled by default; KMS CMK not required for sample app."
+      }
+     ]
+    }
+   }
+  },
+  "quizQueuePolicyE05D939F": {
+   "Type": "AWS::SQS::QueuePolicy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sqs:*",
+       "Condition": {
+        "Bool": {
+         "aws:SecureTransport": "false"
+        }
+       },
+       "Effect": "Deny",
+       "Principal": {
+        "AWS": "*"
+       },
+       "Resource": {
+        "Fn::GetAtt": [
+         "quizQueueA9393B41",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Queues": [
+     {
+      "Ref": "quizQueueA9393B41"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/quizQueue/Policy/Resource"
+   }
+  },
+  "summaryDlq7D01DF6F": {
+   "Type": "AWS::SQS::Queue",
+   "Properties": {
+    "MessageRetentionPeriod": 1209600,
+    "QueueName": "brainstormai-summary-dlq"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/summaryDlq/Resource",
+    "checkov": {
+     "skip": [
+      {
+       "id": "CKV_AWS_27",
+       "comment": "SSE-SQS (AWS-managed key) enabled by default; KMS CMK not required for sample app."
+      }
+     ]
+    }
+   }
+  },
+  "summaryDlqPolicy5A6FA495": {
+   "Type": "AWS::SQS::QueuePolicy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sqs:*",
+       "Condition": {
+        "Bool": {
+         "aws:SecureTransport": "false"
+        }
+       },
+       "Effect": "Deny",
+       "Principal": {
+        "AWS": "*"
+       },
+       "Resource": {
+        "Fn::GetAtt": [
+         "summaryDlq7D01DF6F",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Queues": [
+     {
+      "Ref": "summaryDlq7D01DF6F"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/summaryDlq/Policy/Resource"
+   }
+  },
+  "summaryQueueC7BCB27B": {
+   "Type": "AWS::SQS::Queue",
+   "Properties": {
+    "MessageRetentionPeriod": 345600,
+    "QueueName": "brainstormai-summary",
+    "RedrivePolicy": {
+     "deadLetterTargetArn": {
+      "Fn::GetAtt": [
+       "summaryDlq7D01DF6F",
+       "Arn"
+      ]
+     },
+     "maxReceiveCount": 3
+    },
+    "VisibilityTimeout": 900
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/summaryQueue/Resource",
+    "checkov": {
+     "skip": [
+      {
+       "id": "CKV_AWS_27",
+       "comment": "SSE-SQS (AWS-managed key) enabled by default; KMS CMK not required for sample app."
+      }
+     ]
+    }
+   }
+  },
+  "summaryQueuePolicyADE989E2": {
+   "Type": "AWS::SQS::QueuePolicy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sqs:*",
+       "Condition": {
+        "Bool": {
+         "aws:SecureTransport": "false"
+        }
+       },
+       "Effect": "Deny",
+       "Principal": {
+        "AWS": "*"
+       },
+       "Resource": {
+        "Fn::GetAtt": [
+         "summaryQueueC7BCB27B",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Queues": [
+     {
+      "Ref": "summaryQueueC7BCB27B"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/summaryQueue/Policy/Resource"
+   }
+  },
+  "ClusterEB0386A7": {
+   "Type": "AWS::ECS::Cluster",
+   "Properties": {
+    "ClusterName": "brainstormai",
+    "ClusterSettings": [
+     {
+      "Name": "containerInsights",
+      "Value": "enabled"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/Cluster/Resource"
+   }
+  },
+  "WorkerRole8DD27D41": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/WorkerRole/Resource"
+   }
+  },
+  "WorkerRoleDefaultPolicy1750E153": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "s3:GetObject*",
+        "s3:GetBucket*",
+        "s3:List*",
+        "s3:DeleteObject*",
+        "s3:PutObject",
+        "s3:PutObjectLegalHold",
+        "s3:PutObjectRetention",
+        "s3:PutObjectTagging",
+        "s3:PutObjectVersionTagging",
+        "s3:Abort*"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputFnGetAttAssetsBucket5CB76180ArnBF60D959"
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputFnGetAttAssetsBucket5CB76180ArnBF60D959"
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:Query",
+        "dynamodb:GetItem",
+        "dynamodb:Scan",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputFnGetAttNotebooksTableE3C0F6C4Arn2F247DBA"
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputFnGetAttNotebooksTableE3C0F6C4Arn2F247DBA"
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputFnGetAttNotebooksTableE3C0F6C4Arn2F247DBA"
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputFnGetAttNotebooksTableE3C0F6C4Arn2F247DBA"
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:Query",
+        "dynamodb:GetItem",
+        "dynamodb:Scan",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputFnGetAttSourcesTable1DBF2A17Arn1622AE45"
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputFnGetAttSourcesTable1DBF2A17Arn1622AE45"
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputFnGetAttSourcesTable1DBF2A17Arn1622AE45"
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputFnGetAttSourcesTable1DBF2A17Arn1622AE45"
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:Query",
+        "dynamodb:GetItem",
+        "dynamodb:Scan",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputFnGetAttJobsTable1970BC16ArnC40C1624"
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputFnGetAttJobsTable1970BC16ArnC40C1624"
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputFnGetAttJobsTable1970BC16ArnC40C1624"
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputFnGetAttJobsTable1970BC16ArnC40C1624"
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:Query",
+        "dynamodb:GetItem",
+        "dynamodb:Scan",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputFnGetAttArtifactsTable22794241ArnEC6D514B"
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputFnGetAttArtifactsTable22794241ArnEC6D514B"
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputFnGetAttArtifactsTable22794241ArnEC6D514B"
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputFnGetAttArtifactsTable22794241ArnEC6D514B"
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:Query",
+        "dynamodb:GetItem",
+        "dynamodb:Scan",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputFnGetAttWsConnectionsTable9E1AC3EBArnA4D51A9B"
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputFnGetAttWsConnectionsTable9E1AC3EBArnA4D51A9B"
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:Query",
+        "dynamodb:GetItem",
+        "dynamodb:Scan",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputFnGetAttPodcastSessionsTable33FBA328Arn1B1BAF38"
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputFnGetAttPodcastSessionsTable33FBA328Arn1B1BAF38"
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputFnGetAttPodcastSessionsTable33FBA328Arn1B1BAF38"
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputFnGetAttPodcastSessionsTable33FBA328Arn1B1BAF38"
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:Query",
+        "dynamodb:GetItem",
+        "dynamodb:Scan",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputFnGetAttUserJobCountTable7D8ED211ArnE2CCA549"
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputFnGetAttUserJobCountTable7D8ED211ArnE2CCA549"
+        }
+       ]
+      },
+      {
+       "Action": [
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:DescribeSecret"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputRefDbSecret685A0FA57881E1C6"
+       }
+      },
+      {
+       "Action": [
+        "sqs:ReceiveMessage",
+        "sqs:ChangeMessageVisibility",
+        "sqs:GetQueueUrl",
+        "sqs:DeleteMessage",
+        "sqs:GetQueueAttributes"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "ingestionQueueB8D4F062",
+         "Arn"
+        ]
+       }
+      },
+      {
+       "Action": [
+        "sqs:ReceiveMessage",
+        "sqs:ChangeMessageVisibility",
+        "sqs:GetQueueUrl",
+        "sqs:DeleteMessage",
+        "sqs:GetQueueAttributes"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "podcastQueue88863691",
+         "Arn"
+        ]
+       }
+      },
+      {
+       "Action": [
+        "sqs:ReceiveMessage",
+        "sqs:ChangeMessageVisibility",
+        "sqs:GetQueueUrl",
+        "sqs:DeleteMessage",
+        "sqs:GetQueueAttributes"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "mindmapQueue2C5F51AC",
+         "Arn"
+        ]
+       }
+      },
+      {
+       "Action": [
+        "sqs:ReceiveMessage",
+        "sqs:ChangeMessageVisibility",
+        "sqs:GetQueueUrl",
+        "sqs:DeleteMessage",
+        "sqs:GetQueueAttributes"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "quizQueueA9393B41",
+         "Arn"
+        ]
+       }
+      },
+      {
+       "Action": [
+        "sqs:ReceiveMessage",
+        "sqs:ChangeMessageVisibility",
+        "sqs:GetQueueUrl",
+        "sqs:DeleteMessage",
+        "sqs:GetQueueAttributes"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "summaryQueueC7BCB27B",
+         "Arn"
+        ]
+       }
+      },
+      {
+       "Action": [
+        "bedrock:InvokeModel",
+        "bedrock:InvokeModelWithResponseStream",
+        "bedrock:ApplyGuardrail",
+        "polly:SynthesizeSpeech",
+        "textract:DetectDocumentText",
+        "textract:AnalyzeDocument",
+        "execute-api:ManageConnections",
+        "cloudwatch:PutMetricData",
+        "s3vectors:CreateIndex",
+        "s3vectors:DeleteIndex",
+        "s3vectors:ListIndexes",
+        "s3vectors:PutVectors",
+        "s3vectors:QueryVectors",
+        "s3vectors:GetVectors",
+        "s3vectors:DeleteVectors",
+        "s3vectors:ListVectors"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      },
+      {
+       "Action": [
+        "ssmmessages:CreateControlChannel",
+        "ssmmessages:CreateDataChannel",
+        "ssmmessages:OpenControlChannel",
+        "ssmmessages:OpenDataChannel"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      },
+      {
+       "Action": "logs:DescribeLogGroups",
+       "Effect": "Allow",
+       "Resource": "*"
+      },
+      {
+       "Action": [
+        "logs:CreateLogStream",
+        "logs:DescribeLogStreams",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "WorkerRoleDefaultPolicy1750E153",
+    "Roles": [
+     {
+      "Ref": "WorkerRole8DD27D41"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/WorkerRole/DefaultPolicy/Resource"
+   }
+  },
+  "IngestionLogGroup7C7CFA52": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/ecs/brainstormai-ingestion-worker",
+    "RetentionInDays": 90
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/IngestionLogGroup/Resource"
+   }
+  },
+  "GenerationLogGroupA869341F": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/ecs/brainstormai-generation-worker",
+    "RetentionInDays": 90
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/GenerationLogGroup/Resource"
+   }
+  },
+  "IngestionTaskDef0CBA300A": {
+   "Type": "AWS::ECS::TaskDefinition",
+   "Properties": {
+    "ContainerDefinitions": [
+     {
+      "Environment": [
+       {
+        "Name": "AWS_REGION",
+        "Value": "us-east-1"
+       },
+       {
+        "Name": "S3_BUCKET",
+        "Value": {
+         "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputRefAssetsBucket5CB761808BF2E271"
+        }
+       },
+       {
+        "Name": "S3_VECTORS_BUCKET",
+        "Value": "brainstormai-vectors"
+       },
+       {
+        "Name": "NOTEBOOKS_TABLE",
+        "Value": {
+         "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputRefNotebooksTableE3C0F6C4C4674225"
+        }
+       },
+       {
+        "Name": "SOURCES_TABLE",
+        "Value": {
+         "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputRefSourcesTable1DBF2A17D1A98E10"
+        }
+       },
+       {
+        "Name": "JOBS_TABLE",
+        "Value": {
+         "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputRefJobsTable1970BC16EDB4A824"
+        }
+       },
+       {
+        "Name": "ARTIFACTS_TABLE",
+        "Value": {
+         "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputRefArtifactsTable227942413974C39D"
+        }
+       },
+       {
+        "Name": "WS_CONNECTIONS_TABLE",
+        "Value": {
+         "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputRefWsConnectionsTable9E1AC3EBC8E88C06"
+        }
+       },
+       {
+        "Name": "PODCAST_SESSIONS_TABLE",
+        "Value": {
+         "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputRefPodcastSessionsTable33FBA328BA254A0F"
+        }
+       },
+       {
+        "Name": "DB_HOST",
+        "Value": {
+         "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputFnGetAttDatabaseB269D8BBEndpointAddressA4DBD059"
+        }
+       },
+       {
+        "Name": "DB_PORT",
+        "Value": {
+         "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputFnGetAttDatabaseB269D8BBEndpointPort3ACB3F51"
+        }
+       },
+       {
+        "Name": "DB_NAME",
+        "Value": "brainstormai"
+       },
+       {
+        "Name": "DB_SECRET_ARN",
+        "Value": {
+         "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputRefDbSecret685A0FA57881E1C6"
+        }
+       },
+       {
+        "Name": "INGESTION_QUEUE_URL",
+        "Value": {
+         "Ref": "ingestionQueueB8D4F062"
+        }
+       },
+       {
+        "Name": "PODCAST_QUEUE_URL",
+        "Value": {
+         "Ref": "podcastQueue88863691"
+        }
+       },
+       {
+        "Name": "MINDMAP_QUEUE_URL",
+        "Value": {
+         "Ref": "mindmapQueue2C5F51AC"
+        }
+       },
+       {
+        "Name": "QUIZ_QUEUE_URL",
+        "Value": {
+         "Ref": "quizQueueA9393B41"
+        }
+       },
+       {
+        "Name": "SUMMARY_QUEUE_URL",
+        "Value": {
+         "Ref": "summaryQueueC7BCB27B"
+        }
+       },
+       {
+        "Name": "DAILY_TOKEN_LIMIT",
+        "Value": "1000000"
+       },
+       {
+        "Name": "WS_ENDPOINT",
+        "Value": "https://ve6modezl3.execute-api.us-east-1.amazonaws.com/prod"
+       },
+       {
+        "Name": "QUEUE_URL",
+        "Value": {
+         "Ref": "ingestionQueueB8D4F062"
+        }
+       }
+      ],
+      "Essential": true,
+      "Image": {
+       "Fn::Sub": "173353905255.dkr.ecr.us-east-1.${AWS::URLSuffix}/cdk-hnb659fds-container-assets-173353905255-us-east-1:f02644c23c3f4c14572de73686ec311e266d373667d18c556c309b9fb9dd2be3"
+      },
+      "LogConfiguration": {
+       "LogDriver": "awslogs",
+       "Options": {
+        "awslogs-group": {
+         "Ref": "IngestionLogGroup7C7CFA52"
+        },
+        "awslogs-stream-prefix": "ingestion-worker",
+        "awslogs-region": "us-east-1"
+       }
+      },
+      "Name": "ingestion-worker"
+     }
+    ],
+    "Cpu": "512",
+    "ExecutionRoleArn": {
+     "Fn::GetAtt": [
+      "IngestionTaskDefExecutionRole07CD4E76",
+      "Arn"
+     ]
+    },
+    "Family": "BrainstormAIComputeStackIngestionTaskDefDA773C73",
+    "Memory": "2048",
+    "NetworkMode": "awsvpc",
+    "RequiresCompatibilities": [
+     "FARGATE"
+    ],
+    "TaskRoleArn": {
+     "Fn::GetAtt": [
+      "WorkerRole8DD27D41",
+      "Arn"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/IngestionTaskDef/Resource"
+   }
+  },
+  "IngestionTaskDefExecutionRole07CD4E76": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/IngestionTaskDef/ExecutionRole/Resource"
+   }
+  },
+  "IngestionTaskDefExecutionRoleDefaultPolicy180453CA": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "ecr:BatchCheckLayerAvailability",
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:BatchGetImage"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:",
+          {
+           "Ref": "AWS::Partition"
+          },
+          ":ecr:us-east-1:173353905255:repository/cdk-hnb659fds-container-assets-173353905255-us-east-1"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": "ecr:GetAuthorizationToken",
+       "Effect": "Allow",
+       "Resource": "*"
+      },
+      {
+       "Action": [
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "IngestionLogGroup7C7CFA52",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "IngestionTaskDefExecutionRoleDefaultPolicy180453CA",
+    "Roles": [
+     {
+      "Ref": "IngestionTaskDefExecutionRole07CD4E76"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/IngestionTaskDef/ExecutionRole/DefaultPolicy/Resource"
+   }
+  },
+  "IngestionServiceF46385C8": {
+   "Type": "AWS::ECS::Service",
+   "Properties": {
+    "Cluster": {
+     "Ref": "ClusterEB0386A7"
+    },
+    "DeploymentConfiguration": {
+     "Alarms": {
+      "AlarmNames": [],
+      "Enable": false,
+      "Rollback": false
+     },
+     "MaximumPercent": 200,
+     "MinimumHealthyPercent": 50
+    },
+    "DesiredCount": 1,
+    "EnableECSManagedTags": false,
+    "EnableExecuteCommand": true,
+    "LaunchType": "FARGATE",
+    "NetworkConfiguration": {
+     "AwsvpcConfiguration": {
+      "AssignPublicIp": "DISABLED",
+      "SecurityGroups": [
+       {
+        "Fn::GetAtt": [
+         "IngestionServiceSecurityGroup502B2E17",
+         "GroupId"
+        ]
+       }
+      ],
+      "Subnets": [
+       {
+        "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputRefVpcPrivateSubnet1Subnet536B997AFD4CC940"
+       },
+       {
+        "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputRefVpcPrivateSubnet2Subnet3788AAA1380949A3"
+       }
+      ]
+     }
+    },
+    "TaskDefinition": {
+     "Ref": "IngestionTaskDef0CBA300A"
+    }
+   },
+   "DependsOn": [
+    "WorkerRoleDefaultPolicy1750E153",
+    "WorkerRole8DD27D41"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/IngestionService/Service"
+   }
+  },
+  "IngestionServiceSecurityGroup502B2E17": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "BrainstormAI-ComputeStack/IngestionService/SecurityGroup",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputRefVpc8378EB38272D6E3A"
+    }
+   },
+   "DependsOn": [
+    "WorkerRoleDefaultPolicy1750E153",
+    "WorkerRole8DD27D41"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/IngestionService/SecurityGroup/Resource"
+   }
+  },
+  "IngestionServiceTaskCountTarget6209A0E2": {
+   "Type": "AWS::ApplicationAutoScaling::ScalableTarget",
+   "Properties": {
+    "MaxCapacity": 5,
+    "MinCapacity": 1,
+    "ResourceId": {
+     "Fn::Join": [
+      "",
+      [
+       "service/",
+       {
+        "Ref": "ClusterEB0386A7"
+       },
+       "/",
+       {
+        "Fn::GetAtt": [
+         "IngestionServiceF46385C8",
+         "Name"
+        ]
+       }
+      ]
+     ]
+    },
+    "RoleARN": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":iam::173353905255:role/aws-service-role/ecs.application-autoscaling.amazonaws.com/AWSServiceRoleForApplicationAutoScaling_ECSService"
+      ]
+     ]
+    },
+    "ScalableDimension": "ecs:service:DesiredCount",
+    "ServiceNamespace": "ecs"
+   },
+   "DependsOn": [
+    "WorkerRoleDefaultPolicy1750E153",
+    "WorkerRole8DD27D41"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/IngestionService/TaskCount/Target/Resource"
+   }
+  },
+  "IngestionServiceTaskCountTargetIngestionQueueScalingLowerPolicy7DA5E066": {
+   "Type": "AWS::ApplicationAutoScaling::ScalingPolicy",
+   "Properties": {
+    "PolicyName": "BrainstormAIComputeStackIngestionServiceTaskCountTargetIngestionQueueScalingLowerPolicy61D3F562",
+    "PolicyType": "StepScaling",
+    "ScalingTargetId": {
+     "Ref": "IngestionServiceTaskCountTarget6209A0E2"
+    },
+    "StepScalingPolicyConfiguration": {
+     "AdjustmentType": "ChangeInCapacity",
+     "Cooldown": 60,
+     "MetricAggregationType": "Maximum",
+     "StepAdjustments": [
+      {
+       "MetricIntervalUpperBound": 0,
+       "ScalingAdjustment": -1
+      }
+     ]
+    }
+   },
+   "DependsOn": [
+    "WorkerRoleDefaultPolicy1750E153",
+    "WorkerRole8DD27D41"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/IngestionService/TaskCount/Target/IngestionQueueScaling/LowerPolicy/Resource"
+   }
+  },
+  "IngestionServiceTaskCountTargetIngestionQueueScalingLowerAlarm0B5B965C": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Ref": "IngestionServiceTaskCountTargetIngestionQueueScalingLowerPolicy7DA5E066"
+     }
+    ],
+    "AlarmDescription": "Lower threshold scaling alarm",
+    "ComparisonOperator": "LessThanOrEqualToThreshold",
+    "Dimensions": [
+     {
+      "Name": "QueueName",
+      "Value": {
+       "Fn::GetAtt": [
+        "ingestionQueueB8D4F062",
+        "QueueName"
+       ]
+      }
+     }
+    ],
+    "EvaluationPeriods": 1,
+    "MetricName": "ApproximateNumberOfMessagesVisible",
+    "Namespace": "AWS/SQS",
+    "Period": 60,
+    "Statistic": "Maximum",
+    "Threshold": 0
+   },
+   "DependsOn": [
+    "WorkerRoleDefaultPolicy1750E153",
+    "WorkerRole8DD27D41"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/IngestionService/TaskCount/Target/IngestionQueueScaling/LowerAlarm/Resource"
+   }
+  },
+  "IngestionServiceTaskCountTargetIngestionQueueScalingUpperPolicyE84D4E63": {
+   "Type": "AWS::ApplicationAutoScaling::ScalingPolicy",
+   "Properties": {
+    "PolicyName": "BrainstormAIComputeStackIngestionServiceTaskCountTargetIngestionQueueScalingUpperPolicy1FCB76D9",
+    "PolicyType": "StepScaling",
+    "ScalingTargetId": {
+     "Ref": "IngestionServiceTaskCountTarget6209A0E2"
+    },
+    "StepScalingPolicyConfiguration": {
+     "AdjustmentType": "ChangeInCapacity",
+     "Cooldown": 60,
+     "MetricAggregationType": "Maximum",
+     "StepAdjustments": [
+      {
+       "MetricIntervalLowerBound": 0,
+       "MetricIntervalUpperBound": 7,
+       "ScalingAdjustment": 1
+      },
+      {
+       "MetricIntervalLowerBound": 7,
+       "ScalingAdjustment": 2
+      }
+     ]
+    }
+   },
+   "DependsOn": [
+    "WorkerRoleDefaultPolicy1750E153",
+    "WorkerRole8DD27D41"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/IngestionService/TaskCount/Target/IngestionQueueScaling/UpperPolicy/Resource"
+   }
+  },
+  "IngestionServiceTaskCountTargetIngestionQueueScalingUpperAlarm19158E8D": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Ref": "IngestionServiceTaskCountTargetIngestionQueueScalingUpperPolicyE84D4E63"
+     }
+    ],
+    "AlarmDescription": "Upper threshold scaling alarm",
+    "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+    "Dimensions": [
+     {
+      "Name": "QueueName",
+      "Value": {
+       "Fn::GetAtt": [
+        "ingestionQueueB8D4F062",
+        "QueueName"
+       ]
+      }
+     }
+    ],
+    "EvaluationPeriods": 1,
+    "MetricName": "ApproximateNumberOfMessagesVisible",
+    "Namespace": "AWS/SQS",
+    "Period": 60,
+    "Statistic": "Maximum",
+    "Threshold": 3
+   },
+   "DependsOn": [
+    "WorkerRoleDefaultPolicy1750E153",
+    "WorkerRole8DD27D41"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/IngestionService/TaskCount/Target/IngestionQueueScaling/UpperAlarm/Resource"
+   }
+  },
+  "GenerationTaskDefE8F1E4FE": {
+   "Type": "AWS::ECS::TaskDefinition",
+   "Properties": {
+    "ContainerDefinitions": [
+     {
+      "Environment": [
+       {
+        "Name": "AWS_REGION",
+        "Value": "us-east-1"
+       },
+       {
+        "Name": "S3_BUCKET",
+        "Value": {
+         "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputRefAssetsBucket5CB761808BF2E271"
+        }
+       },
+       {
+        "Name": "S3_VECTORS_BUCKET",
+        "Value": "brainstormai-vectors"
+       },
+       {
+        "Name": "NOTEBOOKS_TABLE",
+        "Value": {
+         "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputRefNotebooksTableE3C0F6C4C4674225"
+        }
+       },
+       {
+        "Name": "SOURCES_TABLE",
+        "Value": {
+         "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputRefSourcesTable1DBF2A17D1A98E10"
+        }
+       },
+       {
+        "Name": "JOBS_TABLE",
+        "Value": {
+         "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputRefJobsTable1970BC16EDB4A824"
+        }
+       },
+       {
+        "Name": "ARTIFACTS_TABLE",
+        "Value": {
+         "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputRefArtifactsTable227942413974C39D"
+        }
+       },
+       {
+        "Name": "WS_CONNECTIONS_TABLE",
+        "Value": {
+         "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputRefWsConnectionsTable9E1AC3EBC8E88C06"
+        }
+       },
+       {
+        "Name": "PODCAST_SESSIONS_TABLE",
+        "Value": {
+         "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputRefPodcastSessionsTable33FBA328BA254A0F"
+        }
+       },
+       {
+        "Name": "DB_HOST",
+        "Value": {
+         "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputFnGetAttDatabaseB269D8BBEndpointAddressA4DBD059"
+        }
+       },
+       {
+        "Name": "DB_PORT",
+        "Value": {
+         "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputFnGetAttDatabaseB269D8BBEndpointPort3ACB3F51"
+        }
+       },
+       {
+        "Name": "DB_NAME",
+        "Value": "brainstormai"
+       },
+       {
+        "Name": "DB_SECRET_ARN",
+        "Value": {
+         "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputRefDbSecret685A0FA57881E1C6"
+        }
+       },
+       {
+        "Name": "INGESTION_QUEUE_URL",
+        "Value": {
+         "Ref": "ingestionQueueB8D4F062"
+        }
+       },
+       {
+        "Name": "PODCAST_QUEUE_URL",
+        "Value": {
+         "Ref": "podcastQueue88863691"
+        }
+       },
+       {
+        "Name": "MINDMAP_QUEUE_URL",
+        "Value": {
+         "Ref": "mindmapQueue2C5F51AC"
+        }
+       },
+       {
+        "Name": "QUIZ_QUEUE_URL",
+        "Value": {
+         "Ref": "quizQueueA9393B41"
+        }
+       },
+       {
+        "Name": "SUMMARY_QUEUE_URL",
+        "Value": {
+         "Ref": "summaryQueueC7BCB27B"
+        }
+       },
+       {
+        "Name": "DAILY_TOKEN_LIMIT",
+        "Value": "1000000"
+       },
+       {
+        "Name": "WS_ENDPOINT",
+        "Value": "https://ve6modezl3.execute-api.us-east-1.amazonaws.com/prod"
+       }
+      ],
+      "Essential": true,
+      "Image": {
+       "Fn::Sub": "173353905255.dkr.ecr.us-east-1.${AWS::URLSuffix}/cdk-hnb659fds-container-assets-173353905255-us-east-1:4115803b74f74fdfaab3407aabe5cb17f85bdb1f4c8890a23cbf31a46e0f1c1a"
+      },
+      "LogConfiguration": {
+       "LogDriver": "awslogs",
+       "Options": {
+        "awslogs-group": {
+         "Ref": "GenerationLogGroupA869341F"
+        },
+        "awslogs-stream-prefix": "generation-worker",
+        "awslogs-region": "us-east-1"
+       }
+      },
+      "Name": "generation-worker"
+     }
+    ],
+    "Cpu": "1024",
+    "ExecutionRoleArn": {
+     "Fn::GetAtt": [
+      "GenerationTaskDefExecutionRole8EB9C00D",
+      "Arn"
+     ]
+    },
+    "Family": "BrainstormAIComputeStackGenerationTaskDefCFD28759",
+    "Memory": "4096",
+    "NetworkMode": "awsvpc",
+    "RequiresCompatibilities": [
+     "FARGATE"
+    ],
+    "TaskRoleArn": {
+     "Fn::GetAtt": [
+      "WorkerRole8DD27D41",
+      "Arn"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/GenerationTaskDef/Resource"
+   }
+  },
+  "GenerationTaskDefExecutionRole8EB9C00D": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/GenerationTaskDef/ExecutionRole/Resource"
+   }
+  },
+  "GenerationTaskDefExecutionRoleDefaultPolicy355CAB8E": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "ecr:BatchCheckLayerAvailability",
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:BatchGetImage"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:",
+          {
+           "Ref": "AWS::Partition"
+          },
+          ":ecr:us-east-1:173353905255:repository/cdk-hnb659fds-container-assets-173353905255-us-east-1"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": "ecr:GetAuthorizationToken",
+       "Effect": "Allow",
+       "Resource": "*"
+      },
+      {
+       "Action": [
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "GenerationLogGroupA869341F",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "GenerationTaskDefExecutionRoleDefaultPolicy355CAB8E",
+    "Roles": [
+     {
+      "Ref": "GenerationTaskDefExecutionRole8EB9C00D"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/GenerationTaskDef/ExecutionRole/DefaultPolicy/Resource"
+   }
+  },
+  "GenerationService6E4FA84B": {
+   "Type": "AWS::ECS::Service",
+   "Properties": {
+    "Cluster": {
+     "Ref": "ClusterEB0386A7"
+    },
+    "DeploymentConfiguration": {
+     "Alarms": {
+      "AlarmNames": [],
+      "Enable": false,
+      "Rollback": false
+     },
+     "MaximumPercent": 200,
+     "MinimumHealthyPercent": 50
+    },
+    "DesiredCount": 2,
+    "EnableECSManagedTags": false,
+    "EnableExecuteCommand": true,
+    "LaunchType": "FARGATE",
+    "NetworkConfiguration": {
+     "AwsvpcConfiguration": {
+      "AssignPublicIp": "DISABLED",
+      "SecurityGroups": [
+       {
+        "Fn::GetAtt": [
+         "GenerationServiceSecurityGroupBDA3D501",
+         "GroupId"
+        ]
+       }
+      ],
+      "Subnets": [
+       {
+        "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputRefVpcPrivateSubnet1Subnet536B997AFD4CC940"
+       },
+       {
+        "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputRefVpcPrivateSubnet2Subnet3788AAA1380949A3"
+       }
+      ]
+     }
+    },
+    "TaskDefinition": {
+     "Ref": "GenerationTaskDefE8F1E4FE"
+    }
+   },
+   "DependsOn": [
+    "WorkerRoleDefaultPolicy1750E153",
+    "WorkerRole8DD27D41"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/GenerationService/Service"
+   }
+  },
+  "GenerationServiceSecurityGroupBDA3D501": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "BrainstormAI-ComputeStack/GenerationService/SecurityGroup",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Fn::ImportValue": "BrainstormAI-StorageStack:ExportsOutputRefVpc8378EB38272D6E3A"
+    }
+   },
+   "DependsOn": [
+    "WorkerRoleDefaultPolicy1750E153",
+    "WorkerRole8DD27D41"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/GenerationService/SecurityGroup/Resource"
+   }
+  },
+  "GenerationServiceTaskCountTargetBA5A2740": {
+   "Type": "AWS::ApplicationAutoScaling::ScalableTarget",
+   "Properties": {
+    "MaxCapacity": 10,
+    "MinCapacity": 2,
+    "ResourceId": {
+     "Fn::Join": [
+      "",
+      [
+       "service/",
+       {
+        "Ref": "ClusterEB0386A7"
+       },
+       "/",
+       {
+        "Fn::GetAtt": [
+         "GenerationService6E4FA84B",
+         "Name"
+        ]
+       }
+      ]
+     ]
+    },
+    "RoleARN": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":iam::173353905255:role/aws-service-role/ecs.application-autoscaling.amazonaws.com/AWSServiceRoleForApplicationAutoScaling_ECSService"
+      ]
+     ]
+    },
+    "ScalableDimension": "ecs:service:DesiredCount",
+    "ServiceNamespace": "ecs"
+   },
+   "DependsOn": [
+    "WorkerRoleDefaultPolicy1750E153",
+    "WorkerRole8DD27D41"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/GenerationService/TaskCount/Target/Resource"
+   }
+  },
+  "GenerationServiceTaskCountTargetGenerationQueueScalingLowerPolicy92574CFF": {
+   "Type": "AWS::ApplicationAutoScaling::ScalingPolicy",
+   "Properties": {
+    "PolicyName": "BrainstormAIComputeStackGenerationServiceTaskCountTargetGenerationQueueScalingLowerPolicy34E4D071",
+    "PolicyType": "StepScaling",
+    "ScalingTargetId": {
+     "Ref": "GenerationServiceTaskCountTargetBA5A2740"
+    },
+    "StepScalingPolicyConfiguration": {
+     "AdjustmentType": "ChangeInCapacity",
+     "Cooldown": 120,
+     "StepAdjustments": [
+      {
+       "MetricIntervalUpperBound": 0,
+       "ScalingAdjustment": -1
+      }
+     ]
+    }
+   },
+   "DependsOn": [
+    "WorkerRoleDefaultPolicy1750E153",
+    "WorkerRole8DD27D41"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/GenerationService/TaskCount/Target/GenerationQueueScaling/LowerPolicy/Resource"
+   }
+  },
+  "GenerationServiceTaskCountTargetGenerationQueueScalingLowerAlarm438A504A": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Ref": "GenerationServiceTaskCountTargetGenerationQueueScalingLowerPolicy92574CFF"
+     }
+    ],
+    "AlarmDescription": "Lower threshold scaling alarm",
+    "ComparisonOperator": "LessThanOrEqualToThreshold",
+    "EvaluationPeriods": 1,
+    "Metrics": [
+     {
+      "Expression": "m1 + m2 + m3 + m4",
+      "Id": "expr_1",
+      "ReturnData": true
+     },
+     {
+      "Id": "m1",
+      "MetricStat": {
+       "Metric": {
+        "Dimensions": [
+         {
+          "Name": "QueueName",
+          "Value": {
+           "Fn::GetAtt": [
+            "podcastQueue88863691",
+            "QueueName"
+           ]
+          }
+         }
+        ],
+        "MetricName": "ApproximateNumberOfMessagesVisible",
+        "Namespace": "AWS/SQS"
+       },
+       "Period": 300,
+       "Stat": "Maximum"
+      },
+      "ReturnData": false
+     },
+     {
+      "Id": "m2",
+      "MetricStat": {
+       "Metric": {
+        "Dimensions": [
+         {
+          "Name": "QueueName",
+          "Value": {
+           "Fn::GetAtt": [
+            "mindmapQueue2C5F51AC",
+            "QueueName"
+           ]
+          }
+         }
+        ],
+        "MetricName": "ApproximateNumberOfMessagesVisible",
+        "Namespace": "AWS/SQS"
+       },
+       "Period": 300,
+       "Stat": "Maximum"
+      },
+      "ReturnData": false
+     },
+     {
+      "Id": "m3",
+      "MetricStat": {
+       "Metric": {
+        "Dimensions": [
+         {
+          "Name": "QueueName",
+          "Value": {
+           "Fn::GetAtt": [
+            "quizQueueA9393B41",
+            "QueueName"
+           ]
+          }
+         }
+        ],
+        "MetricName": "ApproximateNumberOfMessagesVisible",
+        "Namespace": "AWS/SQS"
+       },
+       "Period": 300,
+       "Stat": "Maximum"
+      },
+      "ReturnData": false
+     },
+     {
+      "Id": "m4",
+      "MetricStat": {
+       "Metric": {
+        "Dimensions": [
+         {
+          "Name": "QueueName",
+          "Value": {
+           "Fn::GetAtt": [
+            "summaryQueueC7BCB27B",
+            "QueueName"
+           ]
+          }
+         }
+        ],
+        "MetricName": "ApproximateNumberOfMessagesVisible",
+        "Namespace": "AWS/SQS"
+       },
+       "Period": 300,
+       "Stat": "Maximum"
+      },
+      "ReturnData": false
+     }
+    ],
+    "Threshold": 0
+   },
+   "DependsOn": [
+    "WorkerRoleDefaultPolicy1750E153",
+    "WorkerRole8DD27D41"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/GenerationService/TaskCount/Target/GenerationQueueScaling/LowerAlarm/Resource"
+   }
+  },
+  "GenerationServiceTaskCountTargetGenerationQueueScalingUpperPolicy94FAE393": {
+   "Type": "AWS::ApplicationAutoScaling::ScalingPolicy",
+   "Properties": {
+    "PolicyName": "BrainstormAIComputeStackGenerationServiceTaskCountTargetGenerationQueueScalingUpperPolicy846AA94B",
+    "PolicyType": "StepScaling",
+    "ScalingTargetId": {
+     "Ref": "GenerationServiceTaskCountTargetBA5A2740"
+    },
+    "StepScalingPolicyConfiguration": {
+     "AdjustmentType": "ChangeInCapacity",
+     "Cooldown": 120,
+     "StepAdjustments": [
+      {
+       "MetricIntervalLowerBound": 0,
+       "MetricIntervalUpperBound": 4,
+       "ScalingAdjustment": 1
+      },
+      {
+       "MetricIntervalLowerBound": 4,
+       "MetricIntervalUpperBound": 10,
+       "ScalingAdjustment": 2
+      },
+      {
+       "MetricIntervalLowerBound": 10,
+       "ScalingAdjustment": 3
+      }
+     ]
+    }
+   },
+   "DependsOn": [
+    "WorkerRoleDefaultPolicy1750E153",
+    "WorkerRole8DD27D41"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/GenerationService/TaskCount/Target/GenerationQueueScaling/UpperPolicy/Resource"
+   }
+  },
+  "GenerationServiceTaskCountTargetGenerationQueueScalingUpperAlarm9489615D": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Ref": "GenerationServiceTaskCountTargetGenerationQueueScalingUpperPolicy94FAE393"
+     }
+    ],
+    "AlarmDescription": "Upper threshold scaling alarm",
+    "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+    "EvaluationPeriods": 1,
+    "Metrics": [
+     {
+      "Expression": "m1 + m2 + m3 + m4",
+      "Id": "expr_1",
+      "ReturnData": true
+     },
+     {
+      "Id": "m1",
+      "MetricStat": {
+       "Metric": {
+        "Dimensions": [
+         {
+          "Name": "QueueName",
+          "Value": {
+           "Fn::GetAtt": [
+            "podcastQueue88863691",
+            "QueueName"
+           ]
+          }
+         }
+        ],
+        "MetricName": "ApproximateNumberOfMessagesVisible",
+        "Namespace": "AWS/SQS"
+       },
+       "Period": 300,
+       "Stat": "Maximum"
+      },
+      "ReturnData": false
+     },
+     {
+      "Id": "m2",
+      "MetricStat": {
+       "Metric": {
+        "Dimensions": [
+         {
+          "Name": "QueueName",
+          "Value": {
+           "Fn::GetAtt": [
+            "mindmapQueue2C5F51AC",
+            "QueueName"
+           ]
+          }
+         }
+        ],
+        "MetricName": "ApproximateNumberOfMessagesVisible",
+        "Namespace": "AWS/SQS"
+       },
+       "Period": 300,
+       "Stat": "Maximum"
+      },
+      "ReturnData": false
+     },
+     {
+      "Id": "m3",
+      "MetricStat": {
+       "Metric": {
+        "Dimensions": [
+         {
+          "Name": "QueueName",
+          "Value": {
+           "Fn::GetAtt": [
+            "quizQueueA9393B41",
+            "QueueName"
+           ]
+          }
+         }
+        ],
+        "MetricName": "ApproximateNumberOfMessagesVisible",
+        "Namespace": "AWS/SQS"
+       },
+       "Period": 300,
+       "Stat": "Maximum"
+      },
+      "ReturnData": false
+     },
+     {
+      "Id": "m4",
+      "MetricStat": {
+       "Metric": {
+        "Dimensions": [
+         {
+          "Name": "QueueName",
+          "Value": {
+           "Fn::GetAtt": [
+            "summaryQueueC7BCB27B",
+            "QueueName"
+           ]
+          }
+         }
+        ],
+        "MetricName": "ApproximateNumberOfMessagesVisible",
+        "Namespace": "AWS/SQS"
+       },
+       "Period": 300,
+       "Stat": "Maximum"
+      },
+      "ReturnData": false
+     }
+    ],
+    "Threshold": 2
+   },
+   "DependsOn": [
+    "WorkerRoleDefaultPolicy1750E153",
+    "WorkerRole8DD27D41"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/GenerationService/TaskCount/Target/GenerationQueueScaling/UpperAlarm/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/11Qy04DMQz8lt7TAIuQuJZWICQO0OVeuakb3M0mS5y0qqL9d5Rstw8u8Xg8tmZSyerpUT5M4MBTtWmmhtYy1QFUI+DAq8S/LNNXxIhivrUDKO+nM6SOZ3Joe4GKZZqbyAF9Ho7wFbyGgN/AzQK3ZCmQs1nwn3E2AFn0V9xpt0a/J1V8jLBWYGBtytm5izb0gqCVaelM0ZV6cTqaNE6zTB9Ov3kXuzwZcQ7gV8CMgeXCqQb9ewsaZ5nJM7nEzjEF548vwChQVTLVqKKncDyfuyF6AV1nSEEOAzE4VmDIapku9r3GUBZvmTpgVw/qU4orZqbGP7yR9EIZFzcHCOpHppkB32ZNAX0vSpI6gCarxRLZRa+wF9ZtUO74bv/wLKt7WU12TDT10QZqUS6H+gcnbsCNLQIAAA=="
+   },
+   "Metadata": {
+    "aws:cdk:path": "BrainstormAI-ComputeStack/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "ExportsOutputFnGetAttingestionQueueB8D4F062Arn9CC17258": {
+   "Value": {
+    "Fn::GetAtt": [
+     "ingestionQueueB8D4F062",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "BrainstormAI-ComputeStack:ExportsOutputFnGetAttingestionQueueB8D4F062Arn9CC17258"
+   }
+  },
+  "ExportsOutputFnGetAttpodcastQueue88863691Arn7E3BAE98": {
+   "Value": {
+    "Fn::GetAtt": [
+     "podcastQueue88863691",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "BrainstormAI-ComputeStack:ExportsOutputFnGetAttpodcastQueue88863691Arn7E3BAE98"
+   }
+  },
+  "ExportsOutputFnGetAttmindmapQueue2C5F51ACArnAF69A2E8": {
+   "Value": {
+    "Fn::GetAtt": [
+     "mindmapQueue2C5F51AC",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "BrainstormAI-ComputeStack:ExportsOutputFnGetAttmindmapQueue2C5F51ACArnAF69A2E8"
+   }
+  },
+  "ExportsOutputFnGetAttquizQueueA9393B41Arn8C2C3053": {
+   "Value": {
+    "Fn::GetAtt": [
+     "quizQueueA9393B41",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "BrainstormAI-ComputeStack:ExportsOutputFnGetAttquizQueueA9393B41Arn8C2C3053"
+   }
+  },
+  "ExportsOutputFnGetAttsummaryQueueC7BCB27BArn7DC053A7": {
+   "Value": {
+    "Fn::GetAtt": [
+     "summaryQueueC7BCB27B",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "BrainstormAI-ComputeStack:ExportsOutputFnGetAttsummaryQueueC7BCB27BArn7DC053A7"
+   }
+  },
+  "ExportsOutputRefingestionQueueB8D4F06257563FB1": {
+   "Value": {
+    "Ref": "ingestionQueueB8D4F062"
+   },
+   "Export": {
+    "Name": "BrainstormAI-ComputeStack:ExportsOutputRefingestionQueueB8D4F06257563FB1"
+   }
+  },
+  "ExportsOutputRefpodcastQueue888636919697DF66": {
+   "Value": {
+    "Ref": "podcastQueue88863691"
+   },
+   "Export": {
+    "Name": "BrainstormAI-ComputeStack:ExportsOutputRefpodcastQueue888636919697DF66"
+   }
+  },
+  "ExportsOutputRefmindmapQueue2C5F51AC620FD1C5": {
+   "Value": {
+    "Ref": "mindmapQueue2C5F51AC"
+   },
+   "Export": {
+    "Name": "BrainstormAI-ComputeStack:ExportsOutputRefmindmapQueue2C5F51AC620FD1C5"
+   }
+  },
+  "ExportsOutputRefquizQueueA9393B41EEA51AD5": {
+   "Value": {
+    "Ref": "quizQueueA9393B41"
+   },
+   "Export": {
+    "Name": "BrainstormAI-ComputeStack:ExportsOutputRefquizQueueA9393B41EEA51AD5"
+   }
+  },
+  "ExportsOutputRefsummaryQueueC7BCB27B1DE560CE": {
+   "Value": {
+    "Ref": "summaryQueueC7BCB27B"
+   },
+   "Export": {
+    "Name": "BrainstormAI-ComputeStack:ExportsOutputRefsummaryQueueC7BCB27B1DE560CE"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

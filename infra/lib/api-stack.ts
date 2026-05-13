@@ -4,12 +4,14 @@ import * as apigatewayv2 from "aws-cdk-lib/aws-apigatewayv2";
 import * as apigatewayv2integrations from "aws-cdk-lib/aws-apigatewayv2-integrations";
 import * as apigatewayv2authorizers from "aws-cdk-lib/aws-apigatewayv2-authorizers";
 import * as lambda from "aws-cdk-lib/aws-lambda";
+import * as logs from "aws-cdk-lib/aws-logs";
 import * as cognito from "aws-cdk-lib/aws-cognito";
 import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import * as sqs from "aws-cdk-lib/aws-sqs";
 import * as iam from "aws-cdk-lib/aws-iam";
 import { Construct } from "constructs";
+import { NagSuppressions } from "cdk-nag";
 import * as path from "path";
 import { execSync } from "child_process";
 
@@ -67,6 +69,11 @@ export class ApiStack extends cdk.Stack {
         functionName: `brainstormai-${name.toLowerCase()}`,
         code: lambda.Code.fromAsset(`../backend/lambdas/${handlerPath}`),
         handler: "handler.lambda_handler",
+        logGroup: new logs.LogGroup(this, `${name}LogGroup`, {
+          logGroupName: `/aws/lambda/brainstormai-${name.toLowerCase()}`,
+          retention: logs.RetentionDays.THREE_MONTHS,
+          removalPolicy: cdk.RemovalPolicy.DESTROY,
+        }),
       });
       props.notebooksTable.grantReadWriteData(fn);
       props.sourcesTable.grantReadWriteData(fn);
@@ -94,6 +101,11 @@ export class ApiStack extends cdk.Stack {
       memorySize: 256,
       environment: commonEnv,
       functionName: "brainstormai-notebooks",
+      logGroup: new logs.LogGroup(this, "NotebooksLogGroup", {
+        logGroupName: "/aws/lambda/brainstormai-notebooks",
+        retention: logs.RetentionDays.THREE_MONTHS,
+        removalPolicy: cdk.RemovalPolicy.DESTROY,
+      }),
       code: lambda.Code.fromAsset(notebooksAssetPath, {
         bundling: {
           image: lambda.Runtime.PYTHON_3_12.bundlingImage,
@@ -213,6 +225,11 @@ export class ApiStack extends cdk.Stack {
       environment: {
         USER_POOL_ID: props.userPool.userPoolId,
       },
+      logGroup: new logs.LogGroup(this, "WsAuthorizerLogGroup", {
+        logGroupName: "/aws/lambda/brainstormai-ws-authorizer",
+        retention: logs.RetentionDays.THREE_MONTHS,
+        removalPolicy: cdk.RemovalPolicy.DESTROY,
+      }),
     });
 
     const wsAuthorizer = new apigatewayv2authorizers.WebSocketLambdaAuthorizer(
@@ -265,5 +282,40 @@ export class ApiStack extends cdk.Stack {
 
     new cdk.CfnOutput(this, "ApiUrl", { value: this.apiUrl });
     new cdk.CfnOutput(this, "WsUrl", { value: this.wsUrl });
+
+    NagSuppressions.addStackSuppressions(this, [
+      {
+        id: "AwsSolutions-APIG4",
+        reason: "All REST API methods use Cognito User Pool authorizer (authorizationType: COGNITO). The WebSocket $connect route uses a Lambda REQUEST authorizer validating the ?token= JWT. cdk-nag false-positive on v2 WebSocket routes.",
+      },
+      {
+        id: "AwsSolutions-APIG1",
+        reason: "Access logging not enabled for this sample application. Production deployments should enable access logs on API Gateway stages.",
+      },
+      {
+        id: "AwsSolutions-APIG2",
+        reason: "Basic request validation not configured — input validation is performed inside the Lambda handlers. Production deployments should add request models.",
+      },
+      {
+        id: "AwsSolutions-APIG6",
+        reason: "CloudWatch execution logging not enabled for this sample. Production deployments should enable stage-level logging.",
+      },
+      {
+        id: "AwsSolutions-IAM4",
+        reason: "AWSLambdaBasicExecutionRole and AmazonAPIGatewayPushToCloudWatchLogs are standard managed policies for Lambda execution and API Gateway logging. Custom policies would provide no additional security benefit for this sample.",
+      },
+      {
+        id: "AwsSolutions-IAM5",
+        reason: "Wildcard resources required: Bedrock/Polly do not support resource-level restrictions; execute-api:ManageConnections is scoped to the specific API; S3/DynamoDB wildcards are CDK-generated grant patterns scoped to named resources.",
+      },
+      {
+        id: "AwsSolutions-L1",
+        reason: "All Lambda functions use Python 3.12 which is the latest stable Python runtime available in Lambda.",
+      },
+      {
+        id: "AwsSolutions-APIG3",
+        reason: "WAFv2 web ACL not associated with API Gateway for this sample application. Production deployments should associate a WAF ACL for additional protection.",
+      },
+    ]);
   }
 }

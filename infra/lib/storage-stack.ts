@@ -1,10 +1,12 @@
 import * as cdk from "aws-cdk-lib";
 import * as s3 from "aws-cdk-lib/aws-s3";
+import * as iam from "aws-cdk-lib/aws-iam";
 import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import * as rds from "aws-cdk-lib/aws-rds";
 import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 import { Construct } from "constructs";
+import { NagSuppressions } from "cdk-nag";
 
 export class StorageStack extends cdk.Stack {
   public readonly assetsBucket: s3.Bucket;
@@ -38,15 +40,26 @@ export class StorageStack extends cdk.Stack {
     });
 
     // ── S3 ──
+    const accessLogsBucket = new s3.Bucket(this, "AccessLogsBucket", {
+      bucketName: `brainstormai-access-logs-${this.account}`,
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+      encryption: s3.BucketEncryption.S3_MANAGED,
+      enforceSSL: true,
+      removalPolicy: cdk.RemovalPolicy.RETAIN,
+    });
+
     this.assetsBucket = new s3.Bucket(this, "AssetsBucket", {
       bucketName: `brainstormai-assets-${this.account}`,
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
       encryption: s3.BucketEncryption.S3_MANAGED,
+      enforceSSL: true,
+      serverAccessLogsBucket: accessLogsBucket,
+      serverAccessLogsPrefix: "assets-bucket/",
       lifecycleRules: [
         {
           id: "expire-temp-audio",
           prefix: "audio/",
-          expiration: cdk.Duration.days(7),
+          expiration: cdk.Duration.days(30),
         },
       ],
       cors: [
@@ -60,6 +73,19 @@ export class StorageStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.RETAIN,
     });
 
+    // Helper to attach Checkov skip metadata to DynamoDB tables.
+    // CKV_AWS_119 / DYNAMODB_TABLE_ENCRYPTED_KMS: DynamoDB uses AWS-owned CMK encryption at rest
+    // by default; KMS CMK adds cost and operational overhead not warranted for a sample application.
+    // CKV_AWS_28 / DDB3: PITR disabled for sample app to reduce cost; production deployments should enable it.
+    const skipDynamoCheckov = (table: dynamodb.Table) => {
+      (table.node.defaultChild as cdk.CfnResource).addMetadata("checkov", {
+        skip: [
+          { id: "CKV_AWS_119", comment: "DynamoDB AWS-owned CMK encryption is sufficient for sample app; KMS CMK not required." },
+          { id: "CKV_AWS_28",  comment: "PITR disabled for sample app to reduce cost; enable in production." },
+        ],
+      });
+    };
+
     // ── DynamoDB Tables ──
     this.notebooksTable = new dynamodb.Table(this, "NotebooksTable", {
       tableName: "brainstormai-notebooks",
@@ -67,6 +93,7 @@ export class StorageStack extends cdk.Stack {
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
       removalPolicy: cdk.RemovalPolicy.RETAIN,
     });
+    skipDynamoCheckov(this.notebooksTable);
     this.notebooksTable.addGlobalSecondaryIndex({
       indexName: "userId-index",
       partitionKey: { name: "userId", type: dynamodb.AttributeType.STRING },
@@ -79,6 +106,7 @@ export class StorageStack extends cdk.Stack {
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
       removalPolicy: cdk.RemovalPolicy.RETAIN,
     });
+    skipDynamoCheckov(this.sourcesTable);
     this.sourcesTable.addGlobalSecondaryIndex({
       indexName: "notebookId-index",
       partitionKey: { name: "notebookId", type: dynamodb.AttributeType.STRING },
@@ -90,6 +118,7 @@ export class StorageStack extends cdk.Stack {
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
       removalPolicy: cdk.RemovalPolicy.RETAIN,
     });
+    skipDynamoCheckov(this.jobsTable);
     this.jobsTable.addGlobalSecondaryIndex({
       indexName: "userId-index",
       partitionKey: { name: "userId", type: dynamodb.AttributeType.STRING },
@@ -108,6 +137,7 @@ export class StorageStack extends cdk.Stack {
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
       removalPolicy: cdk.RemovalPolicy.RETAIN,
     });
+    skipDynamoCheckov(this.userJobCountTable);
 
     this.artifactsTable = new dynamodb.Table(this, "ArtifactsTable", {
       tableName: "brainstormai-artifacts",
@@ -115,6 +145,7 @@ export class StorageStack extends cdk.Stack {
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
       removalPolicy: cdk.RemovalPolicy.RETAIN,
     });
+    skipDynamoCheckov(this.artifactsTable);
     this.artifactsTable.addGlobalSecondaryIndex({
       indexName: "notebookId-index",
       partitionKey: { name: "notebookId", type: dynamodb.AttributeType.STRING },
@@ -128,6 +159,7 @@ export class StorageStack extends cdk.Stack {
       timeToLiveAttribute: "ttl",
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
+    skipDynamoCheckov(this.wsConnectionsTable);
 
     this.podcastSessionsTable = new dynamodb.Table(this, "PodcastSessionsTable", {
       tableName: "brainstormai-podcast-sessions",
@@ -136,6 +168,7 @@ export class StorageStack extends cdk.Stack {
       timeToLiveAttribute: "ttl",
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
+    skipDynamoCheckov(this.podcastSessionsTable);
     this.podcastSessionsTable.addGlobalSecondaryIndex({
       indexName: "connectionId-index",
       partitionKey: { name: "connectionId", type: dynamodb.AttributeType.STRING },
@@ -186,5 +219,28 @@ export class StorageStack extends cdk.Stack {
     new cdk.CfnOutput(this, "AssetsBucketName", { value: this.assetsBucket.bucketName });
     new cdk.CfnOutput(this, "VectorsBucketName", { value: this.vectorsBucketName });
     new cdk.CfnOutput(this, "DbEndpoint", { value: this.dbEndpoint });
+
+    NagSuppressions.addResourceSuppressions(accessLogsBucket, [
+      { id: "AwsSolutions-S1", reason: "Access logs bucket does not need its own access logs — this would cause infinite recursion." },
+    ]);
+
+    NagSuppressions.addResourceSuppressions(this.vpc, [
+      { id: "AwsSolutions-VPC7", reason: "VPC Flow Logs omitted for sample application to reduce cost and operational overhead. Production deployments should enable flow logs." },
+    ]);
+
+    NagSuppressions.addResourceSuppressions(dbInstance, [
+      { id: "AwsSolutions-RDS3", reason: "Multi-AZ not required for sample application. Production deployments should enable multi-AZ for high availability." },
+      { id: "AwsSolutions-RDS11", reason: "Default PostgreSQL port used for simplicity in this sample. Production deployments should use a non-default port." },
+    ]);
+
+    NagSuppressions.addResourceSuppressions(this.dbSecret, [
+      { id: "AwsSolutions-SMG4", reason: "Automatic secret rotation not configured for sample application. Production deployments should enable rotation." },
+    ]);
+
+    // Suppress IAM wildcard warnings on CDK-generated grant policies (index/* on DynamoDB is required for GSI access)
+    NagSuppressions.addStackSuppressions(this, [
+      { id: "AwsSolutions-IAM5", reason: "CDK grantReadWriteData adds index/* wildcards for DynamoDB GSI access — required for query operations on global secondary indexes." },
+      { id: "AwsSolutions-DDB3", reason: "Point-in-time recovery not enabled for this sample application. Production deployments should enable PITR on all tables." },
+    ]);
   }
 }

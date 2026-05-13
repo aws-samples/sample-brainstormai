@@ -1,0 +1,21 @@
+{
+  "version": "53.0.0",
+  "files": {
+    "1e916c252d32cabb4b3b47e4c799f90504b89418671765eef2b47893515d1242": {
+      "displayName": "BrainstormAI-CognitoStack Template",
+      "source": {
+        "path": "BrainstormAI-CognitoStack.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "173353905255-us-east-1-0235417f": {
+          "bucketName": "cdk-hnb659fds-assets-173353905255-us-east-1",
+          "objectKey": "1e916c252d32cabb4b3b47e4c799f90504b89418671765eef2b47893515d1242.json",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::173353905255:role/cdk-hnb659fds-file-publishing-role-173353905255-us-east-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

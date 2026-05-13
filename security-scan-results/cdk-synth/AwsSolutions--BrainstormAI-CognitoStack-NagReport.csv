@@ -1,0 +1,4 @@
+Rule ID,Resource ID,Compliance,Exception Reason,Rule Level,Rule Info
+"AwsSolutions-COG1","BrainstormAI-CognitoStack/UserPool/Resource","Compliant","N/A","Error","The Cognito user pool does not have a password policy that minimally specify a password length of at least 8 characters, as well as requiring uppercase, numeric, and special characters."
+"AwsSolutions-COG2","BrainstormAI-CognitoStack/UserPool/Resource","Suppressed","MFA not required for this sample application — users authenticate via email/password with Cognito SRP.","Warning","The Cognito user pool does not require MFA."
+"AwsSolutions-COG8","BrainstormAI-CognitoStack/UserPool/Resource","Suppressed","Cognito Plus tier (advanced security) is not required for a sample app and adds significant cost.","Error","The Cognito user pool is not on the plus tier / feature plan."
