@@ -2,6 +2,7 @@ import * as cdk from "aws-cdk-lib";
 import * as apigateway from "aws-cdk-lib/aws-apigateway";
 import * as apigatewayv2 from "aws-cdk-lib/aws-apigatewayv2";
 import * as apigatewayv2integrations from "aws-cdk-lib/aws-apigatewayv2-integrations";
+import * as apigatewayv2authorizers from "aws-cdk-lib/aws-apigatewayv2-authorizers";
 import * as lambda from "aws-cdk-lib/aws-lambda";
 import * as cognito from "aws-cdk-lib/aws-cognito";
 import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
@@ -202,12 +203,34 @@ export class ApiStack extends cdk.Stack {
     this.apiUrl = api.url;
 
     // ── WebSocket API ──
+    const wsAuthorizerFn = new lambda.Function(this, "WsAuthorizerFn", {
+      runtime: lambda.Runtime.PYTHON_3_12,
+      timeout: cdk.Duration.seconds(10),
+      memorySize: 128,
+      functionName: "brainstormai-ws-authorizer",
+      code: lambda.Code.fromAsset("../backend/lambdas/ws_authorizer"),
+      handler: "handler.lambda_handler",
+      environment: {
+        USER_POOL_ID: props.userPool.userPoolId,
+      },
+    });
+
+    const wsAuthorizer = new apigatewayv2authorizers.WebSocketLambdaAuthorizer(
+      "WsAuthorizer",
+      wsAuthorizerFn,
+      {
+        authorizerName: "CognitoJwtAuthorizer",
+        identitySource: ["route.request.querystring.token"],
+      }
+    );
+
     // Each route needs its own integration object so CDK generates a separate
     // lambda:InvokeFunction permission per route ARN.
     const wsApi = new apigatewayv2.WebSocketApi(this, "WsApi", {
       apiName: "brainstormai-ws",
       connectRouteOptions: {
         integration: new apigatewayv2integrations.WebSocketLambdaIntegration("WsConnectIntegration", websocketFn),
+        authorizer: wsAuthorizer,
       },
       disconnectRouteOptions: {
         integration: new apigatewayv2integrations.WebSocketLambdaIntegration("WsDisconnectIntegration", websocketFn),

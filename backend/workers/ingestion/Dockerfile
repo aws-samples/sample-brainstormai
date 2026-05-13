@@ -2,10 +2,8 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-# System deps for PyMuPDF
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libmupdf-dev \
-    && rm -rf /var/lib/apt/lists/*
+# Apply OS security patches; libmupdf-dev is not needed — PyMuPDF>=1.24 ships bundled MuPDF wheels
+RUN apt-get update && apt-get upgrade -y && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
