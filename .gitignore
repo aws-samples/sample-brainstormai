@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+dist/
+*.dist-info/
+
+# Node
+node_modules/
+frontend/dist/
+frontend/.env*
+.env
+.env.*
+
+# AWS / CDK
+cdk.out/
+cdk.context.json
+*.tfstate
+*.tfstate.backup
+.terraform/
+
+# Secrets
+*.pem
+*.key
+config.json
+backend/lambdas/**/config.json
+
+# Claude Code internal config
+.claude/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverrideFiles
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/

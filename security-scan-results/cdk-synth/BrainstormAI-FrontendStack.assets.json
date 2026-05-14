@@ -1,0 +1,36 @@
+{
+  "version": "53.0.0",
+  "files": {
+    "faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6": {
+      "displayName": "BrainstormAI-FrontendStack/Custom::S3AutoDeleteObjectsCustomResourceProvider Code",
+      "source": {
+        "path": "asset.faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6",
+        "packaging": "zip"
+      },
+      "destinations": {
+        "173353905255-us-east-1-f570c470": {
+          "bucketName": "cdk-hnb659fds-assets-173353905255-us-east-1",
+          "objectKey": "faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6.zip",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::173353905255:role/cdk-hnb659fds-file-publishing-role-173353905255-us-east-1"
+        }
+      }
+    },
+    "48509311cae3ea7c0b609f16199fd6e586122cf490241f6945813ba073f07c19": {
+      "displayName": "BrainstormAI-FrontendStack Template",
+      "source": {
+        "path": "BrainstormAI-FrontendStack.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "173353905255-us-east-1-1fdb6011": {
+          "bucketName": "cdk-hnb659fds-assets-173353905255-us-east-1",
+          "objectKey": "48509311cae3ea7c0b609f16199fd6e586122cf490241f6945813ba073f07c19.json",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::173353905255:role/cdk-hnb659fds-file-publishing-role-173353905255-us-east-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

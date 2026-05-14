@@ -1,0 +1,22 @@
+{
+  "name": "brainstormai-infra",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "cdk": "cdk"
+  },
+  "devDependencies": {
+    "@types/node": "18.x",
+    "aws-cdk": "^2.1121.0",
+    "ts-node": "^10.9.0",
+    "typescript": "5.x"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "^2.253.1",
+    "cdk-nag": "^2.38.2",
+    "constructs": "^10.0.0",
+    "source-map-support": "^0.5.21"
+  }
+}

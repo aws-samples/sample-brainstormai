@@ -1,0 +1,68 @@
+[
+  {
+    "name": "Claude Haiku 4.5 (current)",
+    "format_valid": true,
+    "turn_count": 29,
+    "latency_s": 12.6,
+    "input_tokens": 8895,
+    "output_tokens": 1124,
+    "cost_usd": 0.01161,
+    "first_line": "ALEX: Hey Sam, have you heard about this new approach to making large language models run faster? I just read about some",
+    "error": null
+  },
+  {
+    "name": "Claude Haiku 3.5",
+    "format_valid": false,
+    "turn_count": 0,
+    "latency_s": 0.5,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cost_usd": 0,
+    "first_line": "",
+    "error": "An error occurred (ResourceNotFoundException) when calling the InvokeModelWithResponseStream operation: Access denied. This Model is marked by provider as Legacy and you have not been actively using the model in the last 30 days. Please upgrade to an active model on Amazon Bedrock"
+  },
+  {
+    "name": "Claude Haiku 3 (legacy)",
+    "format_valid": false,
+    "turn_count": 0,
+    "latency_s": 0.5,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cost_usd": 0,
+    "first_line": "",
+    "error": "An error occurred (ResourceNotFoundException) when calling the InvokeModelWithResponseStream operation: Access denied. This Model is marked by provider as Legacy and you have not been actively using the model in the last 30 days. Please upgrade to an active model on Amazon Bedrock"
+  },
+  {
+    "name": "Amazon Nova Pro",
+    "format_valid": true,
+    "turn_count": 9,
+    "latency_s": 3.4,
+    "input_tokens": 8314,
+    "output_tokens": 301,
+    "cost_usd": 0.00761,
+    "first_line": "ALEX: Hey Sam, have you heard about the challenges in serving large language models (LLMs) efficiently?  SAM: Yeah, Alex",
+    "error": null
+  },
+  {
+    "name": "Amazon Nova Lite",
+    "format_valid": true,
+    "turn_count": 13,
+    "latency_s": 4.2,
+    "input_tokens": 8314,
+    "output_tokens": 507,
+    "cost_usd": 0.00062,
+    "first_line": "ALEX: Hey Sam, have you heard about the new advancements in memory management for large language models?  SAM: Yeah, I\u2019v",
+    "error": null
+  },
+  {
+    "name": "Llama 4 Maverick 17B",
+    "format_valid": true,
+    "turn_count": 14,
+    "latency_s": 2.7,
+    "input_tokens": 7327,
+    "output_tokens": 374,
+    "cost_usd": 0.00212,
+    "first_line": "ALEX: Hey Sam, have you heard about the new technique called PagedAttention that's improving the efficiency of large lan",
+    "error": null
+  }
+]

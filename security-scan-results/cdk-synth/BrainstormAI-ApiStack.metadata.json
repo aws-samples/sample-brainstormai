@@ -1,0 +1,1879 @@
+{
+  "/BrainstormAI-ApiStack": [
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/ApiUrl": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApiUrl"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:283:5)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/WsUrl": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WsUrl"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:284:5)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/BootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals, @cspotcode/source-map-support...",
+        "(no user code in 9007199254740991 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/CheckBootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CheckBootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals, @cspotcode/source-map-support...",
+        "(no user code in 9007199254740991 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/NotebooksLogGroup/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "NotebooksLogGroup90E8337C"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new LogGroup2 in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:104:17)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/Notebooks/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "Notebooks05B72151"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:98:25)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/SourcesLogGroup/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SourcesLogGroup95E0FFA6"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new LogGroup2 in aws-cdk-lib...",
+        "makeLambda (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:72:19)",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:152:23)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/Sources/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SourcesBE4D2488"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "makeLambda (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:64:18)",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:152:23)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/JobsLogGroup/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "JobsLogGroup3532B4B6"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new LogGroup2 in aws-cdk-lib...",
+        "makeLambda (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:72:19)",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:153:20)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/Jobs/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "JobsDF1CC2D4"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "makeLambda (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:64:18)",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:153:20)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/ArtifactsLogGroup/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ArtifactsLogGroup385201EA"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new LogGroup2 in aws-cdk-lib...",
+        "makeLambda (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:72:19)",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:154:25)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/Artifacts/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "Artifacts82DD59A1"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "makeLambda (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:64:18)",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:154:25)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/WebsocketLogGroup/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WebsocketLogGroupB6316D1C"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new LogGroup2 in aws-cdk-lib...",
+        "makeLambda (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:72:19)",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:155:25)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/Websocket/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "Websocket76EC4F98"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "makeLambda (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:64:18)",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:155:25)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApi0C43BF4B"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new RestApi2 in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:158:17)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Account": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApiAccount7C83CF5A"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new RestApi2 in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:158:17)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Endpoint": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApiEndpoint0551178A"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new RestApi2 in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:158:17)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/Authorizer/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AuthorizerBD825682"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new CognitoUserPoolsAuthorizer2 in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:167:31)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/WsAuthorizerLogGroup/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WsAuthorizerLogGroup9448D393"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new LogGroup2 in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:228:17)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/WsAuthorizerFn/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WsAuthorizerFn9266202D"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:218:28)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/WsApi/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WsApi88D84716"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new WebSocketApi2 in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:246:19)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/WsApi/BrainstormAIApiStackWsApiWsAuthorizer5480F7D6-Permission": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WsApiBrainstormAIApiStackWsApiWsAuthorizer5480F7D6PermissionE58165AA"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new WebSocketApi2 in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:246:19)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/WsStage/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WsStage9AD02499"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new WebSocketStage2 in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:260:21)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/CDKMetadata/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadata"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals, @cspotcode/source-map-support...",
+        "(no user code in 9007199254740991 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/Notebooks/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "NotebooksServiceRoleBF73C3AD"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:98:25)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/Sources/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SourcesServiceRoleFCC55040"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "makeLambda (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:64:18)",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:152:23)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/Jobs/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "JobsServiceRole9C4A7F49"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "makeLambda (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:64:18)",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:153:20)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/Artifacts/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ArtifactsServiceRole236E0000"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "makeLambda (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:64:18)",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:154:25)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/Websocket/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WebsocketServiceRole38476708"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "makeLambda (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:64:18)",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:155:25)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/CloudWatchRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApiCloudWatchRoleE3ED6605"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new RestApi2 in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:158:17)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Deployment/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApiDeployment180EC5037b4efd79ab9979a082ea10f8c6dcf090"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new RestApi2 in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:158:17)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/DeploymentStage.prod/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApiDeploymentStageprod3855DE66"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new RestApi2 in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:158:17)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/WsAuthorizerFn/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WsAuthorizerFnServiceRole4253DF99"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:218:28)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/WsApi/$connect-Route/WsConnectIntegration-Permission": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WsApiconnectRouteWsConnectIntegrationPermissionADC57492"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new WebSocketApi2 in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:246:19)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/WsApi/$connect-Route/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WsApiconnectRoute3B404673"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new WebSocketApi2 in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:246:19)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/WsApi/WsAuthorizer/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WsApiWsAuthorizer3174927A"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new WebSocketApi2 in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:246:19)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/WsApi/$disconnect-Route/WsDisconnectIntegration-Permission": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WsApidisconnectRouteWsDisconnectIntegrationPermission39495327"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new WebSocketApi2 in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:246:19)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/WsApi/$disconnect-Route/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WsApidisconnectRoute52949C4E"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new WebSocketApi2 in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:246:19)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/WsApi/$default-Route/WsDefaultIntegration-Permission": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WsApidefaultRouteWsDefaultIntegrationPermission7591F047"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new WebSocketApi2 in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:246:19)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/WsApi/$default-Route/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WsApidefaultRoute688BE5A5"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new WebSocketApi2 in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:246:19)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/Notebooks/ServiceRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "NotebooksServiceRoleDefaultPolicy5F44C816"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.grantReadWriteData in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:129:26)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/Sources/ServiceRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SourcesServiceRoleDefaultPolicy268EBAFA"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.grantReadWriteData in aws-cdk-lib...",
+        "makeLambda (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:78:28)",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:152:23)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/Jobs/ServiceRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "JobsServiceRoleDefaultPolicyCBEA0874"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.grantReadWriteData in aws-cdk-lib...",
+        "makeLambda (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:78:28)",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:153:20)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/Artifacts/ServiceRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ArtifactsServiceRoleDefaultPolicy2728E22D"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.grantReadWriteData in aws-cdk-lib...",
+        "makeLambda (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:78:28)",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:154:25)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/Websocket/ServiceRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WebsocketServiceRoleDefaultPolicy1EBB866E"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.grantReadWriteData in aws-cdk-lib...",
+        "makeLambda (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:78:28)",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:155:25)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/OPTIONS/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApiOPTIONS6AA64D2D"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new RestApi2 in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:158:17)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooks6C520D51"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...RootResource.addResource in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:176:40)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/WsApi/$connect-Route/WsConnectIntegration/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WsApiconnectRouteWsConnectIntegration467D17BF"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new WebSocketApi2 in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:246:19)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/WsApi/$disconnect-Route/WsDisconnectIntegration/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WsApidisconnectRouteWsDisconnectIntegration9D9EBAE9"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new WebSocketApi2 in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:246:19)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/WsApi/$default-Route/WsDefaultIntegration/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WsApidefaultRouteWsDefaultIntegration463C229B"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new WebSocketApi2 in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:246:19)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/OPTIONS/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksOPTIONS0864ED09"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...RootResource.addResource in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:176:40)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/GET/ApiPermission.BrainstormAIApiStackRestApiD7E369AF.GET..notebooks": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksGETApiPermissionBrainstormAIApiStackRestApiD7E369AFGETnotebooks700737DE"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:177:23)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/GET/ApiPermission.Test.BrainstormAIApiStackRestApiD7E369AF.GET..notebooks": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksGETApiPermissionTestBrainstormAIApiStackRestApiD7E369AFGETnotebooks12B6AB18"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:177:23)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/GET/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksGET44E05B77"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:177:23)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/POST/ApiPermission.BrainstormAIApiStackRestApiD7E369AF.POST..notebooks": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksPOSTApiPermissionBrainstormAIApiStackRestApiD7E369AFPOSTnotebooksBA8FC712"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:178:23)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/POST/ApiPermission.Test.BrainstormAIApiStackRestApiD7E369AF.POST..notebooks": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksPOSTApiPermissionTestBrainstormAIApiStackRestApiD7E369AFPOSTnotebooks51A656E7"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:178:23)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/POST/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksPOST24B0EBB4"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:178:23)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdAA1CD9B1"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addResource in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:180:48)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/OPTIONS/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdOPTIONSAE98CC13"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addResource in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:180:48)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/GET/ApiPermission.BrainstormAIApiStackRestApiD7E369AF.GET..notebooks.{notebookId}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdGETApiPermissionBrainstormAIApiStackRestApiD7E369AFGETnotebooksnotebookId7F5E7584"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:181:22)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/GET/ApiPermission.Test.BrainstormAIApiStackRestApiD7E369AF.GET..notebooks.{notebookId}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdGETApiPermissionTestBrainstormAIApiStackRestApiD7E369AFGETnotebooksnotebookId31383EE6"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:181:22)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/GET/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdGET08D1D685"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:181:22)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/PATCH/ApiPermission.BrainstormAIApiStackRestApiD7E369AF.PATCH..notebooks.{notebookId}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdPATCHApiPermissionBrainstormAIApiStackRestApiD7E369AFPATCHnotebooksnotebookId176F7840"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:182:22)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/PATCH/ApiPermission.Test.BrainstormAIApiStackRestApiD7E369AF.PATCH..notebooks.{notebookId}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdPATCHApiPermissionTestBrainstormAIApiStackRestApiD7E369AFPATCHnotebooksnotebookId6E94BA25"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:182:22)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/PATCH/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdPATCH894F0E90"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:182:22)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/DELETE/ApiPermission.BrainstormAIApiStackRestApiD7E369AF.DELETE..notebooks.{notebookId}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdDELETEApiPermissionBrainstormAIApiStackRestApiD7E369AFDELETEnotebooksnotebookId7B9F446B"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:183:22)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/DELETE/ApiPermission.Test.BrainstormAIApiStackRestApiD7E369AF.DELETE..notebooks.{notebookId}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdDELETEApiPermissionTestBrainstormAIApiStackRestApiD7E369AFDELETEnotebooksnotebookId92D4835B"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:183:22)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/DELETE/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdDELETE1949E0E3"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:183:22)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/sources/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdsources5CB3C116"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addResource in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:185:46)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/jobs/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdjobs665B8067"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addResource in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:201:43)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/artifacts/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdartifactsB92BCFBC"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addResource in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:209:48)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/sources/OPTIONS/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdsourcesOPTIONS573BA0AC"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addResource in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:185:46)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/sources/GET/ApiPermission.BrainstormAIApiStackRestApiD7E369AF.GET..notebooks.{notebookId}.sources": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdsourcesGETApiPermissionBrainstormAIApiStackRestApiD7E369AFGETnotebooksnotebookIdsourcesE27755CE"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:186:21)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/sources/GET/ApiPermission.Test.BrainstormAIApiStackRestApiD7E369AF.GET..notebooks.{notebookId}.sources": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdsourcesGETApiPermissionTestBrainstormAIApiStackRestApiD7E369AFGETnotebooksnotebookIdsources12C568EE"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:186:21)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/sources/GET/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdsourcesGETD0CEE9A8"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:186:21)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/sources/upload-url/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdsourcesuploadurl59BA41FF"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addResource in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:187:21)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/sources/url/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdsourcesurl93A83835"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addResource in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:190:21)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/sources/text/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdsourcestextED85F113"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addResource in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:193:21)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/sources/{sourceId}/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdsourcessourceIdD8B942A8"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addResource in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:197:44)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/jobs/OPTIONS/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdjobsOPTIONS2FC69B01"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addResource in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:201:43)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/jobs/GET/ApiPermission.BrainstormAIApiStackRestApiD7E369AF.GET..notebooks.{notebookId}.jobs": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdjobsGETApiPermissionBrainstormAIApiStackRestApiD7E369AFGETnotebooksnotebookIdjobs73304F89"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:202:18)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/jobs/GET/ApiPermission.Test.BrainstormAIApiStackRestApiD7E369AF.GET..notebooks.{notebookId}.jobs": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdjobsGETApiPermissionTestBrainstormAIApiStackRestApiD7E369AFGETnotebooksnotebookIdjobs3CF2BD5B"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:202:18)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/jobs/GET/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdjobsGET8C7CF267"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:202:18)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/jobs/POST/ApiPermission.BrainstormAIApiStackRestApiD7E369AF.POST..notebooks.{notebookId}.jobs": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdjobsPOSTApiPermissionBrainstormAIApiStackRestApiD7E369AFPOSTnotebooksnotebookIdjobs97B17500"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:203:18)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/jobs/POST/ApiPermission.Test.BrainstormAIApiStackRestApiD7E369AF.POST..notebooks.{notebookId}.jobs": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdjobsPOSTApiPermissionTestBrainstormAIApiStackRestApiD7E369AFPOSTnotebooksnotebookIdjobsF1323C1E"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:203:18)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/jobs/POST/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdjobsPOST979805CD"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:203:18)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/jobs/{jobId}/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdjobsjobId8207C149"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addResource in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:205:38)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/artifacts/OPTIONS/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdartifactsOPTIONS6EEF68C9"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addResource in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:209:48)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/artifacts/GET/ApiPermission.BrainstormAIApiStackRestApiD7E369AF.GET..notebooks.{notebookId}.artifacts": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdartifactsGETApiPermissionBrainstormAIApiStackRestApiD7E369AFGETnotebooksnotebookIdartifacts05E8A7A6"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:210:23)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/artifacts/GET/ApiPermission.Test.BrainstormAIApiStackRestApiD7E369AF.GET..notebooks.{notebookId}.artifacts": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdartifactsGETApiPermissionTestBrainstormAIApiStackRestApiD7E369AFGETnotebooksnotebookIdartifacts863D56B3"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:210:23)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/artifacts/GET/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdartifactsGET398813BF"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:210:23)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/artifacts/{artifactId}/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdartifactsartifactIdF7C572D1"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addResource in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:212:48)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/sources/upload-url/OPTIONS/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdsourcesuploadurlOPTIONSA981E343"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addResource in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:187:21)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/sources/upload-url/POST/ApiPermission.BrainstormAIApiStackRestApiD7E369AF.POST..notebooks.{notebookId}.sources.upload-url": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdsourcesuploadurlPOSTApiPermissionBrainstormAIApiStackRestApiD7E369AFPOSTnotebooksnotebookIdsourcesuploadurlFC4A14B9"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:187:47)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/sources/upload-url/POST/ApiPermission.Test.BrainstormAIApiStackRestApiD7E369AF.POST..notebooks.{notebookId}.sources.upload-url": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdsourcesuploadurlPOSTApiPermissionTestBrainstormAIApiStackRestApiD7E369AFPOSTnotebooksnotebookIdsourcesuploadurl8EB1097F"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:187:47)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/sources/upload-url/POST/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdsourcesuploadurlPOSTF3D68BF6"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:187:47)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/sources/url/OPTIONS/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdsourcesurlOPTIONS76ED24F3"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addResource in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:190:21)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/sources/url/POST/ApiPermission.BrainstormAIApiStackRestApiD7E369AF.POST..notebooks.{notebookId}.sources.url": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdsourcesurlPOSTApiPermissionBrainstormAIApiStackRestApiD7E369AFPOSTnotebooksnotebookIdsourcesurl25A71D4F"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:190:40)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/sources/url/POST/ApiPermission.Test.BrainstormAIApiStackRestApiD7E369AF.POST..notebooks.{notebookId}.sources.url": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdsourcesurlPOSTApiPermissionTestBrainstormAIApiStackRestApiD7E369AFPOSTnotebooksnotebookIdsourcesurl5325C8CA"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:190:40)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/sources/url/POST/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdsourcesurlPOSTD7284940"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:190:40)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/sources/text/OPTIONS/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdsourcestextOPTIONS162C0015"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addResource in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:193:21)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/sources/text/POST/ApiPermission.BrainstormAIApiStackRestApiD7E369AF.POST..notebooks.{notebookId}.sources.text": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdsourcestextPOSTApiPermissionBrainstormAIApiStackRestApiD7E369AFPOSTnotebooksnotebookIdsourcestext899E3009"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:193:41)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/sources/text/POST/ApiPermission.Test.BrainstormAIApiStackRestApiD7E369AF.POST..notebooks.{notebookId}.sources.text": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdsourcestextPOSTApiPermissionTestBrainstormAIApiStackRestApiD7E369AFPOSTnotebooksnotebookIdsourcestextE4CD2981"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:193:41)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/sources/text/POST/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdsourcestextPOST5DC5170C"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:193:41)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/sources/{sourceId}/OPTIONS/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdsourcessourceIdOPTIONS1FED6525"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addResource in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:197:44)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/sources/{sourceId}/DELETE/ApiPermission.BrainstormAIApiStackRestApiD7E369AF.DELETE..notebooks.{notebookId}.sources.{sourceId}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdsourcessourceIdDELETEApiPermissionBrainstormAIApiStackRestApiD7E369AFDELETEnotebooksnotebookIdsourcessourceId7B4E6943"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:198:20)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/sources/{sourceId}/DELETE/ApiPermission.Test.BrainstormAIApiStackRestApiD7E369AF.DELETE..notebooks.{notebookId}.sources.{sourceId}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdsourcessourceIdDELETEApiPermissionTestBrainstormAIApiStackRestApiD7E369AFDELETEnotebooksnotebookIdsourcessourceId54089513"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:198:20)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/sources/{sourceId}/DELETE/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdsourcessourceIdDELETEC4D28760"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:198:20)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/sources/{sourceId}/ingest/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdsourcessourceIdingestA80F9CDC"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addResource in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:199:20)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/jobs/{jobId}/OPTIONS/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdjobsjobIdOPTIONS1E5DBA02"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addResource in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:205:38)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/jobs/{jobId}/GET/ApiPermission.BrainstormAIApiStackRestApiD7E369AF.GET..notebooks.{notebookId}.jobs.{jobId}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdjobsjobIdGETApiPermissionBrainstormAIApiStackRestApiD7E369AFGETnotebooksnotebookIdjobsjobId633A55B6"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:206:17)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/jobs/{jobId}/GET/ApiPermission.Test.BrainstormAIApiStackRestApiD7E369AF.GET..notebooks.{notebookId}.jobs.{jobId}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdjobsjobIdGETApiPermissionTestBrainstormAIApiStackRestApiD7E369AFGETnotebooksnotebookIdjobsjobId23307B19"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:206:17)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/jobs/{jobId}/GET/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdjobsjobIdGETBFF5EDF4"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:206:17)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/jobs/{jobId}/DELETE/ApiPermission.BrainstormAIApiStackRestApiD7E369AF.DELETE..notebooks.{notebookId}.jobs.{jobId}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdjobsjobIdDELETEApiPermissionBrainstormAIApiStackRestApiD7E369AFDELETEnotebooksnotebookIdjobsjobIdA7930E6B"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:207:17)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/jobs/{jobId}/DELETE/ApiPermission.Test.BrainstormAIApiStackRestApiD7E369AF.DELETE..notebooks.{notebookId}.jobs.{jobId}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdjobsjobIdDELETEApiPermissionTestBrainstormAIApiStackRestApiD7E369AFDELETEnotebooksnotebookIdjobsjobIdDFED53D7"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:207:17)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/jobs/{jobId}/DELETE/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdjobsjobIdDELETE94874A28"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:207:17)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/artifacts/{artifactId}/OPTIONS/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdartifactsartifactIdOPTIONSF6196A38"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addResource in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:212:48)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/artifacts/{artifactId}/GET/ApiPermission.BrainstormAIApiStackRestApiD7E369AF.GET..notebooks.{notebookId}.artifacts.{artifactId}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdartifactsartifactIdGETApiPermissionBrainstormAIApiStackRestApiD7E369AFGETnotebooksnotebookIdartifactsartifactIdE1DB7DA9"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:213:22)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/artifacts/{artifactId}/GET/ApiPermission.Test.BrainstormAIApiStackRestApiD7E369AF.GET..notebooks.{notebookId}.artifacts.{artifactId}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdartifactsartifactIdGETApiPermissionTestBrainstormAIApiStackRestApiD7E369AFGETnotebooksnotebookIdartifactsartifactId87292539"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:213:22)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/artifacts/{artifactId}/GET/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdartifactsartifactIdGET96F5E422"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:213:22)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/sources/{sourceId}/ingest/OPTIONS/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdsourcessourceIdingestOPTIONSA2B14D07"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addResource in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:199:20)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/sources/{sourceId}/ingest/POST/ApiPermission.BrainstormAIApiStackRestApiD7E369AF.POST..notebooks.{notebookId}.sources.{sourceId}.ingest": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdsourcessourceIdingestPOSTApiPermissionBrainstormAIApiStackRestApiD7E369AFPOSTnotebooksnotebookIdsourcessourceIdingest1E408572"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:199:42)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/sources/{sourceId}/ingest/POST/ApiPermission.Test.BrainstormAIApiStackRestApiD7E369AF.POST..notebooks.{notebookId}.sources.{sourceId}.ingest": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdsourcessourceIdingestPOSTApiPermissionTestBrainstormAIApiStackRestApiD7E369AFPOSTnotebooksnotebookIdsourcessourceIdingestD010C97A"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:199:42)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-ApiStack/RestApi/Default/notebooks/{notebookId}/sources/{sourceId}/ingest/POST/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApinotebooksnotebookIdsourcessourceIdingestPOSTC13A4B19"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addMethod in aws-cdk-lib...",
+        "new ApiStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/api-stack.ts:199:42)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:41:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ]
+}

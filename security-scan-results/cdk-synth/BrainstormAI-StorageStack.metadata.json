@@ -1,0 +1,1133 @@
+{
+  "/BrainstormAI-StorageStack": [
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/NotebooksTable": [
+    {
+      "type": "aws:cdk:hasPhysicalName",
+      "data": {
+        "Ref": "NotebooksTableE3C0F6C4"
+      }
+    }
+  ],
+  "/BrainstormAI-StorageStack/SourcesTable": [
+    {
+      "type": "aws:cdk:hasPhysicalName",
+      "data": {
+        "Ref": "SourcesTable1DBF2A17"
+      }
+    }
+  ],
+  "/BrainstormAI-StorageStack/JobsTable": [
+    {
+      "type": "aws:cdk:hasPhysicalName",
+      "data": {
+        "Ref": "JobsTable1970BC16"
+      }
+    }
+  ],
+  "/BrainstormAI-StorageStack/UserJobCountTable": [
+    {
+      "type": "aws:cdk:hasPhysicalName",
+      "data": {
+        "Ref": "UserJobCountTable7D8ED211"
+      }
+    }
+  ],
+  "/BrainstormAI-StorageStack/ArtifactsTable": [
+    {
+      "type": "aws:cdk:hasPhysicalName",
+      "data": {
+        "Ref": "ArtifactsTable22794241"
+      }
+    }
+  ],
+  "/BrainstormAI-StorageStack/WsConnectionsTable": [
+    {
+      "type": "aws:cdk:hasPhysicalName",
+      "data": {
+        "Ref": "WsConnectionsTable9E1AC3EB"
+      }
+    }
+  ],
+  "/BrainstormAI-StorageStack/PodcastSessionsTable": [
+    {
+      "type": "aws:cdk:hasPhysicalName",
+      "data": {
+        "Ref": "PodcastSessionsTable33FBA328"
+      }
+    }
+  ],
+  "/BrainstormAI-StorageStack/VectorsBucket": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VectorsBucket"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:212:5)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/AssetsBucketName": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AssetsBucketName"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:219:5)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/VectorsBucketName": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VectorsBucketName"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:220:5)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/DbEndpoint": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DbEndpoint"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:221:5)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/BootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals, @cspotcode/source-map-support...",
+        "(no user code in 9007199254740991 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/CheckBootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CheckBootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals, @cspotcode/source-map-support...",
+        "(no user code in 9007199254740991 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Vpc/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "Vpc8378EB38"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Vpc2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:32:16)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Vpc/IGW": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcIGWD7BA715C"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Vpc2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:32:16)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Vpc/VPCGW": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcVPCGWBF912B6E"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Vpc2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:32:16)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/AccessLogsBucket/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AccessLogsBucket83982689"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Bucket2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:43:30)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/AssetsBucket/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AssetsBucket5CB76180"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Bucket2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:51:25)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/NotebooksTable/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "NotebooksTableE3C0F6C4"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Table2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:90:27)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/SourcesTable/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SourcesTable1DBF2A17"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Table2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:103:25)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/JobsTable/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "JobsTable1970BC16"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Table2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:115:22)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/UserJobCountTable/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "UserJobCountTable7D8ED211"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Table2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:134:30)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/ArtifactsTable/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ArtifactsTable22794241"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Table2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:142:27)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/WsConnectionsTable/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "WsConnectionsTable9E1AC3EB"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Table2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:155:31)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/PodcastSessionsTable/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "PodcastSessionsTable33FBA328"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Table2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:164:33)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/DbSecurityGroup/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DbSecurityGroupE9D701AD"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new SecurityGroup2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:178:28)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/DbSecret/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DbSecret685A0FA5"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Secret2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:183:21)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Database/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DatabaseB269D8BB"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new DatabaseInstance2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:192:24)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/CDKMetadata/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadata"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals, @cspotcode/source-map-support...",
+        "(no user code in 9007199254740991 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Exports/Output{\"Fn::GetAtt\":[\"AssetsBucket5CB76180\",\"Arn\"]}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputFnGetAttAssetsBucket5CB76180ArnBF60D959"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals, @cspotcode/source-map-support...",
+        "(no user code in 9007199254740991 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Exports/Output{\"Fn::GetAtt\":[\"NotebooksTableE3C0F6C4\",\"Arn\"]}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputFnGetAttNotebooksTableE3C0F6C4Arn2F247DBA"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals, @cspotcode/source-map-support...",
+        "(no user code in 9007199254740991 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Exports/Output{\"Fn::GetAtt\":[\"SourcesTable1DBF2A17\",\"Arn\"]}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputFnGetAttSourcesTable1DBF2A17Arn1622AE45"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals, @cspotcode/source-map-support...",
+        "(no user code in 9007199254740991 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Exports/Output{\"Fn::GetAtt\":[\"JobsTable1970BC16\",\"Arn\"]}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputFnGetAttJobsTable1970BC16ArnC40C1624"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals, @cspotcode/source-map-support...",
+        "(no user code in 9007199254740991 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Exports/Output{\"Fn::GetAtt\":[\"ArtifactsTable22794241\",\"Arn\"]}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputFnGetAttArtifactsTable22794241ArnEC6D514B"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals, @cspotcode/source-map-support...",
+        "(no user code in 9007199254740991 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Exports/Output{\"Fn::GetAtt\":[\"WsConnectionsTable9E1AC3EB\",\"Arn\"]}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputFnGetAttWsConnectionsTable9E1AC3EBArnA4D51A9B"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals, @cspotcode/source-map-support...",
+        "(no user code in 9007199254740991 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Exports/Output{\"Fn::GetAtt\":[\"PodcastSessionsTable33FBA328\",\"Arn\"]}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputFnGetAttPodcastSessionsTable33FBA328Arn1B1BAF38"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals, @cspotcode/source-map-support...",
+        "(no user code in 9007199254740991 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Exports/Output{\"Fn::GetAtt\":[\"UserJobCountTable7D8ED211\",\"Arn\"]}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputFnGetAttUserJobCountTable7D8ED211ArnE2CCA549"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals, @cspotcode/source-map-support...",
+        "(no user code in 9007199254740991 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Exports/Output{\"Ref\":\"DbSecret685A0FA5\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefDbSecret685A0FA57881E1C6"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals, @cspotcode/source-map-support...",
+        "(no user code in 9007199254740991 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Exports/Output{\"Ref\":\"AssetsBucket5CB76180\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefAssetsBucket5CB761808BF2E271"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals, @cspotcode/source-map-support...",
+        "(no user code in 9007199254740991 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Exports/Output{\"Ref\":\"NotebooksTableE3C0F6C4\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefNotebooksTableE3C0F6C4C4674225"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals, @cspotcode/source-map-support...",
+        "(no user code in 9007199254740991 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Exports/Output{\"Ref\":\"SourcesTable1DBF2A17\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefSourcesTable1DBF2A17D1A98E10"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals, @cspotcode/source-map-support...",
+        "(no user code in 9007199254740991 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Exports/Output{\"Ref\":\"JobsTable1970BC16\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefJobsTable1970BC16EDB4A824"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals, @cspotcode/source-map-support...",
+        "(no user code in 9007199254740991 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Exports/Output{\"Ref\":\"ArtifactsTable22794241\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefArtifactsTable227942413974C39D"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals, @cspotcode/source-map-support...",
+        "(no user code in 9007199254740991 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Exports/Output{\"Ref\":\"WsConnectionsTable9E1AC3EB\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefWsConnectionsTable9E1AC3EBC8E88C06"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals, @cspotcode/source-map-support...",
+        "(no user code in 9007199254740991 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Exports/Output{\"Ref\":\"PodcastSessionsTable33FBA328\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefPodcastSessionsTable33FBA328BA254A0F"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals, @cspotcode/source-map-support...",
+        "(no user code in 9007199254740991 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Exports/Output{\"Fn::GetAtt\":[\"DatabaseB269D8BB\",\"Endpoint.Address\"]}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputFnGetAttDatabaseB269D8BBEndpointAddressA4DBD059"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals, @cspotcode/source-map-support...",
+        "(no user code in 9007199254740991 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Exports/Output{\"Fn::GetAtt\":[\"DatabaseB269D8BB\",\"Endpoint.Port\"]}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputFnGetAttDatabaseB269D8BBEndpointPort3ACB3F51"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals, @cspotcode/source-map-support...",
+        "(no user code in 9007199254740991 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Exports/Output{\"Ref\":\"VpcPrivateSubnet1Subnet536B997A\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefVpcPrivateSubnet1Subnet536B997AFD4CC940"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals, @cspotcode/source-map-support...",
+        "(no user code in 9007199254740991 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Exports/Output{\"Ref\":\"VpcPrivateSubnet2Subnet3788AAA1\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefVpcPrivateSubnet2Subnet3788AAA1380949A3"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals, @cspotcode/source-map-support...",
+        "(no user code in 9007199254740991 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Exports/Output{\"Ref\":\"Vpc8378EB38\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefVpc8378EB38272D6E3A"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals, @cspotcode/source-map-support...",
+        "(no user code in 9007199254740991 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Exports/Output{\"Ref\":\"UserJobCountTable7D8ED211\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefUserJobCountTable7D8ED211CFC439FD"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals, @cspotcode/source-map-support...",
+        "(no user code in 9007199254740991 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Vpc/PublicSubnet1/Subnet": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcPublicSubnet1Subnet5C2D37C4"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/hvparasa/Desktop/brainstormAI/infra/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:257 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...new Vpc2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:32:16)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Vpc/PublicSubnet1/RouteTable": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcPublicSubnet1RouteTable6C95E38E"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/hvparasa/Desktop/brainstormAI/infra/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:257 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...new Vpc2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:32:16)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Vpc/PublicSubnet1/RouteTableAssociation": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcPublicSubnet1RouteTableAssociation97140677"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/hvparasa/Desktop/brainstormAI/infra/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:257 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...new Vpc2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:32:16)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Vpc/PublicSubnet1/DefaultRoute": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcPublicSubnet1DefaultRoute3DA9E72A"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/hvparasa/Desktop/brainstormAI/infra/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:197 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...new Vpc2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:32:16)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Vpc/PublicSubnet1/EIP": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcPublicSubnet1EIPD7E02669"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Vpc2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:32:16)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Vpc/PublicSubnet1/NATGateway": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcPublicSubnet1NATGateway4D7517AA"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Vpc2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:32:16)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Vpc/PublicSubnet2/Subnet": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcPublicSubnet2Subnet691E08A3"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/hvparasa/Desktop/brainstormAI/infra/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:257 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...new Vpc2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:32:16)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Vpc/PublicSubnet2/RouteTable": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcPublicSubnet2RouteTable94F7E489"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/hvparasa/Desktop/brainstormAI/infra/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:257 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...new Vpc2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:32:16)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Vpc/PublicSubnet2/RouteTableAssociation": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcPublicSubnet2RouteTableAssociationDD5762D8"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/hvparasa/Desktop/brainstormAI/infra/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:257 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...new Vpc2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:32:16)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Vpc/PublicSubnet2/DefaultRoute": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcPublicSubnet2DefaultRoute97F91067"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/hvparasa/Desktop/brainstormAI/infra/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:197 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...new Vpc2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:32:16)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Vpc/PrivateSubnet1/Subnet": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcPrivateSubnet1Subnet536B997A"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/hvparasa/Desktop/brainstormAI/infra/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:260 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...new Vpc2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:32:16)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Vpc/PrivateSubnet1/RouteTable": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcPrivateSubnet1RouteTableB2C5B500"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/hvparasa/Desktop/brainstormAI/infra/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:260 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...new Vpc2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:32:16)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Vpc/PrivateSubnet1/RouteTableAssociation": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcPrivateSubnet1RouteTableAssociation70C59FA6"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/hvparasa/Desktop/brainstormAI/infra/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:260 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...new Vpc2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:32:16)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Vpc/PrivateSubnet1/DefaultRoute": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcPrivateSubnet1DefaultRouteBE02A9ED"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Vpc2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:32:16)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Vpc/PrivateSubnet2/Subnet": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcPrivateSubnet2Subnet3788AAA1"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/hvparasa/Desktop/brainstormAI/infra/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:260 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...new Vpc2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:32:16)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Vpc/PrivateSubnet2/RouteTable": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcPrivateSubnet2RouteTableA678073B"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/hvparasa/Desktop/brainstormAI/infra/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:260 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...new Vpc2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:32:16)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Vpc/PrivateSubnet2/RouteTableAssociation": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcPrivateSubnet2RouteTableAssociationA89CAD56"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/hvparasa/Desktop/brainstormAI/infra/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:260 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...new Vpc2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:32:16)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Vpc/PrivateSubnet2/DefaultRoute": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcPrivateSubnet2DefaultRoute060D2087"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Vpc2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:32:16)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Vpc/IsolatedSubnet1/Subnet": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcIsolatedSubnet1SubnetE48C5737"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/hvparasa/Desktop/brainstormAI/infra/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:262 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...new Vpc2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:32:16)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Vpc/IsolatedSubnet1/RouteTable": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcIsolatedSubnet1RouteTable4771E3E5"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/hvparasa/Desktop/brainstormAI/infra/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:262 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...new Vpc2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:32:16)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Vpc/IsolatedSubnet1/RouteTableAssociation": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcIsolatedSubnet1RouteTableAssociationD300FCBB"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/hvparasa/Desktop/brainstormAI/infra/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:262 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...new Vpc2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:32:16)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Vpc/IsolatedSubnet2/Subnet": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcIsolatedSubnet2Subnet16364B91"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/hvparasa/Desktop/brainstormAI/infra/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:262 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...new Vpc2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:32:16)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Vpc/IsolatedSubnet2/RouteTable": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcIsolatedSubnet2RouteTable1D30AF7D"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/hvparasa/Desktop/brainstormAI/infra/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:262 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...new Vpc2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:32:16)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Vpc/IsolatedSubnet2/RouteTableAssociation": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcIsolatedSubnet2RouteTableAssociationF7B18CCA"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/hvparasa/Desktop/brainstormAI/infra/node_modules/aws-cdk-lib/aws-ec2/lib/vpc.js:1:262 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...new Vpc2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:32:16)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/AccessLogsBucket/Policy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AccessLogsBucketPolicy7F77476F"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Bucket2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:43:30)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/AssetsBucket/Policy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AssetsBucketPolicyFFACF6C4"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Bucket2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:51:25)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/DbSecret/Attachment/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DbSecretAttachment0609CE05"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new DatabaseInstance2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:192:24)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/BrainstormAI-StorageStack/Database/SubnetGroup/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DatabaseSubnetGroup7D60F180"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new DatabaseInstance2 in aws-cdk-lib...",
+        "new StorageStack (/Users/hvparasa/Desktop/brainstormAI/infra/lib/storage-stack.ts:192:24)",
+        "<anonymous> (/Users/hvparasa/Desktop/brainstormAI/infra/bin/app.ts:20:22)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ]
+}

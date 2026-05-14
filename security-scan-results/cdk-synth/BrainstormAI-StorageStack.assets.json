@@ -1,0 +1,21 @@
+{
+  "version": "53.0.0",
+  "files": {
+    "71c99f0a67cf53171e4dac2d894905de01fd6dc879bb349e64150903c341fd2e": {
+      "displayName": "BrainstormAI-StorageStack Template",
+      "source": {
+        "path": "BrainstormAI-StorageStack.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "173353905255-us-east-1-8b4c53b3": {
+          "bucketName": "cdk-hnb659fds-assets-173353905255-us-east-1",
+          "objectKey": "71c99f0a67cf53171e4dac2d894905de01fd6dc879bb349e64150903c341fd2e.json",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::173353905255:role/cdk-hnb659fds-file-publishing-role-173353905255-us-east-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}
