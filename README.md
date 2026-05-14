@@ -4,7 +4,7 @@ An AWS-native platform that turns your documents into podcasts, mind maps, quizz
 
 > **Note:** This is sample code intended for non-production use. You should work with your security and legal teams to meet your organizational security, regulatory, and compliance requirements before deployment.
 
-Built by Hima Varshini Parasa (hvparasa@)
+Built by Hima Varshini Parasa (https://github.com/hparasa)
 
 ---
 
