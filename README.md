@@ -12,10 +12,10 @@ Built by Hima Varshini Parasa (hvparasa@)
 
 Upload PDFs, URLs, or plain text into a **notebook**. BrainstormAI ingests and embeds your sources, then lets you generate:
 
-- **Podcast** — a two-speaker conversational audio episode (TTS via Amazon Polly Neural), with genre (educational / debate / sporty), language, and depth controls
-- **Mind Map** — an interactive, expandable node graph with uncapped depth — the tree grows as deep as the content warrants
-- **Quiz** — a scored multiple-choice quiz with explanations
-- **Summary** — a concise written overview of the source material
+- **Podcast** - a two-speaker conversational audio episode (TTS via Amazon Polly Neural), with genre (educational / debate / sporty), language, and depth controls
+- **Mind Map** - an interactive, expandable node graph with uncapped depth - the tree grows as deep as the content warrants
+- **Quiz** - a scored multiple-choice quiz with explanations
+- **Summary** - a concise written overview of the source material
 
 Each artifact goes through a RAG pipeline (S3 Vectors similarity search) and a validation agent that checks coverage and retries generation if key points are missing.
 
@@ -92,12 +92,12 @@ Each notebook gets its own S3 Vectors index (`index_name == notebook_id`). Vecto
 
 ## Generation pipeline
 
-1. **Retrieve** — embed the job's query hint with Titan Embeddings v2, cosine-similarity search top-K chunks from S3 Vectors, distributed evenly across sources
-2. **Generate** — Claude Haiku 4.5 produces the artifact grounded in retrieved chunks
-3. **Validate** — Claude checks coverage against source chunks; if score < threshold, retry with missing points (up to 2 retries)
-4. **Post-process** — Polly Neural TTS for podcasts; JSON schema validation for mind maps and quizzes
-5. **Cache** — artifact stored with `notebookUpdatedAt` as cache key; identical future requests return the cached artifact instantly
-6. **Store** — artifact written to S3 + DynamoDB; user notified via WebSocket
+1. **Retrieve** - embed the job's query hint with Titan Embeddings v2, cosine-similarity search top-K chunks from S3 Vectors, distributed evenly across sources
+2. **Generate** - Claude Haiku 4.5 produces the artifact grounded in retrieved chunks
+3. **Validate** - Claude checks coverage against source chunks; if score < threshold, retry with missing points (up to 2 retries)
+4. **Post-process** - Polly Neural TTS for podcasts; JSON schema validation for mind maps and quizzes
+5. **Cache** - artifact stored with `notebookUpdatedAt` as cache key; identical future requests return the cached artifact instantly
+6. **Store** - artifact written to S3 + DynamoDB; user notified via WebSocket
 
 ---
 
@@ -105,7 +105,7 @@ Each notebook gets its own S3 Vectors index (`index_name == notebook_id`). Vecto
 
 Cache key: `notebookId + jobType + params + notebookUpdatedAt`
 
-- Cache **hit**: job is immediately marked COMPLETED pointing at the existing artifact — no LLM call, no queue
+- Cache **hit**: job is immediately marked COMPLETED pointing at the existing artifact - no LLM call, no queue
 - Cache **miss**: normal generation flow runs and stamps `notebookUpdatedAt` on the new artifact
 - Cache **invalidation**: adding or deleting any source bumps `notebook.updatedAt`, automatically invalidating all cached artifacts for that notebook
 
@@ -117,7 +117,7 @@ Cache key: `notebookId + jobType + params + notebookUpdatedAt`
 |---|---|---|
 | Brief | ~5 min | Concise (2 levels) |
 | Important Points | ~10 min | Key points (3 levels) |
-| In-Depth | ~20 min | Uncapped — as deep as content warrants |
+| In-Depth | ~20 min | Uncapped - as deep as content warrants |
 
 ---
 
@@ -131,8 +131,8 @@ English, Hindi, Mandarin, Spanish, French
 
 The app uses a persistent sidebar with two top-level sections:
 
-- **My Notebooks** — list, create, and open notebooks
-- **Usage** — global token usage dashboard with day-wise pie charts across all notebooks
+- **My Notebooks** - list, create, and open notebooks
+- **Usage** - global token usage dashboard with day-wise pie charts across all notebooks
 
 Inside each notebook there are five tabs: Sources, Generate, Artifacts, Summary, and Usage. The notebook Usage tab shows the same day-wise breakdown scoped to jobs in that notebook only.
 
@@ -140,14 +140,14 @@ Inside each notebook there are five tabs: Sources, Generate, Artifacts, Summary,
 
 ## Security
 
-**Prompt injection protection** — source content (from PDFs, URLs, and text) is treated as untrusted data throughout the pipeline:
+**Prompt injection protection** - source content (from PDFs, URLs, and text) is treated as untrusted data throughout the pipeline:
 
 - All chunks are wrapped in `<untrusted_source_chunk>` XML tags with an explicit instruction to the model to treat the content as data, not instructions
-- Every LLM call passes through a Bedrock Guardrail (`lalac10679yh`) with `PROMPT_ATTACK` detection at HIGH sensitivity — if an injection attempt is detected, the job fails with a clear error rather than producing compromised output
+- Every LLM call passes through a Bedrock Guardrail (`lalac10679yh`) with `PROMPT_ATTACK` detection at HIGH sensitivity - if an injection attempt is detected, the job fails with a clear error rather than producing compromised output
 
-**URL validation** — only HTTPS URLs are accepted; private/internal IP ranges and the EC2 metadata endpoint are blocked before any fetch is attempted.
+**URL validation** - only HTTPS URLs are accepted; private/internal IP ranges and the EC2 metadata endpoint are blocked before any fetch is attempted.
 
-**URL fetch safeguards** — the ingestion worker enforces a 15-second connect/read timeout and a 5 MB response size cap on every URL fetch, preventing hung connections and runaway downloads.
+**URL fetch safeguards** - the ingestion worker enforces a 15-second connect/read timeout and a 5 MB response size cap on every URL fetch, preventing hung connections and runaway downloads.
 
 ---
 
@@ -155,21 +155,21 @@ Inside each notebook there are five tabs: Sources, Generate, Artifacts, Summary,
 
 ### Why ECS over Step Functions
 
-Step Functions orchestrates at the infra level — each artifact type becomes a new state machine with separate Lambda functions, IAM roles, retry/catch blocks, and CDK constructs. ECS uses a single worker with a code-level dispatch pattern:
+Step Functions orchestrates at the infra level - each artifact type becomes a new state machine with separate Lambda functions, IAM roles, retry/catch blocks, and CDK constructs. ECS uses a single worker with a code-level dispatch pattern:
 
-- **No timeout ceiling** — Lambda's 15-minute limit kills in-depth podcast jobs (18+ min of TTS synthesis). ECS Fargate has no timeout.
-- **Content-aware retry** — the validation agent inspects coverage and injects `missing_points` back into the generation prompt for a second attempt. Step Functions retries are infra-level only — they can't feed validation feedback into the next LLM call.
-- **Extensibility** — adding a new artifact type (e.g. PPT) is a single Python file + one `elif` in the dispatch. With Step Functions it would be a new state machine, new Lambdas, and new CDK infrastructure.
-- **Cost** — orchestration is 0.15% of total system cost at 15K jobs/month. There is no economic reason to add Step Functions complexity.
+- **No timeout ceiling** - Lambda's 15-minute limit kills in-depth podcast jobs (18+ min of TTS synthesis). ECS Fargate has no timeout.
+- **Content-aware retry** - the validation agent inspects coverage and injects `missing_points` back into the generation prompt for a second attempt. Step Functions retries are infra-level only - they can't feed validation feedback into the next LLM call.
+- **Extensibility** - adding a new artifact type (e.g. PPT) is a single Python file + one `elif` in the dispatch. With Step Functions it would be a new state machine, new Lambdas, and new CDK infrastructure.
+- **Cost** - orchestration is 0.15% of total system cost at 15K jobs/month. There is no economic reason to add Step Functions complexity.
 
 ### Why RAG over direct LLM calls
 
 Sending full documents directly to the LLM is simpler but more expensive and lower quality at scale:
 
-- **Cost** — RAG sends ~9K tokens per job (20 retrieved chunks). Direct LLM pass-through sends ~33K–100K tokens per job depending on notebook size. At 15K jobs/month, RAG saves ~$220/month on LLM inference alone — the RAG infrastructure pays for itself.
-- **Multi-document notebooks** — a notebook with 5 PDFs easily exceeds 50K tokens. RAG retrieves the most relevant chunks across all sources. Direct pass-through hits context window limits and suffers "lost in the middle" — the model deprioritises content in the middle of long contexts.
-- **Quality** — retrieved chunks are the highest-relevance passages for the query. Full documents include boilerplate, references, and appendices that dilute generation quality.
-- **Extensibility** — the retriever is query-agnostic. A future "user Q&A" feature requires zero changes to the ingestion pipeline.
+- **Cost** - RAG sends ~9K tokens per job (20 retrieved chunks). Direct LLM pass-through sends ~33K–100K tokens per job depending on notebook size. At 15K jobs/month, RAG saves ~$220/month on LLM inference alone - the RAG infrastructure pays for itself.
+- **Multi-document notebooks** - a notebook with 5 PDFs easily exceeds 50K tokens. RAG retrieves the most relevant chunks across all sources. Direct pass-through hits context window limits and suffers "lost in the middle" - the model deprioritises content in the middle of long contexts.
+- **Quality** - retrieved chunks are the highest-relevance passages for the query. Full documents include boilerplate, references, and appendices that dilute generation quality.
+- **Extensibility** - the retriever is query-agnostic. A future "user Q&A" feature requires zero changes to the ingestion pipeline.
 
 ## Token usage tracking
 

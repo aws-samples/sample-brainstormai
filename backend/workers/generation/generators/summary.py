@@ -2,7 +2,7 @@
 Summary generator.
 
 Produces a structured summary (TLDR + key points + highlights) from source chunks.
-No TTS, no validation agent — runs fast as a lightweight artifact type.
+No TTS, no validation agent - runs fast as a lightweight artifact type.
 
 Stores the result JSON directly in S3 and returns the artifact metadata.
 """
@@ -30,7 +30,7 @@ DEPTH_INSTRUCTIONS = {
 
 SYSTEM_PROMPT = (
     "You are a research assistant that produces clear, structured summaries. "
-    "You always respond with valid JSON only — no preamble, no markdown code fences."
+    "You always respond with valid JSON only - no preamble, no markdown code fences."
 )
 
 

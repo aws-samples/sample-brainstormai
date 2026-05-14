@@ -1,0 +1,35 @@
+cdk-nag scan — BrainstormAI
+Date: 2026-05-13
+Tool: cdk-nag 2.38.2 with AwsSolutionsChecks (verbose: true)
+CDK version: 2.1121.0  |  aws-cdk-lib: 2.253.1
+
+Result: 0 ERRORS, 0 AwsSolutions WARNINGS across all 5 stacks.
+
+Stacks scanned:
+  BrainstormAI-CognitoStack
+  BrainstormAI-StorageStack
+  BrainstormAI-ComputeStack
+  BrainstormAI-ApiStack
+  BrainstormAI-FrontendStack
+
+All cdk-nag findings were either remediated or suppressed with documented justifications
+in the CDK stack source files (infra/lib/*.ts). Suppressions cover:
+
+  AwsSolutions-COG2/COG8   — MFA / advanced security not required for sample app
+  AwsSolutions-S1/S10      — Frontend S3 bucket accessed via CloudFront OAC only; direct S3 access blocked
+  AwsSolutions-CFR1-4      — Geo restrictions, WAF, access logging, custom cert omitted for sample app
+  AwsSolutions-APIG1-6     — Access logging, request validation, WAF omitted for sample app
+  AwsSolutions-IAM4/5      — Standard managed policies and CDK-generated grant wildcards
+  AwsSolutions-ECS2        — Non-secret config in env vars; DB credentials via Secrets Manager ARN
+  AwsSolutions-L1          — Python 3.12 (latest stable Lambda runtime)
+  AwsSolutions-DDB3        — PITR disabled for sample app
+  AwsSolutions-VPC7        — VPC Flow Logs omitted for sample app
+  AwsSolutions-RDS3/11     — Multi-AZ and non-default port omitted for sample app
+  AwsSolutions-SMG4        — Secret rotation omitted for sample app
+
+Fixes applied during cdk-nag remediation:
+  - Cognito password policy: requireSymbols set to true
+  - S3 assets bucket: enforceSSL: true + server access logging enabled
+  - All 10 SQS queues (5 main + 5 DLQs): enforceSSL: true
+  - Both ECS Dockerfiles: non-root USER instruction added
+  - aws-cdk-lib upgraded from 2.160.0 to 2.253.1

@@ -12,8 +12,8 @@ The same per-source spread logic as the previous pgvector retriever is
 preserved so no single source dominates the retrieved context.
 
 Environment variables required:
-    S3_VECTORS_BUCKET  — name of the S3 Vectors bucket (e.g. "brainstormai-vectors")
-    AWS_REGION         — AWS region (default: "us-east-1")
+    S3_VECTORS_BUCKET  - name of the S3 Vectors bucket (e.g. "brainstormai-vectors")
+    AWS_REGION         - AWS region (default: "us-east-1")
 """
 
 import json
@@ -52,11 +52,11 @@ def retrieve_chunks(notebook_id: str, query: str, top_k: int) -> list[dict]:
     Returns an empty list if the notebook index does not exist yet.
 
     Each returned dict contains:
-        chunk_id    — the S3 Vectors key (source_id#chunk_index)
-        text        — chunk text (from metadata)
-        chunk_index — integer position within the source
-        token_count — token count (from metadata)
-        similarity  — cosine similarity score (1 - cosine_distance)
+        chunk_id    - the S3 Vectors key (source_id#chunk_index)
+        text        - chunk text (from metadata)
+        chunk_index - integer position within the source
+        token_count - token count (from metadata)
+        similarity  - cosine similarity score (1 - cosine_distance)
     """
     embedding = _embed_query(query)
 
@@ -95,7 +95,7 @@ def retrieve_chunks(notebook_id: str, query: str, top_k: int) -> list[dict]:
 def _list_source_ids(notebook_id: str) -> list[str]:
     """Return the READY source_ids for *notebook_id* from DynamoDB.
 
-    Queries the notebookId-index GSI — O(sources) instead of O(vectors).
+    Queries the notebookId-index GSI - O(sources) instead of O(vectors).
     Only includes READY sources; PENDING/ERROR sources have no vectors.
     """
     items = _sources_table.query(
