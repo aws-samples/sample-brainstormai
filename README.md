@@ -181,11 +181,61 @@ Daily limit: 1,000,000 tokens per user (configurable via `DAILY_TOKEN_LIMIT` env
 
 ---
 
-## Security
+## Prerequisites
 
-See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
+- AWS account with CDK bootstrapped (`cdk bootstrap`)
+- [AWS CDK CLI](https://docs.aws.amazon.com/cdk/latest/guide/cli.html) v2
+- Node.js 20+
+- Python 3.12+
+- Docker (for building ECS container images)
+- Amazon Bedrock model access enabled for: **Claude Haiku 4.5** and **Titan Embeddings v2** in your region
+- *(Optional)* A Bedrock Guardrail with `PROMPT_ATTACK` detection enabled — set its ID as `BEDROCK_GUARDRAIL_ID`
 
-If you discover a potential security issue in this project we ask that you notify AWS/Amazon Security via our [vulnerability reporting page](http://aws.amazon.com/security/vulnerability-reporting/). Please do **not** create a public GitHub issue.
+---
+
+## Deployment
+
+```bash
+# 1. Install CDK dependencies
+cd infra && npm install
+
+# 2. Deploy all stacks (first deploy — WS_CALLBACK_URL not yet known)
+npx cdk deploy --all --require-approval never
+
+# 3. After ApiStack deploys, grab the WebSocket URL from the output, then redeploy ComputeStack
+export WS_CALLBACK_URL=<WsUrl output from ApiStack>
+npx cdk deploy BrainstormAI-ComputeStack --require-approval never
+
+# 4. Build and deploy the frontend
+cd ../frontend && npm install && npm run build
+
+# 5. Write config.json with the deployed API URLs
+cat > dist/config.json <<EOF
+{
+  "apiUrl": "<ApiUrl output from ApiStack>",
+  "wsUrl": "<WsUrl output from ApiStack>",
+  "userPoolId": "<UserPoolId output from CognitoStack>",
+  "userPoolClientId": "<UserPoolClientId output from CognitoStack>",
+  "region": "<your-region>"
+}
+EOF
+
+# 6. Upload frontend to S3
+BUCKET=$(aws cloudformation describe-stacks --stack-name BrainstormAI-FrontendStack \
+  --query "Stacks[0].Outputs[?OutputKey=='SiteBucketName'].OutputValue" --output text)
+aws s3 sync dist/ s3://$BUCKET --delete
+
+# 7. Invalidate CloudFront cache
+DIST_ID=$(aws cloudformation describe-stacks --stack-name BrainstormAI-FrontendStack \
+  --query "Stacks[0].Outputs[?OutputKey=='CloudFrontUrl'].OutputValue" --output text)
+aws cloudfront create-invalidation --distribution-id $DIST_ID --paths "/*"
+```
+
+---
+
+## Reporting Security Issues
+
+If you discover a potential security issue in this project, notify AWS/Amazon Security via our [vulnerability reporting page](http://aws.amazon.com/security/vulnerability-reporting/). Please do **not** create a public GitHub issue. See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
 
 ---
 
